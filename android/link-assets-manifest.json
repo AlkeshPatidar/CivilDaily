@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/Fonts/Comfortaa-Bold.ttf",
+      "sha1": "160e0e5a1010cd45ea124f08a894156e02236551"
+    },
+    {
+      "path": "src/assets/Fonts/Comfortaa-Light.ttf",
+      "sha1": "ed0ebd5d2d4f12b0b8ad23bfee5c5ef692c713c7"
+    },
+    {
+      "path": "src/assets/Fonts/Comfortaa-Medium.ttf",
+      "sha1": "fda057b8b92cfb9c4c65b8151cee56a089390526"
+    },
+    {
+      "path": "src/assets/Fonts/Comfortaa-Regular.ttf",
+      "sha1": "fb5a258452921a7f710d1913777ae6f48a0b6089"
+    },
+    {
+      "path": "src/assets/Fonts/Comfortaa-SemiBold.ttf",
+      "sha1": "48890a29aafcb54748ace8dadff63a2dc261fe6c"
+    },
+    {
+      "path": "src/assets/Fonts/index.js",
+      "sha1": "333908a40a7cfc681a59cf18895cbc52c6f0f646"
+    }
+  ]
+}
