@@ -43,9 +43,9 @@ const DrawerModal = ({
         if (key == 'Terms & Condition') {
             navigation.navigate('TermsAndConditons')
         }
-        if (key == 'Setting') {
-            navigation.navigate('Setting')
-        }
+        // if (key == 'Setting') {
+        //     navigation.navigate('Setting')
+        // }
         // TermsAndConditons
     }
 
@@ -114,7 +114,7 @@ const menuData = [
     { title: 'Rate Us', icon: <Star /> },
     { title: 'Privacy Policy', icon: <Star /> },
     { title: 'Contact Us', icon: <Headset /> },
-    { title: 'Setting', icon: <Headset /> },
+    // { title: 'Setting', icon: <Headset /> },
     // { title: 'Contact Us', icon: <Headset /> },
     { title: 'Terms & Condition', icon: <Notepad /> },
     { title: 'Invite Freinds', icon: <Notepad /> },
