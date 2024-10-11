@@ -44,6 +44,7 @@ import UploadIcon from './uploadIcon.svg'
 import ImageEdit from './ImageEdit.svg'
 
 
+
 import Reddit from './Reddit.svg'
 import Whatsapp from './Whatsapp.svg'
 import Linkedin from './Linkedin.svg'
@@ -78,6 +79,8 @@ import TabMsg from './tabMsg.svg'
 import TabPlay from './tabPlay.svg'
 import TabSearch from './tabSearch.svg'
 import TabHome from './TabHome.svg'
+
+import ClassifiedIcon from './classified.svg'
 
 
 
@@ -189,5 +192,7 @@ export {
     TabPlay,
     TabSearch,
     TabHome,
+
+    ClassifiedIcon
 
 };

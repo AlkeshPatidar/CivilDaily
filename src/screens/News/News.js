@@ -17,7 +17,7 @@ const initialState = {
 };
 
 
-const NewsDetail = ({ navigation }) => {
+const News = ({ navigation }) => {
     const [{ openBottomSlider }, setState] = useState(initialState);
 
 
@@ -85,7 +85,7 @@ const NewsDetail = ({ navigation }) => {
                     }}>Samuel Newton</CustomText>
                 </Row>
 
-                <View style={{ marginHorizontal: moderateScale(20), marginTop: verticalScale(20), gap: 5 }}>
+                <View style={{ marginHorizontal: moderateScale(20), marginTop: verticalScale(20), gap: 5, }}>
                     <CustomText style={{
                         fontFamily: FONTS_FAMILY.Comfortaa_Regular,
                         color: App_Primary_color,
@@ -101,60 +101,59 @@ const NewsDetail = ({ navigation }) => {
                         fontFamily: FONTS_FAMILY.Comfortaa_Regular
                     }}>17 June, 2023 — 4:49 PM</CustomText>
                 </View>
-                <View style={{ height: 1, width: '80%', backgroundColor: 'rgba(20, 30, 40, 0.08)', marginTop: verticalScale(20) }} />
-                <CustomText style={{ marginHorizontal: 20, marginTop: 20, fontSize: 16, fontFamily: FONTS_FAMILY.Comfortaa_Regular }}>In the last couple of years, we’ve seen new teams in tech companies emerge that focus on responsible innovation, digital well-being, AI ethics or humane use. Whatever their titles, these individuals are given the task of “leading” ethics at their companies.</CustomText>
-                <BottomSlider
+                    <View style={{ height: 1, width: '80%', backgroundColor: 'rgba(20, 30, 40, 0.08)', marginTop: verticalScale(20) }} />
+                <CustomText style={{ marginHorizontal: 20, marginTop: 20, fontSize: 16, fontFamily: FONTS_FAMILY.Comfortaa_Regular, marginBottom:100 }}>In the last couple of years, we’ve seen new teams in tech companies emerge that focus on responsible innovation, digital well-being, AI ethics or humane use. Whatever their titles, these individuals are given the task of “leading” ethics at their companies.</CustomText>
 
-                    isOpen={openBottomSlider}
-                    isPotrait={true}
-                    onClose={false}
-                    outerPress={onCloseBottomSlider}
-                    sliderHeight={0.3}
-                    sliderStyles={{ padding: 0 }}
-                >
-                    <CustomText style={{
-                        fontFamily: FONTS_FAMILY.Comfortaa_SemiBold,
-                        marginTop: 10
-                    }}>Share News</CustomText>
-                    <View style={{ height: 0.5, backgroundColor: 'rgba(218, 221, 229, 1)', width: '100%', marginTop: 20 }} />
-                    <View style={{ marginTop: 15, marginHorizontal: 10, gap: 10 }}>
-                        <Row>
-                            <Copylink height={70} width={80} />
-                            <Embed height={70} width={80} />
-                            <Facebook height={70} width={80} />
-                            <Twitter height={70} width={80} />
-                        </Row>
-                        <Row>
-                            <Pinterest height={70} width={80} />
-                            <Linkedin height={70} width={80} />
-                            <Whatsapp height={70} width={80} />
-                            <Reddit height={70} width={80} />
-                        </Row>
-                    </View>
-
-                </BottomSlider>
             </ScrollView>
-            <View style={{ height: 80, elevation: 1, backgroundColor: 'white', paddingHorizontal: 20, justifyContent: 'center' }}>
+                <View style={{ height: 80, elevation: 1, backgroundColor: 'white', paddingHorizontal: 20, justifyContent: 'center',  width: '100%', bottom: 65 }}>
+                    <SpaceBetweenRow>
+                        <Row style={{ gap: 10 }}>
+                            <Like />
+                            <CustomText>24.5K</CustomText>
+                        </Row>
+                        <Row style={{ gap: 10 }}>
+                            <Comment />
+                            <CustomText>24.5K</CustomText>
+                        </Row>
+                        <Row style={{ gap: 10 }}>
+                            <BookMark />
+                        </Row>
+                    </SpaceBetweenRow>
 
-                <SpaceBetweenRow>
+                </View>
+            <BottomSlider
 
-                    <Row style={{ gap: 10 }}>
-                        <Like />
-                        <CustomText>24.5K</CustomText>
+                isOpen={openBottomSlider}
+                isPotrait={true}
+                onClose={false}
+                outerPress={onCloseBottomSlider}
+                sliderHeight={0.3}
+                sliderStyles={{ padding: 0 }}
+            >
+                <CustomText style={{
+                    fontFamily: FONTS_FAMILY.Comfortaa_SemiBold,
+                    marginTop: 10
+                }}>Share News</CustomText>
+                <View style={{ height: 0.5, backgroundColor: 'rgba(218, 221, 229, 1)', width: '100%', marginTop: 20 }} />
+                <View style={{ marginTop: 15, marginHorizontal: 10, gap: 10 }}>
+                    <Row>
+                        <Copylink height={70} width={80} />
+                        <Embed height={70} width={80} />
+                        <Facebook height={70} width={80} />
+                        <Twitter height={70} width={80} />
                     </Row>
-                    <Row style={{ gap: 10 }}>
-                        <Comment />
-                        <CustomText>24.5K</CustomText>
+                    <Row>
+                        <Pinterest height={70} width={80} />
+                        <Linkedin height={70} width={80} />
+                        <Whatsapp height={70} width={80} />
+                        <Reddit height={70} width={80} />
                     </Row>
-                    <Row style={{ gap: 10 }}>
-                        <BookMark />
-                    </Row>
-                </SpaceBetweenRow>
+                </View>
 
-            </View>
+            </BottomSlider>
         </View>
 
     )
 }
 
-export default NewsDetail;
+export default News;

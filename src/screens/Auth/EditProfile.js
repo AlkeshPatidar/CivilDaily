@@ -13,6 +13,8 @@ import { App_Primary_color, white } from "../../common/Colors/colors";
 import { ImageEdit, NavBack, PodCastIcon, PostIcon, UploadIcon } from "../../assets/SVGs"; // Use your SVG icons here
 import { FONTS_FAMILY } from "../../assets/Fonts"; // Import custom fonts
 import CustomInputField from "../../components/wrapper/CustomInput";
+import Row from "../../components/wrapper/row";
+import CustomText from "../../components/TextComponent";
 
 const EditProfile = ({ navigation }) => {
     return (
@@ -36,7 +38,24 @@ const EditProfile = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <View style={{marginTop:30, gap:50}}>
+            <Row style={{ alignSelf: 'center', gap: 20, marginVertical: 20 }}>
+                <TouchableOpacity style={{ alignItems: 'center' }}
+                onPress={()=>navigation.navigate('Followers')}
+                >
+                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>Followers</CustomText>
+                    <CustomText>2</CustomText>
+
+                </TouchableOpacity>
+                <TouchableOpacity style={{ alignItems: 'center' }}
+                onPress={()=>navigation.navigate('Following')}
+                >
+                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>Following</CustomText>
+                    <CustomText>2</CustomText>
+
+                </TouchableOpacity>
+            </Row>
+
+            <View style={{ marginTop: 30, gap: 50 }}>
                 <CustomInputField
                     // iconName="lock"
                     label={'Username'}
@@ -47,17 +66,17 @@ const EditProfile = ({ navigation }) => {
                     label={'Full Name'}
                     placeholder="Rahul Sharma"
                 />
-                 <CustomInputField
+                <CustomInputField
                     // iconName="lock"
                     label={'Email Address *'}
                     placeholder="rahul@gmail.com"
                 />
-                  <CustomInputField
+                <CustomInputField
                     // iconName="lock"
                     label={'Phone Number *'}
                     placeholder="9999999999"
                 />
-                 <CustomInputField
+                <CustomInputField
                     // iconName="lock"
                     label={'Bio'}
                     placeholder="Lorem Ipsum is simply dummy text of "
@@ -65,9 +84,9 @@ const EditProfile = ({ navigation }) => {
             </View>
 
             {/* Post Button */}
-            {/* <TouchableOpacity style={styles.postButton}>
+            <TouchableOpacity style={styles.postButton}>
                 <Text style={styles.postButtonText}>POST</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
         </ScrollView>
     );
 };
@@ -94,8 +113,8 @@ const styles = StyleSheet.create({
         marginTop: verticalScale(30),
     },
     profileImage: {
-        width: moderateScale(100),
-        height: moderateScale(100),
+        width: moderateScale(90),
+        height: moderateScale(90),
         borderRadius: moderateScale(100),
     },
     userInfo: {
@@ -167,7 +186,8 @@ const styles = StyleSheet.create({
         borderRadius: moderateScale(4),
         paddingVertical: verticalScale(8),
         alignItems: "center",
-        marginTop: verticalScale(30),
+        marginVertical: verticalScale(30),
+
     },
     postButtonText: {
         fontSize: moderateScale(16),

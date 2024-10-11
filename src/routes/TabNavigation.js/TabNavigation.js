@@ -1,15 +1,19 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ActiveBookMark, ActiveHome, ActiveMessage, ActiveNew, ActivePamplet, InActiveBookMark, InActiveHome, InActiveMessage, InActiveNew, InActivePamplet, TabHome, TabMsg, TabPlay, TabProfile, TabSearch } from '../../assets/SVGs';
+import { ActiveBookMark, ActiveHome, ActiveMessage, ActiveNew, ActivePamplet, ClassifiedIcon, InActiveBookMark, InActiveHome, InActiveMessage, InActiveNew, InActivePamplet, TabHome, TabMsg, TabPlay, TabProfile, TabSearch } from '../../assets/SVGs';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { Dimensions, View } from 'react-native';
-import NewsApp from '../../screens/NewsApp/NewsScreen';
 import EditProfile from '../../screens/Auth/EditProfile';
 import CustomText from '../../components/TextComponent';
 import color, { App_Primary_color } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
-import NewsDetail from '../../screens/NewsApp/NewsDetail';
+import Home from '../../screens/Home/Home';
+import News from '../../screens/News/News';
+import NetWorking from '../../screens/Networking/NetWorking';
+import Classified from '../../screens/Classified/Classified';
+// import NewsDetail from '../../screens/News/News';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -37,7 +41,7 @@ function TabNavigation() {
             }}>
             <Tab.Screen
                 name="Home"
-                component={NewsApp}
+                component={Home}
                 options={{
                     tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Home</CustomText>,
                     tabBarIcon: ({ focused }) =>
@@ -48,10 +52,10 @@ function TabNavigation() {
                 }}
             />
             <Tab.Screen
-                name="Explore"
-                component={NewsDetail}
+                name="Networking"
+                component={NetWorking}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Explore</CustomText>,
+                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Networking</CustomText>,
                     tabBarIcon: ({ focused }) =>
                         focused ? <View>
                             <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
@@ -59,9 +63,9 @@ function TabNavigation() {
                         </View> : <TabSearch height={20} width={20} />,
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="Coverage"
-                component={NewsApp}
+                component={Home}
                 options={{
                     tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Coverage</CustomText>,
                     tabBarIcon: ({ focused }) =>
@@ -72,11 +76,11 @@ function TabNavigation() {
                             </View>
                             : <TabPlay height={20} width={20} />,
                 }}
-            />
+            /> */}
 
             <Tab.Screen
                 name="news"
-                component={NewsDetail}
+                component={News}
                 options={{
                     tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>News</CustomText>,
                     tabBarIcon: ({ focused }) =>
@@ -88,15 +92,15 @@ function TabNavigation() {
             />
 
             <Tab.Screen
-                name="Profile"
-                component={EditProfile}
+                name="Classified"
+                component={Classified}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Profile</CustomText>,
+                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Classified</CustomText>,
                     tabBarIcon: ({ focused }) =>
                         focused ? <View>
                             <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
-                            <TabProfile height={20} width={20} />
-                        </View> : <TabProfile height={20} width={20} />,
+                            <ClassifiedIcon height={20} width={20} />
+                        </View> : <ClassifiedIcon height={20} width={20} />,
                 }}
             />
 

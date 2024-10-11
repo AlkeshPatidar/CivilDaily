@@ -9,13 +9,20 @@ import SignUp from '../../screens/Auth/Signup';
 import LanguageSelection from '../../screens/Choose/ChooseLanguage';
 import LocationSelection from '../../screens/Choose/ChooseLocation';
 import PickInterest from '../../screens/Choose/PickInterest';
-import NewsApp from '../../screens/NewsApp/NewsScreen';
-import NewsDetail from '../../screens/NewsApp/NewsDetail';
 import Splash1 from '../../screens/Splash/Splash1';
 import ShareScreen from '../../screens/Share/ShareScreen';
 import PostScreen from '../../screens/Share/PostShare';
 import EditProfile from '../../screens/Auth/EditProfile';
 import TabNavigation from '../TabNavigation.js/TabNavigation';
+import Home from '../../screens/Home/Home';
+import News from '../../screens/News/News';
+import FollowingScreen from '../../screens/FollowersFollowing/Following';
+import Followers from '../../screens/FollowersFollowing/Followers';
+import ContactUsScreen from '../../screens/AppActivities/ContactUs';
+import SendFeedBack from '../../screens/AppActivities/SendFeedBack';
+import PrivacyPolicy from '../../screens/AppActivities/PrivacyPolicy';
+import TermsCondition from '../../screens/AppActivities/TermsAndConditions';
+import Setting from '../../screens/AppActivities/Setting';
 
 
 
@@ -41,12 +48,26 @@ const StackNavigation = () => {
         <Stack.Screen name={'LanguageSelection'} component={LanguageSelection} />
         <Stack.Screen name={'LocationSelection'} component={LocationSelection} />
         <Stack.Screen name={'PickInterest'} component={PickInterest} />
-        <Stack.Screen name={'NewsApp'} component={NewsApp} />
-        <Stack.Screen name={'NewsDetail'} component={NewsDetail} />
+        <Stack.Screen name={'Home'} component={Home} />
+        <Stack.Screen name={'News'} component={News} />
         <Stack.Screen name={'ShareScreen'} component={ShareScreen} />
         <Stack.Screen name={'PostScreen'} component={PostScreen} />
         <Stack.Screen name={'EditProfile'} component={EditProfile} />
         <Stack.Screen name={'Tab'} component={TabNavigation} />
+        <Stack.Screen name={'Following'} component={FollowingScreen} />
+        <Stack.Screen name={'Followers'} component={Followers} />
+        <Stack.Screen name={'ContactUsScreen'} component={ContactUsScreen} />
+        <Stack.Screen name={'SendFeedBack'} component={SendFeedBack} />
+        <Stack.Screen name={'Privacy'} component={PrivacyPolicy} />
+        <Stack.Screen name={'TermsAndConditons'} component={TermsCondition} />
+        <Stack.Screen name={'Setting'} component={Setting} />
+
+
+
+
+
+        {/* ContactUsScreen */}
+
 
 
 

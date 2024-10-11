@@ -26,6 +26,29 @@ const DrawerModal = ({
     //     setModalVisible(!isModalVisible);
     //   };
 
+    const handleNavigation = (key) => {
+        if (key == 'Edit Profile') {
+            navigation.navigate('EditProfile')
+        }
+        if (key == 'Contact Us') {
+            navigation.navigate('ContactUsScreen')
+
+        }
+        if (key == 'Send Feedback') {
+            navigation.navigate('SendFeedBack')
+        }
+        if (key == 'Privacy Policy') {
+            navigation.navigate('Privacy')
+        }
+        if (key == 'Terms & Condition') {
+            navigation.navigate('TermsAndConditons')
+        }
+        if (key == 'Setting') {
+            navigation.navigate('Setting')
+        }
+        // TermsAndConditons
+    }
+
     return (
         <View style={styles.container}>
 
@@ -68,7 +91,11 @@ const DrawerModal = ({
                     {/* Menu Items */}
                     <ScrollView>
                         {menuData.map((item, index) => (
-                            <TouchableOpacity key={index} style={styles.menuItem}>
+                            <TouchableOpacity key={index} style={styles.menuItem}
+                                onPress={()=>{
+                                    handleNavigation(item?.title)
+                                }}
+                            >
                                 {item.icon}
                                 <Text style={styles.menuText}>{item.title}</Text>
                             </TouchableOpacity>
@@ -82,11 +109,15 @@ const DrawerModal = ({
 
 const menuData = [
     { title: 'Edit Profile', icon: <PencilLine /> },
-    { title: 'Bookmark', icon: <BookmarkSimple /> },
-    { title: 'Rate this app', icon: <Star /> },
-    { title: 'Help Centers', icon: <Headset /> },
+    // { title: 'Bookmark', icon: <BookmarkSimple /> },
+    { title: 'Send Feedback', icon: <Star /> },
+    { title: 'Rate Us', icon: <Star /> },
+    { title: 'Privacy Policy', icon: <Star /> },
     { title: 'Contact Us', icon: <Headset /> },
+    { title: 'Setting', icon: <Headset /> },
+    // { title: 'Contact Us', icon: <Headset /> },
     { title: 'Terms & Condition', icon: <Notepad /> },
+    { title: 'Invite Freinds', icon: <Notepad /> },
     { title: 'Log-out', icon: <SignOut /> },
 ];
 
