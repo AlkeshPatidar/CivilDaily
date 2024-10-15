@@ -10,6 +10,19 @@ import SpaceBetweenRow from "../../components/wrapper/spacebetween";
 import CustomText from "../../components/TextComponent";
 import DrawerModal from "../../components/DrawerModal";
 import BreakingNewsCard from "../News/NewsCards";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
+
+
+
+import Classified from "../Classified/Classified";
+
+
 
 const data = [
     { id: '1', title: 'Mysuru: Dasara elephants undergo weight...', img: IMG.MainNews },
@@ -54,11 +67,37 @@ const SuggestedUser = [
 const Home = ({ navigation }) => {
     const [selected, SetisSelected] = useState("All news")
 
-
+    const [selectedTab, setSelectedTab] = useState('Home');
     const [isModalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
+    };
+
+    const handleTabPress = (tabName) => {
+        setSelectedTab(tabName);
+        if (tabName == 'Home') {
+            navigation.navigate('Home')
+            setSelectedTab("Home");
+        }
+        if (tabName == 'Networking') {
+            // navigation.navigate('Networking')
+            // setSelectedTab("Home"); 
+
+
+        }
+        if (tabName == 'Classified') {
+            // navigation.navigate('Classified')
+            // setSelectedTab("Home"); 
+
+
+        }
+        if (tabName == 'News') {
+            navigation.navigate('News', { type: "News" })
+            setSelectedTab("Home");
+
+
+        }
     };
 
     const Header = () => {
@@ -70,7 +109,7 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('LocationSelection')}>
                         <Row style={{ gap: 10, alignItems: 'center' }}>
-                            <Text style={{ ...styles.headerTitle }}>Mysore</Text>
+                            <Text style={{ ...styles.headerTitle }}>Hubli-Dharwad</Text>
                             <Down style={{ top: 3 }} />
                         </Row>
 
@@ -84,15 +123,76 @@ const Home = ({ navigation }) => {
         );
     };
 
+    const renderUpperTabs = () => {
+        const Uppertabs = [
+            { name: 'Home', icon: <AntDesign name='home' size={20} color={selectedTab === 'Home' ? App_Primary_color : 'black'} /> },
+            { name: 'Networking', icon: <FontAwesome6 name='people-group' size={20} color={selectedTab === 'Networking' ? App_Primary_color : 'black'} /> },
+            { name: 'Classified', icon: <FontAwesome6 name='suitcase' size={20} color={selectedTab === 'Classified' ? App_Primary_color : 'black'} /> },
+            { name: 'News', icon: <FontAwesome6 name='newspaper' size={20} color={selectedTab === 'News' ? App_Primary_color : 'black'} /> },
+        ];
+        return (
+            <SpaceBetweenRow style={{ paddingVertical: 5, backgroundColor: 'white', paddingHorizontal: 16, elevation: 2 }}>
+                {Uppertabs.map((tab, index) => (
+                    <TouchableOpacity key={index} onPress={() => handleTabPress(tab.name)}>
+                        <View style={{ height: 50, alignItems: 'center' }}>
+                            {tab.icon}
+                            <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold, color: selectedTab === tab.name ? App_Primary_color : 'black' }}>
+                                {tab.name}
+                            </Text>
+                            {selectedTab === tab.name && (
+                                <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color }} />
+                            )}
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </SpaceBetweenRow>
+        );
+    };
+
+    const renderBanner = () => {
+        return (
+            <View>
+                <Image source={IMG.brakingnewsImg} style={{ height: 90, width: '100%' }} />
+            </View>
+        )
+    }
+
+
     const Tabs = () => {
-        const tabs = ["All news", "Business", "Politics", "Tech", "Healthy", "Science"];
+        // const tabs = ["Hubli", "Helpline", "Cinema", "Education", "Health", "Ladies-Corner", "Sports", "Human-Stories", "Agriculture", "Questions","Jobs","Crime","Water-power"];
+        const tabs = [
+            { name: "Hubli", icon: <AntDesign name="home" size={20} color="black" /> },
+            { name: "Helpline", icon: <Entypo name="old-phone" size={20} color="black" /> },
+            { name: "Cinema", icon: <MaterialIcons name="movie" size={20} color="black" /> },
+            { name: "Education", icon: <Ionicons name="school" size={20} color="black" /> },
+            { name: "Health", icon: <FontAwesome name="heartbeat" size={20} color="black" /> },
+            { name: "Ladies-Corner", icon: <Ionicons name="woman" size={20} color="black" /> },
+            { name: "Sports", icon: <MaterialIcons name="sports-soccer" size={20} color="black" /> },
+            { name: "Human-Stories", icon: <Ionicons name="people" size={20} color="black" /> },
+            { name: "Agriculture", icon: <MaterialIcons name="eco" size={20} color="black" /> },
+            { name: "Questions", icon: <AntDesign name="questioncircleo" size={20} color="black" /> },
+            { name: "Jobs", icon: <FontAwesome6 name="briefcase" size={20} color="black" /> },
+            { name: "Crime", icon: <MaterialIcons name="security" size={20} color="black" /> },
+            { name: "Water-power", icon: <Ionicons name="water" size={20} color="black" /> }
+        ];
         return (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
                 {tabs.map((tab, index) => (
                     <TouchableOpacity key={index} style={styles.tabItem}
-                        onPress={() => SetisSelected(tab)}>
-                        <Text style={styles.tabText}>{tab}</Text>
-                        {selected == tab && <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color }} />}
+                        onPress={() => {
+                            SetisSelected(tab.name)
+                            navigation.navigate('News', { type: tab?.name })
+                        }}>
+                        <View style={{ height: 50, alignItems: 'center' }}>
+                            {tab.icon}
+                            <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold, color: selectedTab === tab.name ? App_Primary_color : 'black' }}>
+                                {tab.name}
+                            </Text>
+                            {/* {selectedTab === tab.name && (
+                                <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color }} />
+                            )} */}
+                        </View>
+                        {selected == tab.name && <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color, bottom: 5 }} />}
                     </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -104,8 +204,11 @@ const Home = ({ navigation }) => {
             <ScrollView style={styles.containerCard}>
                 {/* Header */}
                 <View style={styles.headerCard}>
-                    <Text style={styles.headerTextCard}>Mysore</Text>
-                    <TouchableOpacity style={styles.clickHereBtnCard}>
+                    <Text style={styles.headerTextCard}>Hubli-Dharwad</Text>
+                    <TouchableOpacity style={styles.clickHereBtnCard}
+                        onPress={() => navigation.navigate('News', { type: 'Hubli-Dharwad' })}
+
+                    >
                         <Text style={styles.clickHereTextCard}>Click Here</Text>
                     </TouchableOpacity>
                 </View>
@@ -115,7 +218,8 @@ const Home = ({ navigation }) => {
                     {data.map((item, index) => (
                         <View key={item.id} style={styles.cardWrapper}>
                             <TouchableOpacity style={styles.cardCard}
-                                onPress={() => navigation.navigate('News')}
+                                // onPress={() => navigation.navigate('News')}
+                                onPress={() => navigation.navigate('News', { type: 'Hubli-Dharwad' })}
 
                             >
                                 <Image
@@ -129,9 +233,6 @@ const Home = ({ navigation }) => {
                         </View>
                     ))}
                 </View>
-
-
-
             </ScrollView>
         );
     };
@@ -142,7 +243,9 @@ const Home = ({ navigation }) => {
                 {/* Header */}
                 <View style={styles.headerCard}>
                     <Text style={styles.headerTextCard}>State And National</Text>
-                    <TouchableOpacity style={styles.clickHereBtnCard} >
+                    <TouchableOpacity style={styles.clickHereBtnCard}
+                        onPress={() => navigation.navigate('News', { type: 'State And National' })}
+                    >
                         <Text style={styles.clickHereTextCard}>Click Here</Text>
                     </TouchableOpacity>
                 </View>
@@ -152,7 +255,9 @@ const Home = ({ navigation }) => {
                     {data.map((item, index) => (
                         <View key={item.id} style={styles.cardWrapper}>
                             <TouchableOpacity style={styles.cardCard}
-                                onPress={() => navigation.navigate('News')}
+                                // onPress={() => navigation.navigate('News')}
+                                onPress={() => navigation.navigate('News', { type: 'State And National' })}
+
                             >
                                 <Image
                                     //   source={ IMG.BgImage}
@@ -236,18 +341,23 @@ const Home = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {Header()}
-            {Tabs()}
+            {renderUpperTabs()}
+            {selectedTab == 'Home' && renderBanner()}
+            {selectedTab == 'Home' && Tabs()}
 
-            <ScrollView style={{ marginTop: verticalScale(0) }}
-                showsVerticalScrollIndicator={false}
-            >
-                {MysoreCards()}
-                {SuggestedUsers()}
-                {stateAndNational()}
-                {/* {BreakingNewsCard()} */}
-                <BreakingNewsCard/>
-                {renderFollowOptions()}
-            </ScrollView>
+            {selectedTab == 'Networking' ?
+                <BreakingNewsCard /> :
+
+                selectedTab == 'Classified' ?
+                    <Classified /> :
+                    <ScrollView style={{ marginTop: verticalScale(0) }}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {MysoreCards()}
+                        {SuggestedUsers()}
+                        {stateAndNational()}
+                        <BreakingNewsCard />
+                    </ScrollView>}
             <TouchableOpacity style={{
                 height: 50,
                 width: 50,
@@ -277,8 +387,10 @@ export default Home;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
-        padding: moderateScale(16),
+        // backgroundColor: 'white',
+        // padding: moderateScale(16),
+        // marginBottom:50
+
     },
     headerContainer: {
         flexDirection: 'row',
@@ -299,11 +411,16 @@ const styles = StyleSheet.create({
     },
     tabsContainer: {
         flexDirection: 'row',
-        marginVertical: verticalScale(0),
+        marginVertical: verticalScale(10),
+        paddingHorizontal: 16,
+        height: 90
+
     },
     tabItem: {
         marginRight: moderateScale(15),
-        height: 50
+        // height: 50,
+        // gap:30
+
     },
     tabText: {
         fontSize: moderateScale(14),

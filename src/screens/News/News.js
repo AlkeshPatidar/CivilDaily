@@ -6,7 +6,7 @@ import { moderateScale, verticalScale } from "react-native-size-matters";
 import { BookMark, Comment, Copylink, Embed, Facebook, Like, Linkedin, NavBack, Pinterest, Reddit, Shareing, Threedot, Twitter, Whatsapp } from "../../assets/SVGs";
 import Row from "../../components/wrapper/row";
 import { FONTS_FAMILY } from "../../assets/Fonts";
-import color, { App_Primary_color } from "../../common/Colors/colors";
+import color, { App_Primary_color, white } from "../../common/Colors/colors";
 import SpaceBetweenRow from "../../components/wrapper/spacebetween";
 import BottomSlider from "../../components/Modals/BottomSlider/BottomSlider";
 import PickInterest from "../Choose/PickInterest";
@@ -17,9 +17,9 @@ const initialState = {
 };
 
 
-const News = ({ navigation }) => {
+const News = ({ navigation, route }) => {
     const [{ openBottomSlider }, setState] = useState(initialState);
-
+    const type = route?.params?.type
 
     const onCloseBottomSlider = () => {
         setState(prev => ({
@@ -34,93 +34,71 @@ const News = ({ navigation }) => {
             openBottomSlider: true,
         }));
     };
+
+    const renderHeader = () => {
+        return (
+
+            <Row style={{ backgroundColor: App_Primary_color, paddingHorizontal: 20, gap:90 }}>
+                <TouchableOpacity style={{ paddingVertical: 10, }}
+                    onPress={() => navigation.goBack()}
+                >
+                    <NavBack />
+                </TouchableOpacity>
+                <CustomText style={{ color: white, fontFamily: FONTS_FAMILY.Comfortaa_Regular }}>{type=="Hubli"?"Local News":type}</CustomText>
+               {type=="Hubli" && <TouchableOpacity
+               style={{
+                position:'absolute' , right:3,
+               }}
+               onPress={()=>navigation.navigate('LocationSelection')}
+               ><CustomText style={{ color: white, fontFamily: FONTS_FAMILY.Comfortaa_Regular, fontSize: 12, }}>Change Location</CustomText></TouchableOpacity>}
+            </Row>
+        )
+    }
     return (
         <View style={{ flex: 1 }}>
-
+            {renderHeader()}
             <ScrollView style={{ flex: 1, }}
                 contentContainerStyle={{ alignItems: 'center', paddingBottom: 30 }}
             >
-
-                <ImageBackground source={IMG.BgImage}
+                <Image source={IMG.BgImage}
                     style={{
-                        height: verticalScale(320), width: '98%',
+                        height: verticalScale(220), width: '98%',
 
-                    }}
-                    resizeMode="contain"
-                >
-                    <SpaceBetweenRow>
-                        <TouchableOpacity style={{ paddingVertical: 20, paddingHorizontal: 20 }}
-                            onPress={() => navigation.goBack()}
-                        >
-                            <NavBack />
+                    }} />
 
-                        </TouchableOpacity>
-                        <Row style={{ paddingHorizontal: 20, gap: 10 }}>
-                            <TouchableOpacity style={{}}
-                                onPress={onOpenBottomSlider}
-                            >
-                                <Shareing />
 
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.71)',
-                                height: 40,
-                                width: 40,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: 100
-                            }}>
-                                <Threedot />
+                <View style={{ marginHorizontal: moderateScale(10), marginTop: verticalScale(10), gap: 5, }}>
 
-                            </TouchableOpacity>
-
-                        </Row>
-                    </SpaceBetweenRow>
-
-                </ImageBackground>
-                <Row style={{ alignSelf: 'flex-start', gap: 20, marginHorizontal: 20, fontFamily: FONTS_FAMILY.Comfortaa_Medium, marginTop: 10 }}>
-                    <Image source={IMG.Avatar} />
                     <CustomText style={{
-
-                    }}>Samuel Newton</CustomText>
-                </Row>
-
-                <View style={{ marginHorizontal: moderateScale(20), marginTop: verticalScale(20), gap: 5, }}>
-                    <CustomText style={{
-                        fontFamily: FONTS_FAMILY.Comfortaa_Regular,
-                        color: App_Primary_color,
-                        fontSize: 12
-                    }}>TECHNOLOGY</CustomText>
-                    <CustomText style={{
-                        fontSize: 22,
+                        fontSize: 18,
                         fontFamily: FONTS_FAMILY.Comfortaa_SemiBold
                     }}>To build responsibly, tech needs to do more than just hire chief ethics officers</CustomText>
-                    <CustomText style={{
-                        color: 'rgba(20, 30, 40, 0.48)',
-                        fontSize: 12,
-                        fontFamily: FONTS_FAMILY.Comfortaa_Regular
-                    }}>17 June, 2023 — 4:49 PM</CustomText>
+
                 </View>
-                    <View style={{ height: 1, width: '80%', backgroundColor: 'rgba(20, 30, 40, 0.08)', marginTop: verticalScale(20) }} />
-                <CustomText style={{ marginHorizontal: 20, marginTop: 20, fontSize: 16, fontFamily: FONTS_FAMILY.Comfortaa_Regular, marginBottom:100 }}>In the last couple of years, we’ve seen new teams in tech companies emerge that focus on responsible innovation, digital well-being, AI ethics or humane use. Whatever their titles, these individuals are given the task of “leading” ethics at their companies.</CustomText>
+                <View style={{ height: 1, width: '80%', backgroundColor: 'rgba(20, 30, 40, 0.08)', marginTop: verticalScale(20) }} />
+                <CustomText style={{ marginHorizontal: 20, marginTop: 20, fontSize: 16, fontFamily: FONTS_FAMILY.Comfortaa_Regular, marginBottom: 100 }}>In the last couple of years, we’ve seen new teams in tech companies emerge that focus on responsible innovation, digital well-being, AI ethics or humane use. Whatever their titles, these individuals are given the task of “leading” ethics at their companies.</CustomText>
 
             </ScrollView>
-                <View style={{ height: 80, elevation: 1, backgroundColor: 'white', paddingHorizontal: 20, justifyContent: 'center',  width: '100%', bottom: 65 }}>
-                    <SpaceBetweenRow>
-                        <Row style={{ gap: 10 }}>
-                            <Like />
-                            <CustomText>24.5K</CustomText>
-                        </Row>
-                        <Row style={{ gap: 10 }}>
-                            <Comment />
-                            <CustomText>24.5K</CustomText>
-                        </Row>
-                        <Row style={{ gap: 10 }}>
-                            <BookMark />
-                        </Row>
-                    </SpaceBetweenRow>
+            <View style={{ height: 80, elevation: 1, backgroundColor: 'white', paddingHorizontal: 20, justifyContent: 'center', width: '100%', position: 'absolute', bottom: 0 }}>
+                <SpaceBetweenRow>
+                    <View style={{ alignItems: 'center' }}>
+                        <Like />
+                        <CustomText style={{ fontSize: 12 }}>Like</CustomText>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <Comment />
+                        <CustomText style={{ fontSize: 12 }}>Comment</CustomText>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <Shareing />
+                        <CustomText style={{ fontSize: 12 }}>Share</CustomText>
+                    </View>
+                    {/* <View style={{ alignItems:'center', position:'absolute', right:20}}>
+                        <Whatsapp height={40} />
+                    </View> */}
+                </SpaceBetweenRow>
 
-                </View>
+            </View>
             <BottomSlider
 
                 isOpen={openBottomSlider}

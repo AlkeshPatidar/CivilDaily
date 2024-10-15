@@ -25,7 +25,9 @@ const SendFeedBack = ({ navigation }) => {
             {renderHeader()}
             <View style={{ gap: 20, marginTop: 30, marginHorizontal: 20 }}>
                 <CustomInputField />
-                <CustomButton title={'Send'} />
+                <CustomButton title={'Send'} 
+                onPress={() => navigation.goBack()}
+                />
 
             </View>
 

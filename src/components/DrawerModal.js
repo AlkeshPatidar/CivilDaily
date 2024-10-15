@@ -6,9 +6,10 @@ import {
     StyleSheet,
     Image,
     ScrollView,
+    Share
 } from 'react-native';
 import Modal from 'react-native-modal'; // Modal package for drawer effect
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import { moderateScale, verticalScale, } from 'react-native-size-matters';
 import CustomText from './TextComponent';
 import { FONTS_FAMILY } from '../assets/Fonts';
 import { BookmarkSimple, Down, DownArrowCircle, Flag, Headset, Notepad, PencilLine, SignOut, Star } from '../assets/SVGs';
@@ -25,6 +26,34 @@ const DrawerModal = ({
     //   const toggleModal = () => {
     //     setModalVisible(!isModalVisible);
     //   };
+
+    const onInvite = async () => {
+        try {
+          const result = await Share.share({
+            message: 'Check out this cool app! https://example.com', // Your message or URL here
+          }, {
+            // Ensure this targets WhatsApp by specifying the package
+            dialogTitle: 'Share via',
+            excludedActivityTypes: [], // You can exclude other apps if needed
+          });
+      
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // Shared with activity type of result.activityType
+              console.log('Shared with activity type:', result.activityType);
+            } else {
+              // Shared without specifying activity type
+              console.log('Shared successfully');
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // Dismissed
+            console.log('Share dismissed');
+          }
+        } catch (error) {
+          console.error('Error while sharing:', error.message);
+        }
+      };
+      
 
     const handleNavigation = (key) => {
         if (key == 'Edit Profile') {
@@ -43,9 +72,23 @@ const DrawerModal = ({
         if (key == 'Terms & Condition') {
             navigation.navigate('TermsAndConditons')
         }
-        // if (key == 'Setting') {
-        //     navigation.navigate('Setting')
-        // }
+        if (key == 'Rate Us') {
+            navigation.navigate('RatingScreen')
+        }
+        if (key == 'Invite Freinds') {
+        onInvite()
+        }
+        if (key == 'Public Post') {
+            navigation.navigate('News',{type:'Public Post'})
+        }
+        if (key == 'User Search') {
+            navigation.navigate('UserSearch')
+        }
+
+        if (key == 'Questions') {
+            navigation.navigate('QuestionsScreen')
+        }
+     
         // TermsAndConditons
     }
 
@@ -114,11 +157,18 @@ const menuData = [
     { title: 'Rate Us', icon: <Star /> },
     { title: 'Privacy Policy', icon: <Star /> },
     { title: 'Contact Us', icon: <Headset /> },
+    { title: 'Public Post', icon: <Headset /> },
     // { title: 'Setting', icon: <Headset /> },
     // { title: 'Contact Us', icon: <Headset /> },
+   
+    { title: 'User Search', icon: <Notepad /> },
+   
+    { title: 'Questions', icon: <Notepad /> },
     { title: 'Terms & Condition', icon: <Notepad /> },
     { title: 'Invite Freinds', icon: <Notepad /> },
+    // { title: 'Rate Us', icon: <SignOut /> },
     { title: 'Log-out', icon: <SignOut /> },
+
 ];
 
 const styles = StyleSheet.create({

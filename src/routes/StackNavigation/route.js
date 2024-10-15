@@ -23,6 +23,11 @@ import SendFeedBack from '../../screens/AppActivities/SendFeedBack';
 import PrivacyPolicy from '../../screens/AppActivities/PrivacyPolicy';
 import TermsCondition from '../../screens/AppActivities/TermsAndConditions';
 import Setting from '../../screens/AppActivities/Setting';
+import NetWorking from '../../screens/Networking/NetWorking';
+import Classified from '../../screens/Classified/Classified';
+import RatingScreen from '../../screens/AppActivities/RateUs';
+import UserSearch from '../../screens/AppActivities/UserSearch';
+import QuestionsScreen from '../../screens/AppActivities/Questions';
 
 
 
@@ -61,6 +66,15 @@ const StackNavigation = () => {
         <Stack.Screen name={'Privacy'} component={PrivacyPolicy} />
         <Stack.Screen name={'TermsAndConditons'} component={TermsCondition} />
         <Stack.Screen name={'Setting'} component={Setting} />
+        <Stack.Screen name={'Networking'} component={NetWorking} />
+        <Stack.Screen name={'Classified'} component={Classified} />
+        <Stack.Screen name={'RatingScreen'} component={RatingScreen} />
+        <Stack.Screen name={'UserSearch'} component={UserSearch} />
+        <Stack.Screen name={'QuestionsScreen'} component={QuestionsScreen} />
+
+
+
+
 
 
 

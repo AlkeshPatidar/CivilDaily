@@ -127,7 +127,7 @@ const Classified = ({ navigation }) => {
 
     return (
         <>
-            {Header()}
+            {/* {Header()} */}
             <View style={styles.container}>
                 {/* Tab Buttons */}
                 {renderTabs()}
@@ -135,7 +135,7 @@ const Classified = ({ navigation }) => {
                 {/* No Data Message */}
                 {renderNoData()}
                 {renderDrawer()}
-                {renderAddPostOption()}
+                {/* {renderAddPostOption()} */}
             </View>
         </>
 
@@ -147,7 +147,7 @@ const Classified = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
         paddingTop: 20, // Adjust as per header height
     },
     tabContainer: {

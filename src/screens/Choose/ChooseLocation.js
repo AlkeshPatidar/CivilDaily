@@ -3,21 +3,43 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet, Button } from "reac
 import { moderateScale, verticalScale } from "react-native-size-matters";
 import { App_Primary_color } from "../../common/Colors/colors";
 import Row from "../../components/wrapper/row";
-import { Back } from "../../assets/SVGs";
+import { Back, ForwardIcon } from "../../assets/SVGs";
 import { FONTS_FAMILY } from "../../assets/Fonts";
 import CustomText from "../../components/TextComponent";
 
 const languages = [
-    { id: '1', name: 'Bangalore Urban' },
-    { id: '2', name: 'Mysore' },
-    { id: '3', name: 'Belgaum' },
-    { id: '4', name: 'Dakshina Kannada' },
-    { id: '5', name: 'Tumkur' },
-    { id: '6', name: 'Shimoga' },
-    { id: '7', name: 'Chitradurga' },
-    { id: '8', name: 'Hassan' },
-    { id: '9', name: 'Gulbarga' },
-    { id: '10', name: 'Bijapur' },
+    { id: '1', name: 'Udupi' },
+    { id: '2', name: 'Dakshin-Kannada' },
+    { id: '3', name: 'Banglore' },
+    { id: '4', name: 'BangLore-Rural' },
+    { id: '5', name: 'Hubli-Dharwad' },
+    { id: '6', name: 'Gadag' },
+    { id: '7', name: 'Bagalkot' },
+    { id: '8', name: 'BelGaum' },
+    { id: '9', name: 'Tamkur' },
+    { id: '11', name: 'Uttara-Kannada' },
+    { id: '12', name: 'Bellary' },
+    { id: '12', name: 'Bidar' },
+    { id: '13', name: 'Bijapur' },
+    { id: '14', name: 'Chamarajnagar' },
+    { id: '15', name: 'Chikkaballapur' },
+    { id: '16', name: 'Chikmagalur' },
+    { id: '17', name: 'Chitradurga' },
+    { id: '18', name: 'Devangere' },
+    { id: '19', name: 'Gulbarga' },
+    { id: '20', name: 'Hassan' },
+
+    { id: '21', name: 'Haveri' },
+    { id: '22', name: 'Kodagu' },
+    { id: '23', name: 'Kolar' },
+    { id: '24', name: 'Koppal' },
+    { id: '25', name: 'Mandya' },
+    { id: '26', name: 'Mysore' },
+    { id: '27', name: 'Raichur' },
+    { id: '28', name: 'Ramnagara' },
+    { id: '29', name: 'Shimoga' },
+    { id: '30', name: 'Vijaynagara' },
+    { id: '31', name: 'Yadgiri' },
 ];
 
 
@@ -27,14 +49,17 @@ const LocationSelection = ({ navigation }) => {
     const renderLanguageItem = ({ item }) => (
         <TouchableOpacity
             style={[styles.languageItem,]}
-            onPress={() => setSelectedLanguage(item.id)}
+            onPress={() => {setSelectedLanguage(item.id)
+                navigation.navigate('Home')
+            }}
         >
             <Text style={styles.languageText}>
                 {item.name}
             </Text>
-            <View style={styles.radioCircle}>
+            <ForwardIcon/>
+            {/* <View style={styles.radioCircle}>
                 {selectedLanguage === item.id && <View style={styles.selectedRb} />}
-            </View>
+            </View> */}
         </TouchableOpacity>
     );
 
@@ -54,12 +79,12 @@ const LocationSelection = ({ navigation }) => {
                 style={styles.languageList}
              
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 style={styles.nextButton}
                 onPress={() => navigation.navigate('Tab')}
             >
                 <Text style={styles.nextButtonText}>NEXT</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 };
@@ -94,10 +119,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: moderateScale(20),
         borderWidth: 1,
         borderColor: 'transparent',
-        borderRadius: moderateScale(8),
+        borderRadius: moderateScale(20),
         marginVertical: verticalScale(4),
         backgroundColor: 'rgba(244, 248, 255, 1)',
         marginHorizontal: 20,
+        elevation: 2,
+        marginBottom:10
 
 
     },

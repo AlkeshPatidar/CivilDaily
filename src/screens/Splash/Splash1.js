@@ -41,7 +41,7 @@ const Splash1 = ({ navigation }) => {
             borderColor:App_Primary_color
           }}
           txtColor={{color:white}}
-          onPress={() => navigation.navigate('Splash')}
+          onPress={() => navigation.navigate('LanguageSelection')}
         />
       </View>
     </ScrollView  >
