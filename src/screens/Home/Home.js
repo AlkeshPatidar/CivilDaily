@@ -397,6 +397,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: verticalScale(10),
+        paddingHorizontal:20
     },
     menuIcon: {
         fontSize: moderateScale(24),

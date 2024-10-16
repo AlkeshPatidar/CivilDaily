@@ -28,6 +28,10 @@ import Classified from '../../screens/Classified/Classified';
 import RatingScreen from '../../screens/AppActivities/RateUs';
 import UserSearch from '../../screens/AppActivities/UserSearch';
 import QuestionsScreen from '../../screens/AppActivities/Questions';
+import TopNews from '../../screens/AppActivities/TopNews';
+import Influencers from '../../screens/AppActivities/Influencers';
+import Survey from '../../screens/AppActivities/Survey';
+import MyContacts from '../../screens/AppActivities/MyContacts';
 
 
 
@@ -71,6 +75,12 @@ const StackNavigation = () => {
         <Stack.Screen name={'RatingScreen'} component={RatingScreen} />
         <Stack.Screen name={'UserSearch'} component={UserSearch} />
         <Stack.Screen name={'QuestionsScreen'} component={QuestionsScreen} />
+
+        <Stack.Screen name={'TopNews'} component={TopNews} />
+        <Stack.Screen name={'Influencers'} component={Influencers} />
+        <Stack.Screen name={'Survey'} component={Survey} />
+        <Stack.Screen name={'MyContacts'} component={MyContacts} />
+
 
 
 

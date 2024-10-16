@@ -110,7 +110,7 @@ const QuestionsScreen = ({navigation}) => {
                     <View style={{ alignItems: 'center' }}>
 
                         <FontAwesome5 name="share" size={20} color="gray" />
-                        <Text style={{
+                        <Text style={{ 
                             fontSize: 12,
                             color: 'black'
                         }}>Share</Text>

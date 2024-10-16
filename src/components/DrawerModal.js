@@ -88,7 +88,19 @@ const DrawerModal = ({
         if (key == 'Questions') {
             navigation.navigate('QuestionsScreen')
         }
-     
+        
+        if (key == 'Top News') {
+            navigation.navigate('TopNews')
+        }
+        // if (key == 'My Contacts') {
+        //     navigation.navigate('MyContacts')
+        // }
+        if (key == 'Survey') {
+            navigation.navigate('Survey')
+        }
+        if (key == 'Influencers') {
+            navigation.navigate('Influencers')
+        }
         // TermsAndConditons
     }
 
@@ -132,7 +144,7 @@ const DrawerModal = ({
                     </View>
 
                     {/* Menu Items */}
-                    <ScrollView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         {menuData.map((item, index) => (
                             <TouchableOpacity key={index} style={styles.menuItem}
                                 onPress={()=>{
@@ -162,6 +174,11 @@ const menuData = [
     // { title: 'Contact Us', icon: <Headset /> },
    
     { title: 'User Search', icon: <Notepad /> },
+    { title: 'Top News', icon: <Notepad /> },
+    // { title: 'My Contacts', icon: <Notepad /> },
+    { title: 'Survey', icon: <Notepad /> },
+    { title: 'Influencers', icon: <Notepad /> },
+
    
     { title: 'Questions', icon: <Notepad /> },
     { title: 'Terms & Condition', icon: <Notepad /> },
@@ -214,12 +231,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: verticalScale(15),
+        paddingVertical: verticalScale(10),
         borderBottomWidth: 1,
         borderBottomColor: '#E6E6E6',
     },
     menuText: {
-        fontSize: moderateScale(16),
+        fontSize: moderateScale(14),
         color: '#333',
         flex: 1,
         marginLeft: moderateScale(10),
