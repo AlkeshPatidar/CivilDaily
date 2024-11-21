@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(16),
         marginLeft: moderateScale(15),
         fontFamily: FONTS_FAMILY.Comfortaa_Bold,
+        color:'black'
     },
     iconContainer: {
         height: 40,
