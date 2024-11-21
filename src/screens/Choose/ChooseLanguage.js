@@ -5,6 +5,8 @@ import { App_Primary_color } from "../../common/Colors/colors";
 import Row from "../../components/wrapper/row";
 import { Back, ForwardIcon } from "../../assets/SVGs";
 import { FONTS_FAMILY } from "../../assets/Fonts";
+import { useTranslation } from "react-i18next";
+import { setItem } from "../../utils/Apis";
 
 const languages = [
     { id: '1', name: 'ಕನ್ನಡ' },  // Kannada
@@ -16,21 +18,38 @@ const languages = [
 const LanguageSelection = ({ navigation }) => {
     const [selectedLanguage, setSelectedLanguage] = useState(null);
 
+    const { t, i18n } = useTranslation();
+    const changeLanguage = async(item) => {
+        console.log(item, '-----------');
+
+        if (item?.name == 'English') {
+            i18n.changeLanguage('en');
+            navigation.navigate('LocationSelection')
+            await setItem('language', 'en')
+
+        }
+         if (item?.name == 'ಕನ್ನಡ') {
+            i18n.changeLanguage('kn');
+            navigation.navigate('LocationSelection')
+            await setItem('language', 'kn')
+
+        }
+        else {
+            i18n.changeLanguage('hi');
+            navigation.navigate('LocationSelection')
+            await setItem('language', 'hi')
+
+        }
+    };
+
     const renderLanguageItem = ({ item }) => (
         <TouchableOpacity
             style={[styles.languageItem, { marginBottom: 30 }]}
-            onPress={() => {
-                setSelectedLanguage(item.id)
-                navigation.navigate('LocationSelection')
-            }
-            }
+            onPress={() => changeLanguage(item)}
         >
             <Text style={styles.languageText}>
                 {item.name}
             </Text>
-            {/* <View style={styles.radioCircle}>
-                {selectedLanguage === item.id && <View style={styles.selectedRb} />}
-            </View> */}
             <ForwardIcon />
 
         </TouchableOpacity>
@@ -58,6 +77,15 @@ const LanguageSelection = ({ navigation }) => {
                 <Text style={styles.nextButtonText}>NEXT</Text>
             </TouchableOpacity> */}
         </View>
+
+        //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        //     <Text style={{ fontSize: 20, marginBottom: 20 }}>{t('welcome')}</Text>
+        //     <Text style={{ fontSize: 16, marginBottom: 20 }}>{t('greeting')}</Text>
+        //     <Text style={{ fontSize: 14, marginBottom: 40 }}>{t('change_language')}</Text>
+        //     <Button title="English" onPress={() => changeLanguage('en')} />
+        //     <Button title="हिंदी" onPress={() => changeLanguage('hi')} />
+        //     <Button title="ಕನ್ನಡ" onPress={() => changeLanguage('kn')} />
+        //   </View>
     );
 };
 
@@ -96,7 +124,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(244, 248, 255, 1)',
         marginHorizontal: 20,
         elevation: 2,
-        marginBottom:10
+        marginBottom: 10
 
 
 

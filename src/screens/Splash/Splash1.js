@@ -1,5 +1,5 @@
 import { ActivityIndicator, Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomText from '../../components/TextComponent';
 import color, { App_Primary_color, white } from '../../common/Colors/colors';
 import IMG from '../../assets/Images';
@@ -8,9 +8,23 @@ import { moderateScale, verticalScale } from 'react-native-size-matters';
 import { SplashIcon } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import App from '../../../App';
+import { getItem } from '../../utils/Apis';
+import { useTranslation } from 'react-i18next';
 
 
 const Splash1 = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const [isLanguage, setIsLanguage]=useState(null)
+
+  useEffect(() => {
+    getAsyncData()
+  }, [])
+
+  const getAsyncData = async () => {
+    const language = await getItem('language')
+    setIsLanguage(language)
+    i18n.changeLanguage(language);
+  }
   return (
     <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', marginHorizontal: 30 }}>
       <SplashIcon />
@@ -41,7 +55,7 @@ const Splash1 = ({ navigation }) => {
             borderColor:App_Primary_color
           }}
           txtColor={{color:white}}
-          onPress={() => navigation.navigate('LanguageSelection')}
+          onPress={() => navigation.navigate(isLanguage?'Home':'LanguageSelection')}
         />
       </View>
     </ScrollView  >

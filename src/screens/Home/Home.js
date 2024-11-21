@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, ScrollView, ImageBackground } from "react-native";
 import { moderateScale, verticalScale } from "react-native-size-matters";
 import { FONTS_FAMILY } from "../../assets/Fonts";
@@ -21,6 +21,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 
 import Classified from "../Classified/Classified";
+import { getItem } from "../../utils/Apis";
 
 
 
@@ -69,6 +70,22 @@ const Home = ({ navigation }) => {
 
     const [selectedTab, setSelectedTab] = useState('Home');
     const [isModalVisible, setModalVisible] = useState(false);
+
+    const [isLanguage, setIsLanguage] = useState(null)
+
+    useEffect(() => {
+        const fetchLanguage = async () => {
+          try {
+            const language = await getItem('language');  // Assuming getItem is a function that retrieves the language from storage
+            console.log(language, '__________-');
+            setIsLanguage(language);  // Update state
+          } catch (error) {
+            console.error('Error fetching language:', error);
+          }
+        };
+    
+        fetchLanguage();  // Call the async function
+      }, []);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -377,6 +394,7 @@ const Home = ({ navigation }) => {
                 isModalVisible={isModalVisible}
                 toggleModal={toggleModal}
                 navigation={navigation}
+                isLanguage={isLanguage}
             />
         </View>
     );
@@ -397,7 +415,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: verticalScale(10),
-        paddingHorizontal:20
+        paddingHorizontal: 20
     },
     menuIcon: {
         fontSize: moderateScale(24),

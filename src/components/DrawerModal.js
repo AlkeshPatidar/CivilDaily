@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -14,46 +14,45 @@ import CustomText from './TextComponent';
 import { FONTS_FAMILY } from '../assets/Fonts';
 import { BookmarkSimple, Down, DownArrowCircle, Flag, Headset, Notepad, PencilLine, SignOut, Star } from '../assets/SVGs';
 import Row from './wrapper/row';
+import { getItem } from '../utils/Apis';
 // import { EditIcon, BookmarkIcon, RateIcon, HelpIcon, ContactIcon, TermsIcon, LogoutIcon, LanguageIcon } from './assets/icons'; // Use your icons here
 
 const DrawerModal = ({
     isModalVisible,
     toggleModal,
-    navigation
+    navigation,
+    isLanguage
 }) => {
-    //   const [isModalVisible, setModalVisible] = useState(false);
 
-    //   const toggleModal = () => {
-    //     setModalVisible(!isModalVisible);
-    //   };
 
     const onInvite = async () => {
         try {
-          const result = await Share.share({
-            message: 'Check out this cool app! https://example.com', // Your message or URL here
-          }, {
-            // Ensure this targets WhatsApp by specifying the package
-            dialogTitle: 'Share via',
-            excludedActivityTypes: [], // You can exclude other apps if needed
-          });
-      
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // Shared with activity type of result.activityType
-              console.log('Shared with activity type:', result.activityType);
-            } else {
-              // Shared without specifying activity type
-              console.log('Shared successfully');
+            const result = await Share.share({
+                message: 'Check out this cool app! https://example.com', // Your message or URL here
+            }, {
+                // Ensure this targets WhatsApp by specifying the package
+                dialogTitle: 'Share via',
+                excludedActivityTypes: [], // You can exclude other apps if needed
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // Shared with activity type of result.activityType
+                    console.log('Shared with activity type:', result.activityType);
+                } else {
+                    // Shared without specifying activity type
+                    console.log('Shared successfully');
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // Dismissed
+                console.log('Share dismissed');
             }
-          } else if (result.action === Share.dismissedAction) {
-            // Dismissed
-            console.log('Share dismissed');
-          }
         } catch (error) {
-          console.error('Error while sharing:', error.message);
+            console.error('Error while sharing:', error.message);
         }
-      };
-      
+    };
+
+
 
     const handleNavigation = (key) => {
         if (key == 'Edit Profile') {
@@ -76,10 +75,10 @@ const DrawerModal = ({
             navigation.navigate('RatingScreen')
         }
         if (key == 'Invite Freinds') {
-        onInvite()
+            onInvite()
         }
         if (key == 'Public Post') {
-            navigation.navigate('News',{type:'Public Post'})
+            navigation.navigate('News', { type: 'Public Post' })
         }
         if (key == 'User Search') {
             navigation.navigate('UserSearch')
@@ -88,7 +87,7 @@ const DrawerModal = ({
         if (key == 'Questions') {
             navigation.navigate('QuestionsScreen')
         }
-        
+
         if (key == 'Top News') {
             navigation.navigate('TopNews')
         }
@@ -134,20 +133,24 @@ const DrawerModal = ({
                     </TouchableOpacity>
 
                     {/* Language Selector */}
-                    <View style={styles.menuItem}>
+                    <TouchableOpacity style={styles.menuItem}
+                    onPress={()=>navigation.navigate('LanguageSelection')}
+                    >
                         <Flag />
                         <Text style={styles.menuText}>Language</Text>
                         <Row>
-                            <Text style={styles.languageText}>English</Text>
+                            <Text style={styles.languageText}>{isLanguage=='en'?'English':
+                                isLanguage=='hi'? 'Hindi':isLanguage=='kn'?'ಕನ್ನಡ':null
+                                }</Text>
                             <Down />
                         </Row>
-                    </View>
+                    </TouchableOpacity>
 
                     {/* Menu Items */}
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {menuData.map((item, index) => (
                             <TouchableOpacity key={index} style={styles.menuItem}
-                                onPress={()=>{
+                                onPress={() => {
                                     handleNavigation(item?.title)
                                 }}
                             >
@@ -172,14 +175,14 @@ const menuData = [
     { title: 'Public Post', icon: <Headset /> },
     // { title: 'Setting', icon: <Headset /> },
     // { title: 'Contact Us', icon: <Headset /> },
-   
+
     { title: 'User Search', icon: <Notepad /> },
     { title: 'Top News', icon: <Notepad /> },
     // { title: 'My Contacts', icon: <Notepad /> },
     { title: 'Survey', icon: <Notepad /> },
     { title: 'Influencers', icon: <Notepad /> },
 
-   
+
     { title: 'Questions', icon: <Notepad /> },
     { title: 'Terms & Condition', icon: <Notepad /> },
     { title: 'Invite Freinds', icon: <Notepad /> },

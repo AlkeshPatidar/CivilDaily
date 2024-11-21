@@ -6,6 +6,7 @@ import Row from "../../components/wrapper/row";
 import { Back, ForwardIcon } from "../../assets/SVGs";
 import { FONTS_FAMILY } from "../../assets/Fonts";
 import CustomText from "../../components/TextComponent";
+import { useTranslation } from "react-i18next";
 
 const languages = [
     { id: '1', name: 'Udupi' },
@@ -28,7 +29,6 @@ const languages = [
     { id: '18', name: 'Devangere' },
     { id: '19', name: 'Gulbarga' },
     { id: '20', name: 'Hassan' },
-
     { id: '21', name: 'Haveri' },
     { id: '22', name: 'Kodagu' },
     { id: '23', name: 'Kolar' },
@@ -45,6 +45,7 @@ const languages = [
 
 const LocationSelection = ({ navigation }) => {
     const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const { t, i18n } = useTranslation();
 
     const renderLanguageItem = ({ item }) => (
         <TouchableOpacity
@@ -54,7 +55,8 @@ const LocationSelection = ({ navigation }) => {
             }}
         >
             <Text style={styles.languageText}>
-                {item.name}
+                {/* {item.name} */}
+                {t(item?.name)}
             </Text>
             <ForwardIcon/>
             {/* <View style={styles.radioCircle}>
@@ -170,3 +172,74 @@ const styles = StyleSheet.create({
 });
 
 export default LocationSelection;
+
+
+// import React, { useEffect, useState } from 'react';
+// import { View, Text, FlatList, Button, ActivityIndicator } from 'react-native';
+// import { useTranslation } from 'react-i18next';
+
+// const LanguageList = () => {
+//   const { t, i18n } = useTranslation();
+//   const [languages, setLanguages] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   // Function to fetch data from server
+//   const fetchLanguagesFromServer = async () => {
+//     // alert (0)
+//     try {
+//       const response = await fetch('https://jsonplaceholder.typicode.com/users'); // Replace with your API endpoint
+//       const data = await response.json();
+
+//       // Process and translate the data
+//       const translatedData = data.map((item) => ({
+//         ...item,
+//         name: t(item.name), // Translate the name dynamically
+//       }));
+
+//       setLanguages(translatedData);
+//     } catch (error) {
+//       console.error('Error fetching languages:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // Call the fetch function on component mount
+//   useEffect(() => {
+//     fetchLanguagesFromServer();
+//   }, [i18n.language]); // Re-fetch data when language changes
+
+//   const changeLanguage = (lang) => {
+//     i18n.changeLanguage(lang);
+//   };
+
+//   if (loading) {
+//     return (
+//       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//         <ActivityIndicator size="large" color="#0000ff" />
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View>
+//       {/* Language Change Buttons */}
+//       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10 }}>
+//         <Button title="English" onPress={() => changeLanguage('en')} />
+//         <Button title="Kannada" onPress={() => changeLanguage('kn')} />
+//         <Button title="Hindi" onPress={() => changeLanguage('hi')} />
+//       </View>
+
+//       {/* Render Translated Languages */}
+//       <FlatList
+//         data={languages}
+//         keyExtractor={(item) => item.id}
+//         renderItem={({ item }) => (
+//           <Text style={{ fontSize: 16, margin: 10, color:'black' }}>{item.name}</Text>
+//         )}
+//       />
+//     </View>
+//   );
+// };
+
+// export default LanguageList;

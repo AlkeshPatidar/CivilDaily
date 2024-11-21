@@ -8,9 +8,13 @@ import { moderateScale, verticalScale } from 'react-native-size-matters';
 import { SplashIcon } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import App from '../../../App';
+import { getI18n, useTranslation } from 'react-i18next';
+import { getItem } from '../../utils/Apis';
 
 
 const Splash = ({ navigation }) => {
+
+
   return (
     <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 30 }}>
       <SplashIcon />
@@ -26,26 +30,26 @@ const Splash = ({ navigation }) => {
         marginTop: 20
       }}>Lorem ipsum dolor sit amet,{"\n"} consectetur adipiscing elit. Nam{"\n"} egestas rhoncus lectus rhoncus, tempor. </CustomText>
       <View style={{
-        gap:20,
-        marginTop:verticalScale(70)
+        gap: 20,
+        marginTop: verticalScale(70)
       }}>
 
         <CustomButton title={'SIGN IN'}
           style={{
             width: moderateScale(295),
-            borderRadius:4
+            borderRadius: 4
           }}
           onPress={() => navigation.navigate('SignUp')}
         />
         <CustomButton title={'CREATE AN ACCOUNT'}
           style={{
-            borderRadius:4,
+            borderRadius: 4,
             width: moderateScale(295),
-            backgroundColor:'white',
-            borderWidth:1,
-            borderColor:App_Primary_color
+            backgroundColor: 'white',
+            borderWidth: 1,
+            borderColor: App_Primary_color
           }}
-          txtColor={{color:App_Primary_color}}
+          txtColor={{ color: App_Primary_color }}
           onPress={() => navigation.navigate('SignUp')}
         />
       </View>
