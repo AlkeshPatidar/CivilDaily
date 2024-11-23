@@ -5,8 +5,10 @@ import { FONTS_FAMILY } from '../../assets/Fonts';
 import { NavBack } from '../../assets/SVGs';
 import CustomInputField from '../../components/wrapper/CustomInput';
 import CustomButton from '../../components/Button';
+import { useTranslation } from 'react-i18next';
 
 const SendFeedBack = ({ navigation }) => {
+    const { t, i18n } = useTranslation();
 
 
     const renderHeader = () => {
@@ -15,7 +17,7 @@ const SendFeedBack = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <NavBack />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Send Feedback</Text>
+                <Text style={styles.headerText}>{t('send_feedback')}</Text>
             </View>
         )
     }
@@ -25,7 +27,7 @@ const SendFeedBack = ({ navigation }) => {
             {renderHeader()}
             <View style={{ gap: 20, marginTop: 30, marginHorizontal: 20 }}>
                 <CustomInputField />
-                <CustomButton title={'Send'} 
+                <CustomButton title={t('send')} 
                 onPress={() => navigation.goBack()}
                 />
 

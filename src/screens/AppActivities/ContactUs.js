@@ -3,8 +3,12 @@ import { View, Text, Linking, StyleSheet, TouchableOpacity, ScrollView } from 'r
 import { moderateScale, verticalScale } from 'react-native-size-matters';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import { NavBack } from '../../assets/SVGs';
+import { useTranslation } from 'react-i18next';
 
 const ContactUsScreen = ({navigation}) => {
+
+    const { t, i18n } = useTranslation();
+
 
     const handleEmailPress = (email) => {
         Linking.openURL(`mailto:${email}`);
@@ -20,7 +24,7 @@ const ContactUsScreen = ({navigation}) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <NavBack />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Contact Us</Text>
+                <Text style={styles.headerText}>{t('contact_us')}</Text>
             </View>
         )
     }
@@ -31,7 +35,7 @@ const ContactUsScreen = ({navigation}) => {
             <ScrollView style={styles.container}>
                 {/* For News */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>For News</Text>
+                    <Text style={styles.sectionTitle}>{t('for_news')}</Text>
                     <TouchableOpacity onPress={() => handleEmailPress('reporter@electreps.com')}>
                         <Text style={styles.linkText}>test@test.com</Text>
                     </TouchableOpacity>
@@ -39,7 +43,7 @@ const ContactUsScreen = ({navigation}) => {
 
                 {/* For Advertisement */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>For Advertisement</Text>
+                    <Text style={styles.sectionTitle}>{t('for_advertisement')}</Text>
                     <TouchableOpacity onPress={() => handlePhonePress('+919972157058')}>
                         <Text style={styles.linkText}>+91 9898989898</Text>
                     </TouchableOpacity>
@@ -50,7 +54,7 @@ const ContactUsScreen = ({navigation}) => {
 
                 {/* For others */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>For others</Text>
+                    <Text style={styles.sectionTitle}>{t('for_others')}</Text>
                     <TouchableOpacity onPress={() => handleEmailPress('help@voiceofkranatak.com')}>
                         <Text style={styles.linkText}>help@voiceofkranatak.com</Text>
                     </TouchableOpacity>

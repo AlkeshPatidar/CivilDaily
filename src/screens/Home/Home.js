@@ -22,6 +22,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import Classified from "../Classified/Classified";
 import { getItem } from "../../utils/Apis";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -72,6 +74,10 @@ const Home = ({ navigation }) => {
     const [isModalVisible, setModalVisible] = useState(false);
 
     const [isLanguage, setIsLanguage] = useState(null)
+    const isFocused=useIsFocused()
+
+    const { t, i18n } = useTranslation();
+
 
     useEffect(() => {
         const fetchLanguage = async () => {
@@ -85,7 +91,7 @@ const Home = ({ navigation }) => {
         };
     
         fetchLanguage();  // Call the async function
-      }, []);
+      }, [isFocused]);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -142,10 +148,10 @@ const Home = ({ navigation }) => {
 
     const renderUpperTabs = () => {
         const Uppertabs = [
-            { name: 'Home', icon: <AntDesign name='home' size={20} color={selectedTab === 'Home' ? App_Primary_color : 'black'} /> },
-            { name: 'Networking', icon: <FontAwesome6 name='people-group' size={20} color={selectedTab === 'Networking' ? App_Primary_color : 'black'} /> },
-            { name: 'Classified', icon: <FontAwesome6 name='suitcase' size={20} color={selectedTab === 'Classified' ? App_Primary_color : 'black'} /> },
-            { name: 'News', icon: <FontAwesome6 name='newspaper' size={20} color={selectedTab === 'News' ? App_Primary_color : 'black'} /> },
+            { name: 'home', icon: <AntDesign name='home' size={20} color={selectedTab === 'Home' ? App_Primary_color : 'black'} /> },
+            { name: 'networking', icon: <FontAwesome6 name='people-group' size={20} color={selectedTab === 'Networking' ? App_Primary_color : 'black'} /> },
+            { name: 'classified', icon: <FontAwesome6 name='suitcase' size={20} color={selectedTab === 'Classified' ? App_Primary_color : 'black'} /> },
+            { name: 'news', icon: <FontAwesome6 name='newspaper' size={20} color={selectedTab === 'News' ? App_Primary_color : 'black'} /> },
         ];
         return (
             <SpaceBetweenRow style={{ paddingVertical: 5, backgroundColor: 'white', paddingHorizontal: 16, elevation: 2 }}>
@@ -154,7 +160,7 @@ const Home = ({ navigation }) => {
                         <View style={{ height: 50, alignItems: 'center' }}>
                             {tab.icon}
                             <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold, color: selectedTab === tab.name ? App_Primary_color : 'black' }}>
-                                {tab.name}
+                                {t(tab.name)}
                             </Text>
                             {selectedTab === tab.name && (
                                 <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color }} />
@@ -178,19 +184,19 @@ const Home = ({ navigation }) => {
     const Tabs = () => {
         // const tabs = ["Hubli", "Helpline", "Cinema", "Education", "Health", "Ladies-Corner", "Sports", "Human-Stories", "Agriculture", "Questions","Jobs","Crime","Water-power"];
         const tabs = [
-            { name: "Hubli", icon: <AntDesign name="home" size={20} color="black" /> },
-            { name: "Helpline", icon: <Entypo name="old-phone" size={20} color="black" /> },
-            { name: "Cinema", icon: <MaterialIcons name="movie" size={20} color="black" /> },
-            { name: "Education", icon: <Ionicons name="school" size={20} color="black" /> },
-            { name: "Health", icon: <FontAwesome name="heartbeat" size={20} color="black" /> },
-            { name: "Ladies-Corner", icon: <Ionicons name="woman" size={20} color="black" /> },
-            { name: "Sports", icon: <MaterialIcons name="sports-soccer" size={20} color="black" /> },
-            { name: "Human-Stories", icon: <Ionicons name="people" size={20} color="black" /> },
-            { name: "Agriculture", icon: <MaterialIcons name="eco" size={20} color="black" /> },
-            { name: "Questions", icon: <AntDesign name="questioncircleo" size={20} color="black" /> },
-            { name: "Jobs", icon: <FontAwesome6 name="briefcase" size={20} color="black" /> },
-            { name: "Crime", icon: <MaterialIcons name="security" size={20} color="black" /> },
-            { name: "Water-power", icon: <Ionicons name="water" size={20} color="black" /> }
+            { name: "hubli", icon: <AntDesign name="home" size={20} color="black" /> },
+            { name: "helpline", icon: <Entypo name="old-phone" size={20} color="black" /> },
+            { name: "cinema", icon: <MaterialIcons name="movie" size={20} color="black" /> },
+            { name: "education", icon: <Ionicons name="school" size={20} color="black" /> },
+            { name: "health", icon: <FontAwesome name="heartbeat" size={20} color="black" /> },
+            { name: "ladies_corner", icon: <Ionicons name="woman" size={20} color="black" /> },
+            { name: "sports", icon: <MaterialIcons name="sports-soccer" size={20} color="black" /> },
+            { name: "human_stories", icon: <Ionicons name="people" size={20} color="black" /> },
+            { name: "agriculture", icon: <MaterialIcons name="eco" size={20} color="black" /> },
+            { name: "questions", icon: <AntDesign name="questioncircleo" size={20} color="black" /> },
+            { name: "jobs", icon: <FontAwesome6 name="briefcase" size={20} color="black" /> },
+            { name: "crime", icon: <MaterialIcons name="security" size={20} color="black" /> },
+            { name: "water_power", icon: <Ionicons name="water" size={20} color="black" /> }
         ];
         return (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
@@ -203,7 +209,7 @@ const Home = ({ navigation }) => {
                         <View style={{ height: 50, alignItems: 'center' }}>
                             {tab.icon}
                             <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold, color: selectedTab === tab.name ? App_Primary_color : 'black' }}>
-                                {tab.name}
+                                {t(tab.name)}
                             </Text>
                             {/* {selectedTab === tab.name && (
                                 <View style={{ height: 2, width: 60, backgroundColor: App_Primary_color }} />
@@ -226,7 +232,7 @@ const Home = ({ navigation }) => {
                         onPress={() => navigation.navigate('News', { type: 'Hubli-Dharwad' })}
 
                     >
-                        <Text style={styles.clickHereTextCard}>Click Here</Text>
+                        <Text style={styles.clickHereTextCard}>{t("click_here")}</Text> 
                     </TouchableOpacity>
                 </View>
 
@@ -259,11 +265,11 @@ const Home = ({ navigation }) => {
             <ScrollView style={styles.containerCard}>
                 {/* Header */}
                 <View style={styles.headerCard}>
-                    <Text style={styles.headerTextCard}>State And National</Text>
+                    <Text style={styles.headerTextCard}>{t('state_and_national')}</Text>
                     <TouchableOpacity style={styles.clickHereBtnCard}
                         onPress={() => navigation.navigate('News', { type: 'State And National' })}
                     >
-                        <Text style={styles.clickHereTextCard}>Click Here</Text>
+                        <Text style={styles.clickHereTextCard}>{t("click_here")}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -308,7 +314,7 @@ const Home = ({ navigation }) => {
 
         return (
             <View style={styles.suggestedContainer}>
-                <Text style={styles.suggestedText}>Suggested for you</Text>
+                <Text style={styles.suggestedText}>{t('suggested_for_you')}</Text>
                 <FlatList
                     data={SuggestedUser}
                     horizontal

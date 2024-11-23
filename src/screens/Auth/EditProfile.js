@@ -15,8 +15,10 @@ import { FONTS_FAMILY } from "../../assets/Fonts"; // Import custom fonts
 import CustomInputField from "../../components/wrapper/CustomInput";
 import Row from "../../components/wrapper/row";
 import CustomText from "../../components/TextComponent";
+import { useTranslation } from "react-i18next";
 
 const EditProfile = ({ navigation }) => {
+    const { t, i18n } = useTranslation();
     return (
         <ScrollView style={styles.container}>
             {/* Header */}
@@ -24,7 +26,7 @@ const EditProfile = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <NavBack />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Edit Profile</Text>
+                <Text style={styles.headerText}>{t('edit_profile')}</Text>
             </View>
 
             {/* User Information */}
@@ -42,14 +44,14 @@ const EditProfile = ({ navigation }) => {
                 <TouchableOpacity style={{ alignItems: 'center' }}
                 onPress={()=>navigation.navigate('Followers')}
                 >
-                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>Followers</CustomText>
+                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>{t('followers')}</CustomText>
                     <CustomText>2</CustomText>
 
                 </TouchableOpacity>
                 <TouchableOpacity style={{ alignItems: 'center' }}
                 onPress={()=>navigation.navigate('Following')}
                 >
-                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>Following</CustomText>
+                    <CustomText style={{ fontFamily: FONTS_FAMILY.Comfortaa_Bold, fontSize: 14 }}>{t('following')}</CustomText>
                     <CustomText>2</CustomText>
 
                 </TouchableOpacity>
@@ -58,34 +60,34 @@ const EditProfile = ({ navigation }) => {
             <View style={{ marginTop: 30, gap: 50 }}>
                 <CustomInputField
                     // iconName="lock"
-                    label={'Username'}
+                    label={'username'}
                     placeholder="Rahul"
                 />
                 <CustomInputField
                     // iconName="lock"
-                    label={'Full Name'}
+                    label={'full_name'}
                     placeholder="Rahul Sharma"
                 />
                 <CustomInputField
                     // iconName="lock"
-                    label={'Email Address *'}
+                    label={'email_address'}
                     placeholder="rahul@gmail.com"
                 />
                 <CustomInputField
                     // iconName="lock"
-                    label={'Phone Number *'}
+                    label={'phone_number'}
                     placeholder="9999999999"
                 />
                 <CustomInputField
                     // iconName="lock"
-                    label={'Bio'}
+                    label={'bio'}
                     placeholder="Lorem Ipsum is simply dummy text of "
                 />
             </View>
 
             {/* Post Button */}
             <TouchableOpacity style={styles.postButton}>
-                <Text style={styles.postButtonText}>POST</Text>
+                <Text style={styles.postButtonText}>{t('post')}</Text>
             </TouchableOpacity>
         </ScrollView>
     );

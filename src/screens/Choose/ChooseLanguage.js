@@ -24,20 +24,20 @@ const LanguageSelection = ({ navigation }) => {
 
         if (item?.name == 'English') {
             i18n.changeLanguage('en');
-            navigation.navigate('LocationSelection')
             await setItem('language', 'en')
+            navigation.navigate('LocationSelection')
 
         }
          if (item?.name == 'ಕನ್ನಡ') {
             i18n.changeLanguage('kn');
-            navigation.navigate('LocationSelection')
             await setItem('language', 'kn')
+            navigation.navigate('LocationSelection')
 
         }
-        else {
+        if (item?.name == 'हिन्दी') {
             i18n.changeLanguage('hi');
-            navigation.navigate('LocationSelection')
             await setItem('language', 'hi')
+            navigation.navigate('LocationSelection')
 
         }
     };

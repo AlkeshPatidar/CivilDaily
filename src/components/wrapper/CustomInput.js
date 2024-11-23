@@ -4,11 +4,14 @@ import { verticalScale } from 'react-native-size-matters';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomText from '../TextComponent';
 import color from '../../common/Colors/colors';
+import { useTranslation } from 'react-i18next';
 
 const CustomInputField = ({ icon, placeholder, label, ...props }) => {
+  const { t, i18n } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <CustomText style={{ position: 'absolute', bottom: 60, color: 'rgba(78, 75, 102, 1)', fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>{label}</CustomText>
+      <CustomText style={{ position: 'absolute', bottom: 60, color: 'rgba(78, 75, 102, 1)', fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>{t(label)}</CustomText>
       <TextInput
         style={styles.input}
         placeholder={placeholder}

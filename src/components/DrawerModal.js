@@ -15,6 +15,7 @@ import { FONTS_FAMILY } from '../assets/Fonts';
 import { BookmarkSimple, Down, DownArrowCircle, Flag, Headset, Notepad, PencilLine, SignOut, Star } from '../assets/SVGs';
 import Row from './wrapper/row';
 import { getItem } from '../utils/Apis';
+import { useTranslation } from 'react-i18next';
 // import { EditIcon, BookmarkIcon, RateIcon, HelpIcon, ContactIcon, TermsIcon, LogoutIcon, LanguageIcon } from './assets/icons'; // Use your icons here
 
 const DrawerModal = ({
@@ -52,23 +53,25 @@ const DrawerModal = ({
         }
     };
 
+    const { t, i18n } = useTranslation();
+
 
 
     const handleNavigation = (key) => {
-        if (key == 'Edit Profile') {
+        if (key == 'edit_profile') {
             navigation.navigate('EditProfile')
         }
-        if (key == 'Contact Us') {
+        if (key == 'send_feedback') {
             navigation.navigate('ContactUsScreen')
 
         }
-        if (key == 'Send Feedback') {
+        if (key == 'rate_us') {
             navigation.navigate('SendFeedBack')
         }
-        if (key == 'Privacy Policy') {
+        if (key == 'privacy_policy') {
             navigation.navigate('Privacy')
         }
-        if (key == 'Terms & Condition') {
+        if (key == 'terms_and_conditions') {
             navigation.navigate('TermsAndConditons')
         }
         if (key == 'Rate Us') {
@@ -77,27 +80,28 @@ const DrawerModal = ({
         if (key == 'Invite Freinds') {
             onInvite()
         }
-        if (key == 'Public Post') {
+        if (key == 'public_post') {
             navigation.navigate('News', { type: 'Public Post' })
         }
-        if (key == 'User Search') {
+        if (key == 'user_search') {
             navigation.navigate('UserSearch')
         }
 
-        if (key == 'Questions') {
+        if (key == 'questions') {
             navigation.navigate('QuestionsScreen')
         }
 
-        if (key == 'Top News') {
+        if (key == 'top_news') {
             navigation.navigate('TopNews')
         }
-        // if (key == 'My Contacts') {
-        //     navigation.navigate('MyContacts')
-        // }
-        if (key == 'Survey') {
+        
+        if (key == 'contact_us') {
+            navigation.navigate('ContactUsScreen')
+        }
+        if (key == 'survey') {
             navigation.navigate('Survey')
         }
-        if (key == 'Influencers') {
+        if (key == 'influencers') {
             navigation.navigate('Influencers')
         }
         // TermsAndConditons
@@ -134,14 +138,14 @@ const DrawerModal = ({
 
                     {/* Language Selector */}
                     <TouchableOpacity style={styles.menuItem}
-                    onPress={()=>navigation.navigate('LanguageSelection')}
+                        onPress={() => navigation.navigate('LanguageSelection')}
                     >
                         <Flag />
-                        <Text style={styles.menuText}>Language</Text>
+                        <Text style={styles.menuText}>{t('language')}</Text>
                         <Row>
-                            <Text style={styles.languageText}>{isLanguage=='en'?'English':
-                                isLanguage=='hi'? 'Hindi':isLanguage=='kn'?'ಕನ್ನಡ':null
-                                }</Text>
+                            <Text style={styles.languageText}>{isLanguage == 'en' ? 'English' :
+                                isLanguage == 'hi' ? "हिंदी" : isLanguage == 'kn' ? 'ಕನ್ನಡ' : null
+                            }</Text>
                             <Down />
                         </Row>
                     </TouchableOpacity>
@@ -155,7 +159,7 @@ const DrawerModal = ({
                                 }}
                             >
                                 {item.icon}
-                                <Text style={styles.menuText}>{item.title}</Text>
+                                <Text style={styles.menuText}>{t(item.title)}</Text>
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
@@ -166,89 +170,83 @@ const DrawerModal = ({
 };
 
 const menuData = [
-    { title: 'Edit Profile', icon: <PencilLine /> },
-    // { title: 'Bookmark', icon: <BookmarkSimple /> },
-    { title: 'Send Feedback', icon: <Star /> },
-    { title: 'Rate Us', icon: <Star /> },
-    { title: 'Privacy Policy', icon: <Star /> },
-    { title: 'Contact Us', icon: <Headset /> },
-    { title: 'Public Post', icon: <Headset /> },
-    // { title: 'Setting', icon: <Headset /> },
-    // { title: 'Contact Us', icon: <Headset /> },
-
-    { title: 'User Search', icon: <Notepad /> },
-    { title: 'Top News', icon: <Notepad /> },
-    // { title: 'My Contacts', icon: <Notepad /> },
-    { title: 'Survey', icon: <Notepad /> },
-    { title: 'Influencers', icon: <Notepad /> },
-
-
-    { title: 'Questions', icon: <Notepad /> },
-    { title: 'Terms & Condition', icon: <Notepad /> },
-    { title: 'Invite Freinds', icon: <Notepad /> },
-    // { title: 'Rate Us', icon: <SignOut /> },
-    { title: 'Log-out', icon: <SignOut /> },
+    { id: 1, title: 'edit_profile', icon: <PencilLine /> },
+    { id: 2, title: 'send_feedback', icon: <Star /> },
+    { id: 3, title: 'rate_us', icon: <Star /> },
+    { id: 4, title: 'privacy_policy', icon: <Star /> },
+    { id: 5, title: 'contact_us', icon: <Headset /> },
+    { id: 6, title: 'public_post', icon: <Headset /> },
+    { id: 7, title: 'user_search', icon: <Notepad /> },
+    { id: 8, title: 'top_news', icon: <Notepad /> },
+    { id: 9, title: 'survey', icon: <Notepad /> },
+    { id: 10, title: 'influencers', icon: <Notepad /> },
+    { id: 11, title: 'questions', icon: <Notepad /> },
+    { id: 12, title: 'terms_and_conditions', icon: <Notepad /> },
+    { id: 13, title: 'invite_friends', icon: <Notepad /> },
+    { id: 14, title: 'log_out', icon: <SignOut /> },
 
 ];
 
+ 
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modal: {
-        margin: 0,
-        justifyContent: 'flex-start',
-    },
-    drawer: {
-        width: '80%',
-        height: '100%',
-        backgroundColor: '#fff',
-        padding: moderateScale(20),
-        // borderTopRightRadius: moderateScale(10),
-        // borderBottomRightRadius: moderateScale(10),
-    },
-    profileSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: verticalScale(20),
-        gap: 10
-    },
-    profileImage: {
-        width: moderateScale(50),
-        height: moderateScale(50),
-        borderRadius: moderateScale(35),
-        marginBottom: verticalScale(10),
-    },
-    userName: {
-        fontSize: moderateScale(18),
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    userEmail: {
-        fontSize: moderateScale(14),
-        color: '#8A8A8A',
-    },
-    menuItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: verticalScale(10),
-        borderBottomWidth: 1,
-        borderBottomColor: '#E6E6E6',
-    },
-    menuText: {
-        fontSize: moderateScale(14),
-        color: '#333',
-        flex: 1,
-        marginLeft: moderateScale(10),
-        fontFamily: FONTS_FAMILY.Comfortaa_Regular
-    },
-    languageText: {
-        fontSize: moderateScale(14),
-        color: '#333',
-    },
-});
+        container: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        modal: {
+            margin: 0,
+            justifyContent: 'flex-start',
+        },
+        drawer: {
+            width: '80%',
+            height: '100%',
+            backgroundColor: '#fff',
+            padding: moderateScale(20),
+            // borderTopRightRadius: moderateScale(10),
+            // borderBottomRightRadius: moderateScale(10),
+        },
+        profileSection: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: verticalScale(20),
+            gap: 10
+        },
+        profileImage: {
+            width: moderateScale(50),
+            height: moderateScale(50),
+            borderRadius: moderateScale(35),
+            marginBottom: verticalScale(10),
+        },
+        userName: {
+            fontSize: moderateScale(18),
+            fontWeight: 'bold',
+            color: '#333',
+        },
+        userEmail: {
+            fontSize: moderateScale(14),
+            color: '#8A8A8A',
+        },
+        menuItem: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingVertical: verticalScale(10),
+            borderBottomWidth: 1,
+            borderBottomColor: '#E6E6E6',
+        },
+        menuText: {
+            fontSize: moderateScale(14),
+            color: '#333',
+            flex: 1,
+            marginLeft: moderateScale(10),
+            fontFamily: FONTS_FAMILY.Comfortaa_Regular
+        },
+        languageText: {
+            fontSize: moderateScale(14),
+            color: '#333',
+        },
+    });
 
 export default DrawerModal;
