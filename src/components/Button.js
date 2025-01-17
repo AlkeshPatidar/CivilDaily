@@ -29,9 +29,9 @@ const CustomButton = ({ title, onPress, leftIcon, style, txtColor }) => {
 
 const styles = StyleSheet.create({
     button: {
-        width: moderateScale(250),
+        width: '100%',
         height: verticalScale(40),
-        borderRadius: moderateScale(29),
+        borderRadius: moderateScale(15),
         backgroundColor: color.App_Primary_color,
         justifyContent: 'center',
         alignItems: 'center',
@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     buttonText: {
-        fontSize: 14,
+        fontSize: 16,
         color: 'white',
-        fontFamily: FONTS_FAMILY.Comfortaa_Regular
+        fontFamily: FONTS_FAMILY.Poppins_SemiBold
     },
 });
 

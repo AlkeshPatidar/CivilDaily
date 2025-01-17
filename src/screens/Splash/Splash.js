@@ -21,7 +21,7 @@ const Splash = ({ navigation }) => {
       <CustomText style={{
         fontFamily: FONTS_FAMILY.Comfortaa_Medium,
         fontSize: 24
-      }}>Hey! Welcome</CustomText>
+      }}>Hey! Welcomes</CustomText>
       <CustomText style={{
         fontFamily: FONTS_FAMILY.Comfortaa_Medium,
         fontSize: 14,

@@ -1,86 +1,157 @@
-import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, VirtualizedList } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import CustomText from '../../components/TextComponent';
-import color, { App_Primary_color, black, gray } from '../../common/Colors/colors';
-import IMG from '../../assets/Images';
-import CustomButton from '../../components/Button';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
-import { EmailIcon, EyeIcon, FilledCheckBox, Lock, SignUpIcon } from '../../assets/SVGs';
-import { FONTS_FAMILY } from '../../assets/Fonts';
-import CustumInputwitUnderline from '../../components/wrapper/CustomInput';
-import CustomInputField from '../../components/wrapper/CustomInput';
-import Row from '../../components/wrapper/row';
-
+import React from "react";
+import { ScrollView, StatusBar, TouchableOpacity, View } from "react-native";
+import CustomText from "../../components/TextComponent";
+import color, { App_Primary_color } from "../../common/Colors/colors";
+import Row from "../../components/wrapper/row";
+import { BackArrow, EyeIcon, LoginLogo, SignUPLogo } from "../../assets/SVGs";
+import { FONTS_FAMILY } from "../../assets/Fonts";
+import CustomInputField from "../../components/wrapper/CustomInput";
+import CustomButton from "../../components/Button";
 
 const SignUp = ({ navigation }) => {
-    const [isChecked, setIsChecked] = useState(false)
-    return (
-        <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 20 }}>
 
-            {/* <MediIcon style={{ marginTop: verticalScale(60) }} /> */}
-            <SignUpIcon />
-            <CustomText
-                style={{
-                    color: black,
-                    fontFamily: FONTS_FAMILY.Comfortaa_Medium,
-                    fontSize: 24,
-                    marginTop: 10,
-                    alignSelf: 'flex-start'
-                }}
-            >Sign In</CustomText>
+    const renderHeader = () => {
+        return (
+            <Row style={{ marginTop: 50, marginHorizontal: 20, gap: 30 }}>
+                <TouchableOpacity>
+                    <BackArrow />
+                </TouchableOpacity>
+                <CustomText style={{
+                    color: 'white',
+                    fontFamily: FONTS_FAMILY.Poppins_Medium,
+                    fontSize: 20
+                }}>Sign up</CustomText>
+            </Row>
+        )
+    }
 
-            <CustomText
-                style={{
-                    color: gray,
-                    fontFamily: FONTS_FAMILY.Comfortaa_Medium,
-                    fontSize: 14,
-                    marginTop: 10,
-                    alignSelf: 'flex-start'
-                }}
-            >Don’t have an account? <CustomText style={{ color: App_Primary_color, fontFamily: FONTS_FAMILY.Comfortaa_Medium, fontSize: 14 }}>SIGN UP</CustomText></CustomText>
 
-            <View style={{  gap: 20, marginTop: 20 }}>
-                <CustomInputField
-                    // iconName="lock"
-                    placeholder="User Name"
-                />
+    const renderLogoAndInputItems = () => {
+        return (
+            <View style={{ alignItems: 'center', marginTop: 30, gap: 18 }}>
+                <SignUPLogo />
+                <View style={{ gap: 20 }}>
+                    <CustomInputField
+                        placeholder={'Name'}
+                    />
+                    <CustomInputField
+                        placeholder={'Email'}
+                    />
 
-                <CustomInputField
-                    icon={<EyeIcon />}
-                    // iconName="lock"
-                    placeholder="Password"
-                />
+                    <CustomInputField
+                        placeholder={'Password'}
+                        icon={<EyeIcon />}
+                    />
+                    <Row>
 
-                <Row style={{ gap: 10 }}>
-                    <TouchableOpacity
-                    onPress={()=>setIsChecked(isChecked=>!isChecked)}
-                    >{
-                        isChecked ?
-                            <FilledCheckBox /> :
-                            <View style={{ height: 18, width: 18, borderWidth: 1, borderColor: App_Primary_color }}>
-                            </View>
-                    }
-                    </TouchableOpacity>
-                    <CustomText
-                        style={{ fontSize: 14, fontFamily: FONTS_FAMILY.Comfortaa_Regular }}
-                    >Remember Me</CustomText>
-                </Row>
-                <CustomButton title={'SIGN IN'}
-                    style={{
-                       marginTop:verticalScale(30),
-                        borderRadius: 4,
-                        width: moderateScale(295)
-                    }}
-                    onPress={() => navigation.navigate('LanguageSelection')}
-                />
+                    <CustomText style={{
+                        // alignSelf: 'flex-end',
+                        color: 'rgba(202, 202, 202, 1)',
+                        fontFamily: FONTS_FAMILY.Poppins_Medium,
+                        fontSize:12,
+                        color:'black'
+                    }}>By creating an account your agree{'\n'}
+                        to our <CustomText style={{
+                            color: App_Primary_color,
+                            fontFamily: FONTS_FAMILY.Poppins_Medium,
+                            fontSize:12,
+                        }}>Term and Condtions</CustomText> </CustomText>
+                    </Row>
+                </View>
             </View>
+        )
+    }
+
+    const renderWhiteBgItmes = () => {
+        return (
+            <ScrollView style={{
+                flex: 1,
+                backgroundColor: 'white',
+                marginTop: 30,
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30,
+                paddingHorizontal: 20,
+                paddingVertical: 20
+            }}>
+
+                <CustomText style={{
+                    color: App_Primary_color,
+                    fontSize: 24,
+                    fontFamily: FONTS_FAMILY.Poppins_SemiBold
+                }}>Welcome to us,</CustomText>
+                <CustomText
+                    style={{
+                        fontSize: 12,
+                        fontFamily: FONTS_FAMILY.Poppins_Medium
+                    }}
+                >Hello there, create New account</CustomText>
+                {renderLogoAndInputItems()}
+                {renderButton()}
+
+            </ScrollView>
+        )
+    }
 
 
+    const renderButton = () => {
+        return (
+            <View style={{ alignItems: 'center' }}>
+                <CustomButton
+                    style={{ marginTop: 27 }}
+                    title={'Sign Up'}
+                    onPress={() => navigation.navigate('Login')}
+                    
+                />
+                <Row style={{ gap: 10, marginTop: 20 }}>
+                    <CustomText
+                        style={{
+                            fontSize: 12,
+                            fontFamily: FONTS_FAMILY.Poppins_Medium
+                        }}
+                    >Have an account?  </CustomText>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Login')}
+                    >
+
+                        <CustomText
+                            style={{
+                                fontSize: 12,
+                                fontFamily: FONTS_FAMILY.Poppins_Medium,
+                                color: App_Primary_color
+                            }}
+                        >Log In </CustomText>
+                    </TouchableOpacity>
+                </Row>
+            </View>
+        )
+    }
+
+    return (
+        <View style={{
+            backgroundColor: App_Primary_color,
+            flex: 1
+        }}>
+            <StatusBar
+                translucent={true}
+                backgroundColor="transparent"
+                barStyle="light-content"
+            />
+            {renderHeader()}
+
+            {renderWhiteBgItmes()}
 
 
-        </View  >
+            <View style={{
+                height: 5,
+                width: 134,
+                backgroundColor: 'rgba(202, 202, 202, 1)',
+                alignSelf: 'center',
+                position: 'absolute',
+                bottom: 8,
+                borderRadius: 8
+            }} />
+        </View>
     )
-
 }
 
-export default SignUp
+export default SignUp;

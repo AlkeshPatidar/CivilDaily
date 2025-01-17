@@ -6,19 +6,23 @@ import CustomText from '../TextComponent';
 import color from '../../common/Colors/colors';
 import { useTranslation } from 'react-i18next';
 
-const CustomInputField = ({ icon, placeholder, label, ...props }) => {
+const CustomInputField = ({ icon, placeholder,value ,label, ...props }) => {
   const { t, i18n } = useTranslation();
 
   return (
-    <View style={styles.container}>
-      <CustomText style={{ position: 'absolute', bottom: 60, color: 'rgba(78, 75, 102, 1)', fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>{t(label)}</CustomText>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#999"
-        {...props}
-      />
-      {icon}
+    <View style={{ width: '100%' }}>
+      {label && <CustomText style={{ color: 'rgba(151, 151, 151, 1)', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
+      <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          placeholderTextColor="#999"
+          value={value}
+          {...props}
+        />
+        {icon}
+      </View>
+
     </View>
   );
 };
@@ -29,11 +33,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(218, 218, 218, 1)',
-    borderRadius: 10,
+    borderRadius: 15,
     paddingHorizontal: 10,
-    backgroundColor: '#F3F4F6',
+    // backgroundColor: '#F3F4F6',
     width: '100%',
-    height: verticalScale(45),
+    height: verticalScale(44),
     gap: 10
   },
   icon: {
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: '#333',
-    fontFamily: FONTS_FAMILY.Comfortaa_Regular
+    fontFamily: FONTS_FAMILY.Poppins_Regular
   },
 });
 

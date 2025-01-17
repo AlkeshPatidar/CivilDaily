@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ActiveBookMark, ActiveHome, ActiveMessage, ActiveNew, ActivePamplet, ClassifiedIcon, InActiveBookMark, InActiveHome, InActiveMessage, InActiveNew, InActivePamplet, TabHome, TabMsg, TabPlay, TabProfile, TabSearch } from '../../assets/SVGs';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { Dimensions, View } from 'react-native';
-import EditProfile from '../../screens/Auth/EditProfile';
 import CustomText from '../../components/TextComponent';
 import color, { App_Primary_color } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import Home from '../../screens/Home/Home';
-import News from '../../screens/News/News';
-import NetWorking from '../../screens/Networking/NetWorking';
-import Classified from '../../screens/Classified/Classified';
+import Information from '../../screens/Information';
+import DamageHistory from '../../screens/DamageHistory/DamageHistory';
+import Profile from '../../screens/Profile/Profile';
+import { Chartgray, SearchIcons, TabHome, TabMail, TabSet } from '../../assets/SVGs';
+import Row from '../../components/wrapper/row';
+import EventNote from '../../screens/EventNote/EventNote';
+
 // import NewsDetail from '../../screens/News/News';
 
 
@@ -34,6 +36,7 @@ function TabNavigation() {
                     alignItems: 'center',
                     elevation: 20,
                     shadowColor: '#000',
+                    paddingHorizontal: 20,
                     // width: Dimensions.get('screen').width / 1.05,
                     backgroundColor: 'white',
                     // marginHorizontal: scale(10),
@@ -43,66 +46,108 @@ function TabNavigation() {
                 name="Home"
                 component={Home}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Home</CustomText>,
+                    tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
-                        focused ? <View>
-                            <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
+                        focused ? <Row style={{
+                            backgroundColor: App_Primary_color,
+                            height: 36,
+                            width: 80,
+                            borderRadius: 20,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 5
+                        }}>
                             <TabHome height={20} width={20} />
-                        </View> : <TabHome height={20} width={20} />,
+                            <CustomText style={{ color: 'white', fontSize: 14 }}>Home</CustomText>
+                        </Row> : <TabHome height={20} width={20} />,
                 }}
             />
             <Tab.Screen
-                name="Networking"
-                component={NetWorking}
+                name="Search"
+                component={Information}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Networking</CustomText>,
+                    tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
-                        focused ? <View>
-                            <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
-                            <TabSearch height={20} width={20} />
-                        </View> : <TabSearch height={20} width={20} />,
+                        focused ? <Row style={{
+                            backgroundColor: App_Primary_color,
+                            height: 36,
+                            width: 80,
+                            borderRadius: 20,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 5
+                        }}>
+                            <SearchIcons height={20} width={20} />
+                            <CustomText style={{ color: 'white', fontSize: 14 }}>Search</CustomText>
+                        </Row> : <SearchIcons height={20} width={20} />,
                 }}
             />
-            {/* <Tab.Screen
-                name="Coverage"
-                component={Home}
-                options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Coverage</CustomText>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ?
-                            <View>
-                                <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
-                                <TabPlay height={20} width={20} />
-                            </View>
-                            : <TabPlay height={20} width={20} />,
-                }}
-            /> */}
+
 
             <Tab.Screen
                 name="news"
-                component={News}
+                component={DamageHistory}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>News</CustomText>,
+                    tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
-                        focused ? <View>
-                            <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
-                            <TabMsg height={20} width={20} />
-                        </View> : <TabMsg height={20} width={20} />,
+                        focused ? <Row style={{
+                            backgroundColor: App_Primary_color,
+                            height: 36,
+                            width: 80,
+                            borderRadius: 20,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 5
+                        }}>
+                            <TabMail height={20} width={20} />
+                            <CustomText style={{ color: 'white', fontSize: 14 }}>Mail</CustomText>
+                        </Row> : <TabMail height={20} width={20} />,
                 }}
             />
 
             <Tab.Screen
-                name="Classified"
-                component={Classified}
+                name="Event Note"
+                component={EventNote}
                 options={{
-                    tabBarLabel: () => <CustomText style={{ color: 'gray', fontSize: 10, marginTop: -10, marginBottom: 20, fontFamily: FONTS_FAMILY.Comfortaa_SemiBold }}>Classified</CustomText>,
+                    tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
-                        focused ? <View>
-                            <View style={{ height: 2, width: 50, backgroundColor: App_Primary_color, position: 'absolute', bottom: 32, right: -15, borderRadius: 6 }} />
-                            <ClassifiedIcon height={20} width={20} />
-                        </View> : <ClassifiedIcon height={20} width={20} />,
+                        focused ? <Row style={{
+                            backgroundColor: App_Primary_color,
+                            height: 36,
+                            width: 80,
+                            borderRadius: 20,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 5
+                        }}>
+                            <Chartgray height={20} width={20} />
+                            <CustomText style={{ color: 'white', fontSize: 14 }}>Note</CustomText>
+                        </Row> : <Chartgray height={24} width={24} />,
                 }}
             />
+
+
+            <Tab.Screen
+                name="Classified"
+                component={Profile}
+                options={{
+                    tabBarLabel: () => <></>,
+                    tabBarIcon: ({ focused }) =>
+                        focused ? <Row style={{
+                            backgroundColor: App_Primary_color,
+                            height: 36,
+                            width: 80,
+                            borderRadius: 20,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 5
+                        }}>
+                            <TabSet height={20} width={20} />
+                            <CustomText style={{ color: 'white', fontSize: 14 }}>Profile</CustomText>
+                        </Row> : <TabSet height={20} width={20} />,
+                }}
+            />
+
 
         </Tab.Navigator>
     );

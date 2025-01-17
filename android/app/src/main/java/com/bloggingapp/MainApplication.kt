@@ -1,4 +1,4 @@
-package com.bloggingapp
+package com.management
 
 import android.app.Application
 import com.facebook.react.PackageList
