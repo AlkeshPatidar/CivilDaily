@@ -8,23 +8,70 @@ import { moderateScale, verticalScale } from 'react-native-size-matters';
 import { SplashIcon } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import App from '../../../App';
-import { getItem } from '../../utils/Apis';
 import { useTranslation } from 'react-i18next';
 
+import { apiGet, getItem } from '../../utils/Apis';
+import { useDispatch, useSelector } from 'react-redux';
+import urls from '../../config/urls';
+import { setUser } from '../../redux/reducer/user';
 
 const Splash1 = ({ navigation }) => {
-  const { t, i18n } = useTranslation();
-  const [isLanguage, setIsLanguage] = useState(null)
+  
+  const dispatch = useDispatch()
+  // let selector = useSelector(state => state?.user?.userData);
+  // if (Object.keys(selector).length != 0) {
+  //   selector = JSON.parse(selector);
+  // }
 
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
-    getAsyncData()
-  }, [])
+    oncheck()
 
-  const getAsyncData = async () => {
-    const language = await getItem('language')
-    setIsLanguage(language)
-    i18n.changeLanguage(language);
+  }, [navigation]);
+
+  const oncheck = async () => {
+    const token = await getItem('token');
+
+    if (token) {
+      callApi()
+
+    } else {
+      navigation.navigate('Login')
+    }
+
   }
+
+  const callApi = async () => {
+
+    fetchUserData();
+  }
+
+  const fetchUserData = async () => {
+    try {
+      setLoading(true)
+      const token = await getItem('token');
+      if (token) {
+        console.log(token, 'token in splace');
+        const user = await apiGet(urls.getUserProfile);
+        console.log('-------------', user);
+        if (user?.statusCode === 200) {
+          dispatch(setUser(JSON.stringify(user?.data)));
+          console.log('===-+++USER++-', user?.data)
+          navigation.navigate('Tab')
+          setLoading(false)
+        }
+
+
+      }
+
+    } catch (error) {
+      console.log('Error fetching user data:', error);
+      // ToastMsg(error?.message || 'Network Error');
+      setLoading(false)
+
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
       {/* <SplashIcon /> */}
@@ -56,8 +103,13 @@ const Splash1 = ({ navigation }) => {
         marginTop: verticalScale(70)
       }}>
 
-
-        <CustomButton title={'Get Started'}
+{loading && <ActivityIndicator size={'large'} color={App_Primary_color}
+     style={{
+      // position:'absolute',
+      // bottom:10
+     }}
+     />}
+        {/* <CustomButton title={'Get Started'}
           style={{
             width: moderateScale(295),
             backgroundColor: App_Primary_color,
@@ -66,7 +118,7 @@ const Splash1 = ({ navigation }) => {
           }}
           txtColor={{ color: white }}
           onPress={() => navigation.navigate('Login')}
-        />
+        /> */}
       </View>
     </ScrollView  >
   )

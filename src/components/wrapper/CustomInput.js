@@ -1,14 +1,14 @@
-import React, { version } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState, version } from 'react';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { verticalScale } from 'react-native-size-matters';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomText from '../TextComponent';
 import color from '../../common/Colors/colors';
 import { useTranslation } from 'react-i18next';
 
-const CustomInputField = ({ icon, placeholder,value ,label, ...props }) => {
+const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeholder,value ,onChangeText,label, ...props }) => {
   const { t, i18n } = useTranslation();
-
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   return (
     <View style={{ width: '100%' }}>
       {label && <CustomText style={{ color: 'rgba(151, 151, 151, 1)', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
@@ -18,9 +18,16 @@ const CustomInputField = ({ icon, placeholder,value ,label, ...props }) => {
           placeholder={placeholder}
           placeholderTextColor="#999"
           value={value}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+          secureTextEntry={isPassword && !isPasswordVisible}
           {...props}
         />
-        {icon}
+   <TouchableOpacity
+          onPress={() =>{isPassword ? setPasswordVisible(!isPasswordVisible): null}}
+        >
+          {icon}
+        </TouchableOpacity>
       </View>
 
     </View>

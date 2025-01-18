@@ -4,8 +4,7 @@ import { showError } from './helperFunctions';
 import RNRestart from 'react-native-restart';
 import { Alert } from 'react-native';
 
-// export const BASE_URL = 'https://raily-route.vercel.app/api';
-export const BASE_URL = 'https://tuurf.vercel.app/api';
+export const BASE_URL = 'https://zero-backend-red.vercel.app';
 
 
 export async function getHeaders() {

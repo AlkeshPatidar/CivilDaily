@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StatusBar, TouchableOpacity, View } from "react-native";
 import CustomText from "../../components/TextComponent";
 import color, { App_Primary_color } from "../../common/Colors/colors";
@@ -7,8 +7,56 @@ import { BackArrow, EyeIcon, LoginLogo } from "../../assets/SVGs";
 import { FONTS_FAMILY } from "../../assets/Fonts";
 import CustomInputField from "../../components/wrapper/CustomInput";
 import CustomButton from "../../components/Button";
+import { inValidNum } from "../../utils/CheckValidation";
+import { ToastMsg } from "../../utils/helperFunctions";
+import useLoader from "../../utils/LoaderHook";
+import urls from "../../config/urls";
+import { apiPost, getItem, setItem } from "../../utils/Apis";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/reducer/user";
 
 const Login = ({ navigation }) => {
+
+    const [email, setEmail]=useState('')
+    const [password, setPassword]=useState('')
+const {showLoader, hideLoader}=useLoader()
+const dispatch = useDispatch()
+    
+    const onSubmit = async () => {
+     
+        try {
+            showLoader();
+            const data = { Email: email, Password:password };
+            const response = await apiPost(urls.login, data);
+            console.log("response", response);
+
+            if (response?.statusCode === 200) {
+                dispatch(setUser(JSON.stringify(response?.data?.User)));
+                if (response?.data?.token) {
+                   await setItem('token', response?.data?.token);
+                    const token = await getItem('token');
+                    if (token) {
+                   
+                        navigation.replace('Tab')
+
+
+                    }
+
+                }
+                ToastMsg(response?.message)
+                hideLoader();
+             
+            }
+        } catch (error) {
+            hideLoader();
+            if (error?.message) {
+                ToastMsg(error?.message);
+                // response?.message
+            } else {
+                ToastMsg('Network Error');
+            }
+        }
+    };
 
     const renderHeader = () => {
         return (
@@ -33,11 +81,17 @@ const Login = ({ navigation }) => {
                 <View style={{ gap: 25 }}>
                     <CustomInputField
                         placeholder={'Email'}
+                        onChangeText={setEmail}
                     />
 
                     <CustomInputField
                         placeholder={'Password'}
                         icon={<EyeIcon />}
+                        onChangeText={setPassword}
+                        secureTextEntry={true}
+                        // keyboardType={'phone-pad'}
+                        isPassword
+                        
                     />
                     <CustomText style={{
                         alignSelf: 'flex-end',
@@ -86,7 +140,10 @@ const Login = ({ navigation }) => {
                 <CustomButton
                     style={{ marginTop: 40 }}
                     title={'Log in'}
-                    onPress={() => navigation.navigate('Tab')}
+                    onPress={() =>
+                        //  navigation.navigate('Tab')
+                        onSubmit()
+                        }
 
                 />
                 <Row style={{ gap: 10, marginTop: 20 }}>

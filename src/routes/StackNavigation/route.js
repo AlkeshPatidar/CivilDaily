@@ -15,6 +15,7 @@ import DamageHistory from '../../screens/DamageHistory/DamageHistory';
 import Profile from '../../screens/Profile/Profile';
 import Scan from '../../screens/ScanScreen/Scan';
 import TabNavigation from '../TabNavigation.js/TabNavigation';
+import ProductDetail from '../../screens/Home/ProductDetailPage';
 
 
 
@@ -38,6 +39,8 @@ const StackNavigation = () => {
         <Stack.Screen name={'Login'} component={Login} />
         <Stack.Screen name={'SignUp'} component={SignUp} />
         <Stack.Screen name={'Home'} component={Home} />
+        <Stack.Screen name={'productDetail'} component={ProductDetail} />
+
         <Stack.Screen name={'Information'} component={Information} />
         <Stack.Screen name={'Notification'} component={Notification} />
         <Stack.Screen name={'AddIssues'} component={AddIssues} />

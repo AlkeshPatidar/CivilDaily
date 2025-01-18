@@ -9,8 +9,25 @@ import CustomInputField from "../../components/wrapper/CustomInput";
 import CustomButton from "../../components/Button";
 import SpaceBetweenRow from "../../components/wrapper/spacebetween";
 import IMG from "../../assets/Images";
+import { useSelector } from "react-redux";
+import { clearAsyncStorage } from "../../utils/Apis";
+import { showError } from "../../utils/helperFunctions";
 
 const Profile = ({ navigation }) => {
+
+    let selector = useSelector(state => state?.user?.userData);
+    if (Object.keys(selector).length != 0) {
+        selector = JSON.parse(selector);
+    }
+
+    const onLogout = async () => {
+        try {
+            await clearAsyncStorage();
+            navigation?.replace('Login');
+        } catch (error) {
+            showError('Error while logging out');
+        }
+    };
 
     const renderHeader = () => {
         return (
@@ -103,7 +120,9 @@ const Profile = ({ navigation }) => {
                                 alignItems: "center",
                             }}
                         >
-                            <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                            <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
+                            onPress={()=>item?.title =='Logout'? onLogout():null}
+                            >
                                 {item?.icon}
                                 <View>
                                     <CustomText
@@ -116,7 +135,7 @@ const Profile = ({ navigation }) => {
                                     </CustomText>
 
                                 </View>
-                            </View>
+                            </TouchableOpacity>
 
                         </View>
                     )}
@@ -147,7 +166,7 @@ const Profile = ({ navigation }) => {
                     }}
                 />
                 <View style={{ alignSelf: 'center', marginTop: 40, alignItems: 'center' }}>
-                    <CustomText style={{ color: App_Primary_color, fontSize: 16, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Phillip Williamson</CustomText>
+                    <CustomText style={{ color: App_Primary_color, fontSize: 16, fontFamily: FONTS_FAMILY.Poppins_Medium }}>{selector?.FullName}</CustomText>
                     <CustomText style={{ color: 'rgba(74, 70, 70, 1)', fontSize: 14, fontFamily: FONTS_FAMILY.Poppins_Regular, }}>Staff</CustomText>
                     <Row style={{ gap: 5, alignItems: 'center' }}>
                         <BlueLocation />
