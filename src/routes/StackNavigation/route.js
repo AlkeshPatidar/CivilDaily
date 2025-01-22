@@ -8,14 +8,17 @@ import Splash1 from '../../screens/Splash/Splash1';
 import Login from '../../screens/Auth/Login';
 import SignUp from '../../screens/Auth/SignUp';
 import Home from '../../screens/Home/Home';
-import Information from '../../screens/Information';
+import Information from '../../screens/RentedItems';
 import Notification from '../../screens/Notification/Notification';
 import AddIssues from '../../screens/AddIssues/AddIssues';
-import DamageHistory from '../../screens/DamageHistory/DamageHistory';
+import DamageHistory from '../../screens/RetrunItems/RetrunedItems';
 import Profile from '../../screens/Profile/Profile';
 import Scan from '../../screens/ScanScreen/Scan';
 import TabNavigation from '../TabNavigation.js/TabNavigation';
 import ProductDetail from '../../screens/Home/ProductDetailPage';
+import ScanRetrun from '../../screens/ScanScreen/ScanForReturn';
+import Reminder from '../../screens/EventNote/GetAllEventsRemainder';
+import AddNoteScreen from '../../screens/EventNote/EventNote';
 
 
 
@@ -47,6 +50,12 @@ const StackNavigation = () => {
         <Stack.Screen name={'DamageHistory'} component={DamageHistory} />
         <Stack.Screen name={'Profile'} component={Profile} />
         <Stack.Screen name={'Scan'} component={Scan} />
+        <Stack.Screen name={'ScanRetrun'} component={ScanRetrun} />
+        <Stack.Screen name={'Reminder'} component={Reminder} />
+        <Stack.Screen name={'AddNoteScreen'} component={AddNoteScreen} />
+
+
+
         <Stack.Screen name={'Tab'} component={TabNavigation} />
 
 

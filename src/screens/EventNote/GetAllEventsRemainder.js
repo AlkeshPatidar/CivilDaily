@@ -1,30 +1,77 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
-import CustomText from "../components/TextComponent";
-import color, { App_Primary_color } from "../common/Colors/colors";
-import Row from "../components/wrapper/row";
-import { BackArrow, BcIcon, BlackBack, BlueForword, BlueLocation, EyeIcon, ForwardIcon, LoginLogo, NotiIcon, RedPolygon, SearchIcon, SearchIcons, SignUPLogo } from "../assets/SVGs";
-import { FONTS_FAMILY } from "../assets/Fonts";
-import CustomInputField from "../components/wrapper/CustomInput";
-import CustomButton from "../components/Button";
-import SpaceBetweenRow from "../components/wrapper/spacebetween";
-import IMG from "../assets/Images";
+import CustomText from "../../components/TextComponent";
+import color, { App_Primary_color } from "../../common/Colors/colors";
+import Row from "../../components/wrapper/row";
+import { BackArrow, BcIcon, BlackBack, BlueForword, BlueLocation, EyeIcon, ForwardIcon, LoginLogo, NotiIcon, RedPolygon, SearchIcon, SearchIcons, SignUPLogo } from "../../assets/SVGs";
+import { FONTS_FAMILY } from "../../assets/Fonts";
+import CustomInputField from "../../components/wrapper/CustomInput";
+import CustomButton from "../../components/Button";
+import SpaceBetweenRow from "../../components/wrapper/spacebetween";
+import IMG from "../../assets/Images";
+import urls from "../../config/urls";
+import { apiGet } from "../../utils/Apis";
+import useLoader from "../../utils/LoaderHook";
+import moment from "moment"
+import { useIsFocused } from "@react-navigation/native";
 
-const Information = ({ navigation }) => {
+const Reminder = ({ navigation }) => {
+    const { showLoader, hideLoader } = useLoader()
+    const [allProduct, setAllProduct] = useState([])
+    const isFocused = useIsFocused()
+
+
+    useEffect(() => {
+        fetchData()
+    }, [isFocused])
+
+    const fetchData = async () => {
+        try {
+            showLoader()
+            const response = await apiGet(urls.getAllnotes);
+            console.log('-------------', response);
+            if (response?.statusCode === 200) {
+                console.log('=======RETUEN===', response?.message);
+                setAllProduct(response?.data)
+                hideLoader()
+
+            }
+
+        } catch (error) {
+            console.log('Error fetching user data:', error);
+            // ToastMsg(error?.message || 'Network Error');
+            hideLoader()
+        }
+    };
 
     const renderHeader = () => {
         return (
+            <SpaceBetweenRow>
             <Row style={{ gap: 20, marginTop: 50, marginHorizontal: 20 }}>
-                <TouchableOpacity onPress={()=>navigation.goBack()}>
-                <BlackBack />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <BlackBack />
                 </TouchableOpacity>
                 <CustomText style={{
                     color: 'black',
                     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
                     fontSize: 18
-                }}>Information</CustomText>
+                }}>All Notes</CustomText>
 
             </Row>
+            <TouchableOpacity
+            onPress={()=>navigation.navigate('AddNoteScreen')}
+            >
+            <CustomText style={{
+                    color: App_Primary_color,
+                    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+                    fontSize: 16,
+                    marginTop: 50,
+                    paddingHorizontal:20
+                }}>Add Events</CustomText>
+
+            </TouchableOpacity>
+
+            </SpaceBetweenRow>
         )
     }
 
@@ -50,71 +97,21 @@ const Information = ({ navigation }) => {
     }
 
     const renderItems = () => {
-        const data = [
-            {
-                id: 1,
-                title: "Electrical wire",
-                quantity: 'Banglore',
-                image: "url_to_electrical_wire_image",
-                status: "Out of stock",
-            },
-            {
-                id: 2,
-                title: "Camera",
-                quantity: 'Delhi',
-                image: "url_to_camera_image",
-                status: "Out of stock",
-            },
-            {
-                id: 3,
-                title: "Led Light",
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "Out of stock",
-            },
-            {
-                id: 4,
-                title: "Led Light",
-                quantity: 'Banglore',
-                image: "url_to_led_light_image",
-                status: "Out of stock",
-            },
-            {
-                id: 5,
-                title: "Led Light",
-                quantity: 'Delhi',
-                image: "url_to_led_light_image",
-                status: "Out of stock",
-            },
-            {
-                id: 6,
-                title: "Led Light",
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "Out of stock",
-            },
-            {
-                id: 7,
-                title: "Led Light",
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "Out of stock",
-            },
-        ];
+
 
         return (
             <View style={{ flex: 1, marginBottom: 100 }}>
                 <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id.toString()} // Ensure unique keys
+                    data={allProduct}
+                    keyExtractor={(item) => item._id} // Ensure unique keys
                     renderItem={({ item }) => (
-                        <View
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Profile')}
                             style={{
-                                padding: 12,
+                                // padding: 12,
                                 backgroundColor: "white",
                                 marginTop: 8,
                                 width: "97%",
-                                elevation: 3, // Android shadow
                                 shadowColor: "#000", // iOS shadow color
                                 shadowOffset: { width: 0, height: 4 }, // Offset for shadow
                                 shadowOpacity: 0.3, // Opacity for shadow
@@ -125,17 +122,14 @@ const Information = ({ navigation }) => {
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                                 alignItems: "center",
+                                height: 80,
+                                padding: 10
                             }}
                         >
+                            {console.log(item, '------------')}
+
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                                <Image
-                                    source={IMG.AvatorImage} // Replace with your default image or a placeholder
-                                    style={{
-                                        height: 42,
-                                        width: 42,
-                                        borderRadius: 21,
-                                    }}
-                                />
+
                                 <View>
                                     <CustomText
                                         style={{
@@ -143,20 +137,28 @@ const Information = ({ navigation }) => {
                                             fontSize: 14,
                                         }}
                                     >
-                                        {item.title}
+                                        {item?.eventName}
                                     </CustomText>
                                     <Row style={{ gap: 5 }}>
-                                        <BlueLocation />
                                         <CustomText
                                             style={{
-                                                fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+                                                fontFamily: FONTS_FAMILY.Poppins_Medium,
                                                 fontSize: 12,
                                                 color: "rgba(151, 151, 151, 1)",
                                             }}
                                         >
-                                            {item.quantity}
+                                            {item.location}
                                         </CustomText>
                                     </Row>
+                                    <CustomText
+                                        style={{
+                                            fontFamily: FONTS_FAMILY.Poppins_Regular,
+                                            fontSize: 12,
+                                            color: "rgba(151, 151, 151, 1)",
+                                        }}
+                                    >
+                                        {item.description}
+                                    </CustomText>
                                 </View>
                             </View>
                             <View style={{
@@ -167,17 +169,16 @@ const Information = ({ navigation }) => {
                                     style={{
                                         fontFamily: FONTS_FAMILY.Poppins_Medium,
                                         fontSize: 10,
-                                        color: "red",
+                                        color: "rgba(60, 62, 86, 1)",
+                                        paddingRight: 10
                                     }}
                                 >
-                                    {item.status}
+                                    {moment(item.eventDate)?.format('DD/MMM/YY')}
                                 </CustomText>
-                                <View style={{ height: 30, width: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 100, backgroundColor: 'rgba(230, 48, 100, 1)' }}>
-                                    <CustomText style={{ color: 'white', fontSize: 14 }}>14</CustomText>
-                                </View>
+
 
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                 />
             </View>
@@ -214,4 +215,4 @@ const Information = ({ navigation }) => {
     )
 }
 
-export default Information;
+export default Reminder;

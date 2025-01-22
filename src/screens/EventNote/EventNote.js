@@ -15,13 +15,60 @@ import CustomText from "../../components/TextComponent";
 import { FONTS_FAMILY } from "../../assets/Fonts";
 import { App_Primary_color } from "../../common/Colors/colors";
 import useStatusBar from "../../utils/statusBar";
+import useLoader from "../../utils/LoaderHook";
+import { apiPost } from "../../utils/Apis";
+import urls from "../../config/urls";
+import { ToastMsg } from "../../utils/helperFunctions";
 
 const AddNoteScreen = ({navigation}) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+
+  const {showLoader, hideLoader}=useLoader()
+
  useStatusBar('white','dark-content')
+
+    const onSubmit = async () => {
+      if (!title || !date || !description || !location) {
+        ToastMsg( "Please fill all fields.");
+        return;
+      }
+         try {
+             showLoader();
+            //  { Email: email, Password:password };
+
+             const data =  {
+              eventName: title,
+              eventDate: date,
+              eventTime: "17:00",
+              location: location,
+              description: description,
+              status: "Upcoming"
+          }
+             const response = await apiPost(urls.addEvent, data);
+             console.log("response", response);
+ 
+             if (response?.statusCode === 200) {
+              // navigation.navigate('Tab', { screen: 'Home' });
+              navigation.goBack()
+              ToastMsg(response?.message)
+                 hideLoader();
+
+              
+             }
+         } catch (error) {
+             hideLoader();
+             if (error?.message) {
+                 ToastMsg(error?.message);
+                 // response?.message
+             } else {
+                 ToastMsg('Network Error');
+             }
+         }
+     };
 
   const handleSaveNote = () => {
     if (!title.trim() || !description.trim()) {
@@ -100,6 +147,16 @@ const AddNoteScreen = ({navigation}) => {
         />
       )}
 
+<Text style={styles.label}>Event Location</Text>
+      <TextInput
+        style={[styles.input, { height: 100, textAlignVertical: "top" }]}
+        placeholder="Enter event Location"
+        placeholderTextColor="gray"
+        value={location}
+        onChangeText={setLocation}
+        multiline={true}
+      />
+
       <Text style={styles.label}>Event Description</Text>
       <TextInput
         style={[styles.input, { height: 100, textAlignVertical: "top" }]}
@@ -110,7 +167,7 @@ const AddNoteScreen = ({navigation}) => {
         multiline={true}
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSaveNote}>
+      <TouchableOpacity style={styles.saveButton} onPress={onSubmit}>
         <Text style={styles.saveButtonText}>Save Note</Text>
       </TouchableOpacity>
         </View>

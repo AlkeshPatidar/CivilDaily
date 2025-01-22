@@ -18,7 +18,7 @@ import axios from "axios";
 import { ToastMsg } from "../../utils/helperFunctions";
 
 
-const Scan = ({ navigation }) => {
+const ScanRetrun = ({ navigation , route}) => {
 
     const [isScanned, setIsScanned] = useState(false);
 
@@ -28,7 +28,7 @@ const Scan = ({ navigation }) => {
         // setIsScanned(true);
     
         const productId = e.data; // Scanned product ID
-        console.log("Scanned Product ID:", JSON.stringify(productId));
+        console.log("Scanned Product ID:", productId);
     
             try {
                 const token = await getItem('token');
@@ -40,7 +40,7 @@ const Scan = ({ navigation }) => {
                 }
     
                 const response = await axios.post(
-                    `${BASE_URL}/api/user/ScanForRent/${productId}`, // Use dynamic productId
+                    `${BASE_URL}/api/user/ScanForReturnProduct/${productId}`, // Use dynamic productId
                     {}, // Replace with the actual body if required
                     {
                         headers: {
@@ -80,7 +80,7 @@ const Scan = ({ navigation }) => {
                     color: 'black',
                     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
                     fontSize: 18
-                }}>Scan Barcode</CustomText>
+                }}>Scan Barcode For Retrun</CustomText>
 
             </Row>
         )
@@ -167,7 +167,7 @@ const Scan = ({ navigation }) => {
     )
 }
 
-export default Scan;
+export default ScanRetrun;
 
 
 const styles = StyleSheet.create({

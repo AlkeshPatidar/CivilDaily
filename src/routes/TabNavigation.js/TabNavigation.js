@@ -7,12 +7,13 @@ import CustomText from '../../components/TextComponent';
 import color, { App_Primary_color } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import Home from '../../screens/Home/Home';
-import Information from '../../screens/Information';
-import DamageHistory from '../../screens/DamageHistory/DamageHistory';
+import Information from '../../screens/RentedItems';
+import DamageHistory from '../../screens/RetrunItems/RetrunedItems';
 import Profile from '../../screens/Profile/Profile';
 import { Chartgray, SearchIcons, TabHome, TabMail, TabSet } from '../../assets/SVGs';
 import Row from '../../components/wrapper/row';
 import EventNote from '../../screens/EventNote/EventNote';
+import Reminder from '../../screens/EventNote/GetAllEventsRemainder';
 
 // import NewsDetail from '../../screens/News/News';
 
@@ -58,7 +59,7 @@ function TabNavigation() {
                             gap: 5
                         }}>
                             <TabHome height={20} width={20} />
-                            <CustomText style={{ color: 'white', fontSize: 14 }}>Home</CustomText>
+                            {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Home</CustomText> */}
                         </Row> : <TabHome height={20} width={20} />,
                 }}
             />
@@ -78,7 +79,7 @@ function TabNavigation() {
                             gap: 5
                         }}>
                             <SearchIcons height={20} width={20} />
-                            <CustomText style={{ color: 'white', fontSize: 14 }}>Search</CustomText>
+                            {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Rented</CustomText> */}
                         </Row> : <SearchIcons height={20} width={20} />,
                 }}
             />
@@ -90,7 +91,7 @@ function TabNavigation() {
                 options={{
                     tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
-                        focused ? <Row style={{
+                        focused ? <View style={{
                             backgroundColor: App_Primary_color,
                             height: 36,
                             width: 80,
@@ -100,14 +101,14 @@ function TabNavigation() {
                             gap: 5
                         }}>
                             <TabMail height={20} width={20} />
-                            <CustomText style={{ color: 'white', fontSize: 14 }}>Mail</CustomText>
-                        </Row> : <TabMail height={20} width={20} />,
+                            {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Retruned</CustomText> */}
+                        </View> : <TabMail height={20} width={20} />,
                 }}
             />
 
             <Tab.Screen
                 name="Event Note"
-                component={EventNote}
+                component={Reminder}
                 options={{
                     tabBarLabel: () => <></>,
                     tabBarIcon: ({ focused }) =>
@@ -121,7 +122,7 @@ function TabNavigation() {
                             gap: 5
                         }}>
                             <Chartgray height={20} width={20} />
-                            <CustomText style={{ color: 'white', fontSize: 14 }}>Note</CustomText>
+                            {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Note</CustomText> */}
                         </Row> : <Chartgray height={24} width={24} />,
                 }}
             />
@@ -143,7 +144,7 @@ function TabNavigation() {
                             gap: 5
                         }}>
                             <TabSet height={20} width={20} />
-                            <CustomText style={{ color: 'white', fontSize: 14 }}>Profile</CustomText>
+                            {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Profile</CustomText> */}
                         </Row> : <TabSet height={20} width={20} />,
                 }}
             />

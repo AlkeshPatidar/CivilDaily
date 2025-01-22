@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
 import CustomText from "../../components/TextComponent";
 import color, { App_Primary_color } from "../../common/Colors/colors";
@@ -9,8 +9,40 @@ import CustomInputField from "../../components/wrapper/CustomInput";
 import CustomButton from "../../components/Button";
 import SpaceBetweenRow from "../../components/wrapper/spacebetween";
 import IMG from "../../assets/Images";
+import urls from "../../config/urls";
+import { apiGet } from "../../utils/Apis";
+import useLoader from "../../utils/LoaderHook";
+import moment from "moment"
+import { useIsFocused } from "@react-navigation/native";
 
 const DamageHistory = ({ navigation }) => {
+    const { showLoader, hideLoader } = useLoader()
+  const [allProduct, setAllProduct] = useState([])
+    const isFocused= useIsFocused()
+  
+
+      useEffect(() => {
+        fetchData()
+      }, [isFocused])
+    
+      const fetchData = async () => {
+        try {
+          showLoader()
+          const response = await apiGet(urls.getReturnProduct);
+          console.log('-------------', response);
+          if (response?.statusCode === 200) {
+            console.log('=======RETUEN===', response?.message);
+            setAllProduct(response?.message)
+            hideLoader()
+    
+          }
+    
+        } catch (error) {
+          console.log('Error fetching user data:', error);
+          // ToastMsg(error?.message || 'Network Error');
+          hideLoader()
+        }
+      };
 
     const renderHeader = () => {
         return (
@@ -22,7 +54,7 @@ const DamageHistory = ({ navigation }) => {
                     color: 'black',
                     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
                     fontSize: 18
-                }}>Damage History</CustomText>
+                }}>Returned Products</CustomText>
 
             </Row>
         )
@@ -105,8 +137,8 @@ const DamageHistory = ({ navigation }) => {
         return (
             <View style={{ flex: 1, marginBottom: 100 }}>
                 <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id.toString()} // Ensure unique keys
+                    data={allProduct}
+                    keyExtractor={(item) => item._id} // Ensure unique keys
                     renderItem={({ item }) => (
                         <TouchableOpacity
                         onPress={()=>navigation.navigate('Profile')}
@@ -128,9 +160,11 @@ const DamageHistory = ({ navigation }) => {
                                 height:80
                             }}
                         >
+                            {console.log(item,'------------')}
+                            
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                                 <Image
-                                    source={IMG.cameraImage} // Replace with your default image or a placeholder
+                                    source={{uri:item?.image}} // Replace with your default image or a placeholder
                                     style={{
                                         height: 80,
                                         width: 120,
@@ -144,7 +178,7 @@ const DamageHistory = ({ navigation }) => {
                                             fontSize: 14,
                                         }}
                                     >
-                                        {item.title}
+                                        {item.productName}
                                     </CustomText>
                                     <Row style={{ gap: 5 }}>
                                         <CustomText
@@ -154,7 +188,7 @@ const DamageHistory = ({ navigation }) => {
                                                 color: "rgba(151, 151, 151, 1)",
                                             }}
                                         >
-                                            {item.quantity}
+                                            {item.companyName}
                                         </CustomText>
                                     </Row>
                                 </View>
@@ -171,7 +205,7 @@ const DamageHistory = ({ navigation }) => {
                                         paddingRight:10
                                     }}
                                 >
-                                    {item.status}
+                                    {moment(item.rentalDate)?.format('DD/MMM/YY') }
                                 </CustomText>
                               
 

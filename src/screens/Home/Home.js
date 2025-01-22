@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import useLoader from "../../utils/LoaderHook";
 import { apiGet } from "../../utils/Apis";
 import urls from "../../config/urls";
+import ScanOptionsModal from "../ScanScreen/Modal";
 
 const Home = ({ navigation }) => {
   useStatusBar(App_Primary_color, 'light-content')
@@ -26,6 +27,19 @@ const Home = ({ navigation }) => {
   // console.log(selector);
 
   const [allProduct, setAllProduct] = useState([])
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+  const handleScanForRent = () => {
+    closeModal();
+    navigation.navigate('Scan')};
+
+const handleScanForReturn = () => {
+    closeModal();
+    navigation.navigate('ScanRetrun'); // Navigate to Return Screen
+};
 
   useEffect(() => {
     fetchData()
@@ -131,7 +145,8 @@ const Home = ({ navigation }) => {
             justifyContent: 'center'
           }}
             // onPress={()=>navigation.navigate('AddIssues')}
-            onPress={() => navigation.navigate('Scan')}
+            // onPress={() => navigation.navigate('Scan')}
+            onPress={()=>openModal()}
 
           >
             <BcIcon />
@@ -345,6 +360,12 @@ const Home = ({ navigation }) => {
       {renderHeader()}
       {renderWhiteBgItmes()}
 
+      <ScanOptionsModal
+                isVisible={isModalVisible}
+                onClose={closeModal}
+                onRent={handleScanForRent}
+                onReturn={handleScanForReturn}
+            />
 
       <View style={{
         height: 5,
@@ -355,6 +376,7 @@ const Home = ({ navigation }) => {
         bottom: 8,
         borderRadius: 8
       }} />
+
     </View>
   )
 }
