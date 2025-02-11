@@ -14,7 +14,8 @@
 // import urls from '../../config/urls';
 
 
-// const Splash = ({ navigation }) => {
+// const Splash = ({ navigation 
+// }) => {
 
   
 //   return (
