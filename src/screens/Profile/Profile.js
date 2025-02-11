@@ -12,8 +12,10 @@ import IMG from "../../assets/Images";
 import { useSelector } from "react-redux";
 import { clearAsyncStorage } from "../../utils/Apis";
 import { showError } from "../../utils/helperFunctions";
+import useStatusBar from "../../utils/statusBar";
 
 const Profile = ({ navigation }) => {
+    useStatusBar(App_Primary_color, 'light-content')
 
     let selector = useSelector(state => state?.user?.userData);
     if (Object.keys(selector).length != 0) {
@@ -69,27 +71,27 @@ const Profile = ({ navigation }) => {
 
     const renderItems = () => {
         const data = [
-            {
-                id: 1,
-                title: "My Profile",
-                icon: <ProfIcon />
-            },
-            {
-                id: 2,
-                title: "Statistic",
-                icon: <Chart />
-            },
-            {
-                id: 3,
-                title: "Location",
-                icon: <BlueLocation height={23} width={23} />
-            },
-            {
-                id: 4,
-                title: "Settings",
-                icon: <Setting />
+            // {
+            //     id: 1,
+            //     title: "My Profile",
+            //     icon: <ProfIcon />
+            // },
+            // {
+            //     id: 2,
+            //     title: "Statistic",
+            //     icon: <Chart />
+            // },
+            // {
+            //     id: 3,
+            //     title: "Location",
+            //     icon: <BlueLocation height={23} width={23} />
+            // },
+            // {
+            //     id: 4,
+            //     title: "Settings",
+            //     icon: <Setting />
 
-            },
+            // },
             {
                 id: 5,
                 title: "Logout",
@@ -108,7 +110,7 @@ const Profile = ({ navigation }) => {
                         <View
                             style={{
                                 padding: 12,
-                                marginTop: 8,
+                                // marginTop:68,
                                 width: "97%",
                                 shadowOpacity: 0.3,
                                 shadowRadius: 4,
@@ -118,6 +120,10 @@ const Profile = ({ navigation }) => {
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                                 alignItems: "center",
+                                alignSelf:'flex-end',
+                                // position:'absolute',
+                                // bottom:0
+                                // top:300
                             }}
                         >
                             <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
