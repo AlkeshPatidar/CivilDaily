@@ -1,128 +1,134 @@
-import { ActivityIndicator, Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import CustomText from '../../components/TextComponent';
-import color, { App_Primary_color, white } from '../../common/Colors/colors';
-import IMG from '../../assets/Images';
-import CustomButton from '../../components/Button';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
-import { SplashIcon } from '../../assets/SVGs';
-import { FONTS_FAMILY } from '../../assets/Fonts';
-import App from '../../../App';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from 'react-native'
+import IMG from '../../assets/Images'
 
-import { apiGet, getItem } from '../../utils/Apis';
-import { useDispatch, useSelector } from 'react-redux';
-import urls from '../../config/urls';
-import { setUser } from '../../redux/reducer/user';
+const {width} = Dimensions.get('window')
 
-const Splash1 = ({ navigation }) => {
-  
-  const dispatch = useDispatch()
-  // let selector = useSelector(state => state?.user?.userData);
-  // if (Object.keys(selector).length != 0) {
-  //   selector = JSON.parse(selector);
-  // }
-
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    oncheck()
-
-  }, [navigation]);
-
-  const oncheck = async () => {
-    const token = await getItem('token');
-
-    if (token) {
-      callApi()
-
-    } else {
-      navigation.navigate('Login')
-    }
-
-  }
-
-  const callApi = async () => {
-
-    fetchUserData();
-  }
-
-  const fetchUserData = async () => {
-    try {
-      setLoading(true)
-      const token = await getItem('token');
-      if (token) {
-        console.log(token, 'token in splace');
-        const user = await apiGet(urls.getUserProfile);
-        console.log('-------------', user);
-        if (user?.statusCode === 200) {
-          dispatch(setUser(JSON.stringify(user?.data)));
-          console.log('===-+++USER++-', user?.data)
-          navigation.navigate('Tab')
-          setLoading(false)
-        }
-
-
-      }
-
-    } catch (error) {
-      console.log('Error fetching user data:', error);
-      // ToastMsg(error?.message || 'Network Error');
-      setLoading(false)
-
-    }
-  };
-
+const OnboardingScreen = ({navigation}) => {
   return (
-    <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-      {/* <SplashIcon /> */}
-      <Image
-        source={IMG.TrackOn}
-        style={{
-          width: '100%'
-        }}
-      />
-      <CustomText style={{
-        fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        fontSize: 26,
-        marginTop: verticalScale(30),
-        textAlign: 'center',
-        color: color.App_Primary_color
-      }}>Welcome To{"\n"} Management Tracking</CustomText>
-      <CustomText style={{
-        fontFamily: FONTS_FAMILY.Poppins_Regular,
-        fontSize: 14,
-        textAlign: 'center',
-        lineHeight: 20,
-        marginTop: 20,
-        lineHeight:23
-      }}>This productive tool is designed to help{'\n'}
-        you better manage your task{'\n'}
-        project-wise conveniently! </CustomText>
-      <View style={{
-        gap: 20,
-        marginTop: verticalScale(70)
-      }}>
+    <View style={styles.container}>
+      {/* Top Red Section */}
+      <View style={styles.topSection}>
+        <Text style={styles.skipText}>Skip</Text>
+        <View style={styles.dotsContainer}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.activeDot]} />
+        </View>
+        <Image
+          source={IMG.onBoardingImage} // replace with your image path
+          style={styles.illustration}
+          resizeMode='contain'
+        />
 
-{loading && <ActivityIndicator size={'large'} color={App_Primary_color}
-     style={{
-      // position:'absolute',
-      // bottom:10
-     }}
-     />}
-        {/* <CustomButton title={'Get Started'}
-          style={{
-            width: moderateScale(295),
-            backgroundColor: App_Primary_color,
-            borderWidth: 1,
-            borderColor: App_Primary_color
-          }}
-          txtColor={{ color: white }}
-          onPress={() => navigation.navigate('Login')}
-        /> */}
+        {/* Pagination Dots */}
       </View>
-    </ScrollView  >
-  )
 
+      {/* Bottom White Section */}
+      <View style={styles.bottomSection}>
+        <Text style={styles.title}>
+          Connect Friend{' '}
+          <Text style={styles.highlighted}>Easily &{'\n'}Quickly</Text>
+        </Text>
+        <Text style={styles.description}>
+          Explore the power of real-time advertising with Digiboard. Instantly
+          connect with your audience across Indonesia.
+        </Text>
+
+        <TouchableOpacity style={styles.button}
+        onPress={()=>navigation.navigate('Login')}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
 }
 
-export default Splash1
+export default OnboardingScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  topSection: {
+    flex: 1.2,
+    backgroundColor: '#E8443B',
+    alignItems: 'center',
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  skipText: {
+    alignSelf: 'flex-end',
+    color: '#fff',
+    marginBottom: 20,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  illustration: {
+    width: '100%',
+    height: 200,
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    // marginTop: 20,
+    gap: 6,
+    bottom:30
+  },
+  dot: {
+    width: 40,
+    height: 5,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    opacity: 0.5,
+  },
+  activeDot: {
+    width: 16,
+    borderRadius: 4,
+    opacity: 1,
+  },
+  bottomSection: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 25,
+    paddingTop: 30,
+    // alignItems: 'center',
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    // textAlign: 'center',
+    color: '#000',
+  },
+  highlighted: {
+    color: '#E8443B',
+  },
+  description: {
+    // textAlign: 'center',
+    fontSize: 14,
+    color: '#555',
+    marginTop: 15,
+    lineHeight: 20,
+  },
+  button: {
+    marginTop: 30,
+    backgroundColor: '#E8443B',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+})

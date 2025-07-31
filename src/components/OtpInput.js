@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import CustomText from './TextComponent';
-import { FONTS_FAMILY } from '../assets/Fonts';
-import color, { black } from '../common/colors';
+
 import { moderateScale } from 'react-native-size-matters';
+import { FONTS_FAMILY } from '../assets/Fonts';
+import color, { black } from '../common/Colors/colors';
 
 const OTPInput = ({ numInputs, onChangeText }) => {
     const [otp, setOTP] = useState(new Array(numInputs).fill(''));
@@ -65,19 +66,20 @@ const OTPInput = ({ numInputs, onChangeText }) => {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        gap: moderateScale(20),
+        gap: moderateScale(4),
         marginVertical: 30,
         alignSelf: 'center',
     },
 
     input: {
-        width: 45,
-        height: 60,
-        borderBottomWidth: 2.5,
+        width: 50,
+        height: 50,
+        borderWidth: 1,
         borderColor: 'rgba(142, 142, 142, 1)',
         textAlign: 'center',
         fontSize: 18,
-        color:black
+        color:black,
+        borderRadius:10
     },
     errorInput: {
         borderColor: 'red',

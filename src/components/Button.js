@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     button: {
         width: '100%',
         height: verticalScale(40),
-        borderRadius: moderateScale(15),
+        borderRadius: moderateScale(8),
         backgroundColor: color.App_Primary_color,
         justifyContent: 'center',
         alignItems: 'center',
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 14,
         color: 'white',
         fontFamily: FONTS_FAMILY.Poppins_SemiBold
     },

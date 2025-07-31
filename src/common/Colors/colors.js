@@ -1,5 +1,5 @@
 const color={
-    App_Primary_color:'rgba(54, 41, 183, 1)',
+    App_Primary_color:'#D43C31',
     black:"#000",
     white:"#fff",
     light_black:'#999999',

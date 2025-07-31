@@ -1,197 +1,325 @@
-import React from "react";
-import { FlatList, Image, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
-import CustomText from "../../components/TextComponent";
-import color, { App_Primary_color } from "../../common/Colors/colors";
-import Row from "../../components/wrapper/row";
-import { BackArrow, BcIcon, BlackBack, BlueForword, BlueLocation, EyeIcon, ForwardIcon, LoginLogo, NotiIcon, RedPolygon, SearchIcon, SearchIcons, SignUPLogo } from "../../assets/SVGs";
-import { FONTS_FAMILY } from "../../assets/Fonts";
-import CustomInputField from "../../components/wrapper/CustomInput";
-import CustomButton from "../../components/Button";
-import SpaceBetweenRow from "../../components/wrapper/spacebetween";
-import IMG from "../../assets/Images";
+import React, {useState} from 'react'
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {FONTS_FAMILY} from '../../assets/Fonts'
+import {App_Primary_color, font_gray} from '../../common/Colors/colors'
+import {Back, BackArrow, Settings, Transactions} from '../../assets/SVGs'
+import CustomText from '../../components/TextComponent'
+import Row from '../../components/wrapper/row'
 
-const Notification = ({ navigation }) => {
+const Notification = ({navigation}) => {
+  const [searchText, setSearchText] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
-    const renderHeader = () => {
-        return (
-            <Row style={{ gap: 20, marginTop: 50, marginHorizontal: 20 }}>
-                <TouchableOpacity onPress={()=>navigation.goBack()}>
-                <BlackBack />
-                </TouchableOpacity>
-                <CustomText style={{
-                    color: 'black',
-                    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-                    fontSize: 18
-                }}>Notification</CustomText>
+  const categories = ['All', 'Completed', 'Cancelled']
 
-            </Row>
-        )
-    }
+  const foodItems = [
+    {
+      id: 1,
+      title: 'Your Transaction Is Not Complete',
+      subtitle:
+        'Complete your transaction DB320256 before it is automatically canceled on 27 Dec 2023, 15:00',
+      category: 'Food & Beverage',
+      price: '12',
+      status: 'COMPLETED',
+      statusColor: '#3170FA',
+      date: '27 Dec 2023, 14:00',
+      image:
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+    },
+    {
+      id: 2,
+      title: 'Your Transaction Is Not Complete',
+      subtitle:
+        'Complete your transaction DB320256 before it is automatically canceled on 27 Dec 2023, 15:00',
+      category: 'Food',
+      price: '12',
+      status: 'COMPLETED',
+      statusColor: '#3170FA',
+      date: '15 Dec 2023, 09:20',
+      additionalItems: '+2 more Items',
+      image:
+        'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=300&h=200&fit=crop',
+    },
+    {
+      id: 3,
+      title: 'Your Transaction Is Not Complete',
+      subtitle:
+        'Complete your transaction DB320256 before it is automatically canceled on 27 Dec 2023, 15:00',
+      category: 'Food & Beverage',
+      price: '12',
+      status: 'CANCELLED',
+      statusColor: '#F44336',
+      date: '14 Dec 2023, 11:20',
+      image:
+        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=200&fit=crop',
+    },
+    {
+      id: 4,
+      title: 'Your Transaction Is Not Complete',
+      subtitle:
+        'Complete your transaction DB320256 before it is automatically canceled on 27 Dec 2023, 15:00',
+      category: 'Food & Beverage',
+      price: '12',
+      status: 'COMPLETED',
+      statusColor: '#3170FA',
+      date: '12 Dec 2023, 16:30',
+      image:
+        'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=300&h=200&fit=crop',
+    },
+  ]
 
+  const FoodCard = ({item, index}) => (
+    <TouchableOpacity
+      style={styles.foodCard}
+      //   onPress={() => navigation.navigate('CampaignList')}
+    >
+      <View style={styles.cardHeader}>
+        <Row
+          style={{
+            gap: 10,
+          }}>
+          <Transactions />
+          <Text style={styles.dateText}>{'Transaction'}</Text>
+        </Row>
+        <Text style={styles.statusText}>{'27 Dec 2023, 14:01'}</Text>
+      </View>
 
+      <View style={styles.cardContent}>
+        <View style={styles.cardDetails}>
+          <Text style={styles.foodTitle} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <Text style={styles.foodSubtitle} numberOfLines={2}>
+            {item.subtitle}
+          </Text>
 
-
-    const renderWhiteBgItmes = () => {
-        return (
-            <ScrollView style={{
-                flex: 1,
-                // backgroundColor: 'rgba(255, 255, 255, 1)',
-                marginTop: 0,
-                // borderTopLeftRadius: 30,
-                // borderTopRightRadius: 30,
-                paddingHorizontal: 20,
-                paddingVertical: 20
-            }}>
-
-
-                {renderItems()}
-            </ScrollView>
-        )
-    }
-
-    const renderItems = () => {
-        const data = [
-            {
-                id: 1,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                quantity: 'Banglore',
-                image: "url_to_electrical_wire_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 2,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Delhi',
-                image: "url_to_camera_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 3,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 4,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Banglore',
-                image: "url_to_led_light_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 5,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Delhi',
-                image: "url_to_led_light_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 6,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "1 hr ago",
-            },
-            {
-                id: 7,
-                title: "Ronald C. Kinch  Replaced You \n products",
-                
-                quantity: 'Indore',
-                image: "url_to_led_light_image",
-                status: "1 hr ago",
-            },
-        ];
-
-        return (
-            <View style={{ flex: 1, marginBottom: 100 }}>
-                <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id.toString()} // Ensure unique keys
-                    renderItem={({ item }) => (
-                        <View
-                            style={{
-                                padding: 12,
-                                backgroundColor: "white",
-                                marginTop: 8,
-                                width: "97%",
-                                // elevation: 1, // Android shadow
-                                shadowColor: "#000", // iOS shadow color
-                                shadowOffset: { width: 0, height: 4 }, // Offset for shadow
-                                shadowOpacity: 0.3, // Opacity for shadow
-                                shadowRadius: 4, // Spread radius for shadow
-                                borderRadius: 10,
-                                margin: 9,
-                                alignSelf: "center",
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                            }}
-                        >
-                               
-                                <View>
-                                    <CustomText
-                                        style={{
-                                            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-                                            fontSize: 14,
-                                        }}
-                                    >
-                                        {item.title}
-                                    </CustomText>
-                                  
-                            </View>
-                          
-                                <CustomText
-                                    style={{
-                                        fontFamily: FONTS_FAMILY.Poppins_Medium,
-                                        fontSize: 10,
-                                        color: "rgba(60, 62, 86, 1)",
-                                    }}
-                                >
-                                    {item.status}
-                                </CustomText>
-                               
-
-                        </View>
-                    )}
-                />
-            </View>
-        );
-    };
-
-
-
-
-    return (
-        <View style={{
-            // backgroundColor: App_Primary_color,
-            flex: 1
-        }}>
-            <StatusBar
-                translucent={true}
-                backgroundColor="transparent"
-                barStyle="dark-content"
-            />
-            {renderHeader()}
-            {renderWhiteBgItmes()}
-
-
-            <View style={{
-                height: 5,
-                width: 134,
-                backgroundColor: 'rgba(202, 202, 202, 1)',
-                alignSelf: 'center',
-                position: 'absolute',
-                bottom: 8,
-                borderRadius: 8
-            }} />
+          {item.additionalItems && (
+            <Text style={styles.additionalItems}>{item.additionalItems}</Text>
+          )}
         </View>
-    )
+      </View>
+    </TouchableOpacity>
+  )
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <BackArrow />
+        </TouchableOpacity>
+        <CustomText
+          style={{
+            color: 'white',
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+          }}>
+          Notifications
+        </CustomText>
+        <Settings />
+      </View>
+
+      {/* Food Items List */}
+      <ScrollView
+        style={styles.contentContainer}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.listContainer}>
+          {foodItems.map((item, index) => (
+            <View key={item.id} style={styles.listItem}>
+              <FoodCard item={item} index={index} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
 }
 
-export default Notification;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    backgroundColor: App_Primary_color,
+    // alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 30,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF26',
+    padding: 0,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  categoryContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    alignSelf: 'flex-start',
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryButton: {
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#E53E3E',
+  },
+  categoryText: {
+    fontSize: 13,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  listContainer: {
+    paddingBottom: 80,
+  },
+  listItem: {
+    marginBottom: 16,
+  },
+  foodCard: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  dateText: {
+    fontSize: 14,
+    color: 'red',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  statusText: {
+    color: '#4B5563',
+    fontSize: 10,
+    fontWeight: '600',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  foodImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  cardDetails: {
+    flex: 1,
+  },
+  foodTitle: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  foodSubtitle: {
+    color: '#666',
+    fontSize: 12,
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  additionalItems: {
+    color: '#FF6B35',
+    fontSize: 11,
+    marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // alignItems: 'center',
+    marginTop: 10,
+  },
+  orderTotalLabel: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    right: 50,
+  },
+  priceContainer: {
+    backgroundColor: '#FF6B35',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  priceText: {
+    color: '#3D0066',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#E53E3E',
+    width: 56,
+    height: 56,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+})
+
+export default Notification

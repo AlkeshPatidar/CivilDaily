@@ -13,6 +13,25 @@ const IMG = {
   AvatorImage:require('../Images/AvatorImage.png'),
   cameraImage:require('../Images/cameraImage.png'),
   userProfileImage:require('../Images/userProfileImage.png'),
+  Logo:require('../Images/Logo.png'),
+  onBoardingImage:require('../Images/onBoardingImage.png'),
+  Asset:require('../Images/Asset.png'),
+  Daily:require('../Images/Daily.png'),
+  Statistic:require('../Images/Statistic.png'),
+
+  Home:require('../Images/Home.png'),
+  heart:require('../Images/heart.png'),
+  msg:require('../Images/msg.png'),
+  profile:require('../Images/profile.png'),
+  Map:require('../Images/Map.png'),
+  Calendar:require('../Images/calendar.png'),
+
+
+
+
+
+
+
 
 
 

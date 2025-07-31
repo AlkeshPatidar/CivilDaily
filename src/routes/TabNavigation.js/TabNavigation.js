@@ -1,334 +1,278 @@
-// import * as React from 'react';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
-// import { Dimensions, View } from 'react-native';
-// import CustomText from '../../components/TextComponent';
-// import color, { App_Primary_color } from '../../common/Colors/colors';
-// import { FONTS_FAMILY } from '../../assets/Fonts';
-// import Home from '../../screens/Home/Home';
-// import Information from '../../screens/RentedItems';
-// import DamageHistory from '../../screens/RetrunItems/RetrunedItems';
-// import Profile from '../../screens/Profile/Profile';
-// import { Chartgray, SearchIcons, TabHome, TabMail, TabSet } from '../../assets/SVGs';
-// import Row from '../../components/wrapper/row';
-// import EventNote from '../../screens/EventNote/EventNote';
-// import Reminder from '../../screens/EventNote/GetAllEventsRemainder';
+import * as React from 'react'
+import {useState, useEffect} from 'react'
+import {Keyboard, Dimensions, View, Image} from 'react-native'
+import {NavigationContainer} from '@react-navigation/native'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
+import CustomText from '../../components/TextComponent'
+import color, {App_Primary_color} from '../../common/Colors/colors'
+import {FONTS_FAMILY} from '../../assets/Fonts'
+import BrandHome from '../../screens/BrandFlow/BrandHome/BrandHome'
+import IMG, {Home} from '../../assets/Images'
+import MessageScreen from '../../screens/Message/MessageList'
+import ProfileScreen from '../../screens/Profile/Profile'
+import InfluencersScreen from '../../screens/Influencer/Influencerlist'
 
-// // import NewsDetail from '../../screens/News/News';
+const Tab = createBottomTabNavigator()
 
+function TabNavigation () {
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true)
+      },
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false)
+      },
+    )
 
-// const Tab = createBottomTabNavigator();
+    return () => {
+      keyboardDidShowListener.remove()
+      keyboardDidHideListener.remove()
+    }
+  }, [])
 
-// function TabNavigation() {
+  return (
+    <Tab.Navigator
+      initialRouteName='Home'
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          position: 'absolute',
+          bottom: verticalScale(0),
+          borderRadius: moderateScale(0),
+          height: verticalScale(68),
+          justifyContent: 'center',
+          alignItems: 'center',
+          elevation: 20,
+          shadowColor: '#000',
+          paddingHorizontal: 20,
+          backgroundColor: 'white',
+          display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
+        },
+      }}>
+      <Tab.Screen
+        name='Home'
+        component={BrandHome}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.Home}
+                  style={{
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: App_Primary_color,
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Home
+                </CustomText>
+              </View>
+            ) : (
+              <View>
+                <Image
+                  source={IMG.Home}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: '#6B7280',
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: '#6B7280',
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Home
+                </CustomText>
+              </View>
+            ),
+        }}
+      />
+      <Tab.Screen
+        name='Fav'
+        component={InfluencersScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.heart}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: App_Primary_color,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: App_Primary_color,
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Influencer
+                </CustomText>
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.heart}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: '#6B7280',
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: '#6B7280',
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Influencer
+                </CustomText>
+              </View>
+            ),
+        }}
+      />
+      <Tab.Screen
+        name='Message'
+        component={MessageScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.msg}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: App_Primary_color,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: App_Primary_color,
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Message
+                </CustomText>
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.msg}
+                  style={{
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: '#6B7280',
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Message
+                </CustomText>
+              </View>
+            ),
+        }}
+      />
 
-//     return (
-//         <Tab.Navigator
-//             initialRouteName="Home"
-//             screenOptions={{
-//                 headerShown: false,
-//                 tabBarStyle: {
-//                     position: 'absolute',
-//                     bottom: verticalScale(0),
-//                     borderRadius: moderateScale(0),
-//                     height: verticalScale(68),
-//                     justifyContent: 'center',
-//                     alignItems: 'center',
-//                     elevation: 20,
-//                     shadowColor: '#000',
-//                     paddingHorizontal: 20,
-//                     // width: Dimensions.get('screen').width / 1.05,
-//                     backgroundColor: 'white',
-//                     // marginHorizontal: scale(10),
-//                 },
-//             }}>
-//             <Tab.Screen
-//                 name="Home"
-//                 component={Home}
-//                 options={{
-//                     tabBarLabel: () => <></>,
-//                     tabBarIcon: ({ focused }) =>
-//                         focused ? <Row style={{
-//                             backgroundColor: App_Primary_color,
-//                             height: 36,
-//                             width: 80,
-//                             borderRadius: 20,
-//                             alignItems: 'center',
-//                             justifyContent: 'center',
-//                             gap: 5
-//                         }}>
-//                             <TabHome height={20} width={20} />
-//                             {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Home</CustomText> */}
-//                         </Row> : <TabHome height={20} width={20} />,
-//                 }}
-//             />
-//             <Tab.Screen
-//                 name="Search"
-//                 component={Information}
-//                 options={{
-//                     tabBarLabel: () => <></>,
-//                     tabBarIcon: ({ focused }) =>
-//                         focused ? <Row style={{
-//                             backgroundColor: App_Primary_color,
-//                             height: 36,
-//                             width: 80,
-//                             borderRadius: 20,
-//                             alignItems: 'center',
-//                             justifyContent: 'center',
-//                             gap: 5
-//                         }}>
-//                             <SearchIcons height={20} width={20} />
-//                             {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Rented</CustomText> */}
-//                         </Row> : <SearchIcons height={20} width={20} />,
-//                 }}
-//             />
-
-
-//             <Tab.Screen
-//                 name="news"
-//                 component={DamageHistory}
-//                 options={{
-//                     tabBarLabel: () => <></>,
-//                     tabBarIcon: ({ focused }) =>
-//                         focused ? <View style={{
-//                             backgroundColor: App_Primary_color,
-//                             height: 36,
-//                             width: 80,
-//                             borderRadius: 20,
-//                             alignItems: 'center',
-//                             justifyContent: 'center',
-//                             gap: 5
-//                         }}>
-//                             <TabMail height={20} width={20} />
-//                             {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Retruned</CustomText> */}
-//                         </View> : <TabMail height={20} width={20} />,
-//                 }}
-//             />
-
-//             <Tab.Screen
-//                 name="Event Note"
-//                 component={Reminder}
-//                 options={{
-//                     tabBarLabel: () => <></>,
-//                     tabBarIcon: ({ focused }) =>
-//                         focused ? <Row style={{
-//                             backgroundColor: App_Primary_color,
-//                             height: 36,
-//                             width: 80,
-//                             borderRadius: 20,
-//                             alignItems: 'center',
-//                             justifyContent: 'center',
-//                             gap: 5
-//                         }}>
-//                             <Chartgray height={20} width={20} />
-//                             {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Note</CustomText> */}
-//                         </Row> : <Chartgray height={24} width={24} />,
-//                 }}
-//             />
-
-
-//             <Tab.Screen
-//                 name="Classified"
-//                 component={Profile}
-//                 options={{
-//                     tabBarLabel: () => <></>,
-//                     tabBarIcon: ({ focused }) =>
-//                         focused ? <Row style={{
-//                             backgroundColor: App_Primary_color,
-//                             height: 36,
-//                             width: 80,
-//                             borderRadius: 20,
-//                             alignItems: 'center',
-//                             justifyContent: 'center',
-//                             gap: 5
-//                         }}>
-//                             <TabSet height={20} width={20} />
-//                             {/* <CustomText style={{ color: 'white', fontSize: 14 }}>Profile</CustomText> */}
-//                         </Row> : <TabSet height={20} width={20} />,
-//                 }}
-//             />
-
-
-//         </Tab.Navigator>
-//     );
-// }
-
-// export default TabNavigation;
-
-
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Keyboard, Dimensions, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
-import CustomText from '../../components/TextComponent';
-import color, { App_Primary_color } from '../../common/Colors/colors';
-import { FONTS_FAMILY } from '../../assets/Fonts';
-import Home from '../../screens/Home/Home';
-import Information from '../../screens/RentedItems';
-import DamageHistory from '../../screens/RetrunItems/RetrunedItems';
-import Profile from '../../screens/Profile/Profile';
-import { Chartgray, SearchIcons, TabHome, TabMail, TabSet } from '../../assets/SVGs';
-import Row from '../../components/wrapper/row';
-import Reminder from '../../screens/EventNote/GetAllEventsRemainder';
-
-const Tab = createBottomTabNavigator();
-
-function TabNavigation() {
-    const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardVisible(true);
-        });
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardVisible(false);
-        });
-
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-        };
-    }, []);
-
-    return (
-        <Tab.Navigator
-            initialRouteName="Home"
-            screenOptions={{
-                headerShown: false,
-                tabBarStyle: {
-                    position: 'absolute',
-                    bottom: verticalScale(0),
-                    borderRadius: moderateScale(0),
-                    height: verticalScale(68),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    elevation: 20,
-                    shadowColor: '#000',
-                    paddingHorizontal: 20,
-                    backgroundColor: 'white',
-                    display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
-                },
-            }}>
-            <Tab.Screen
-                name="Home"
-                component={Home}
-                options={{
-                    tabBarLabel: () => <></>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Row style={{
-                                backgroundColor: App_Primary_color,
-                                height: 36,
-                                width: 80,
-                                borderRadius: 20,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 5,
-                            }}>
-                                <TabHome height={20} width={20} />
-                            </Row>
-                        ) : (
-                            <TabHome height={20} width={20} />
-                        ),
-                }}
-            />
-            <Tab.Screen
-                name="Search"
-                component={Information}
-                options={{
-                    tabBarLabel: () => <></>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Row style={{
-                                backgroundColor: App_Primary_color,
-                                height: 36,
-                                width: 80,
-                                borderRadius: 20,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 5,
-                            }}>
-                                <SearchIcons height={20} width={20} />
-                            </Row>
-                        ) : (
-                            <SearchIcons height={20} width={20} />
-                        ),
-                }}
-            />
-            <Tab.Screen
-                name="news"
-                component={DamageHistory}
-                options={{
-                    tabBarLabel: () => <></>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <View style={{
-                                backgroundColor: App_Primary_color,
-                                height: 36,
-                                width: 80,
-                                borderRadius: 20,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 5,
-                            }}>
-                                <TabMail height={20} width={20} />
-                            </View>
-                        ) : (
-                            <TabMail height={20} width={20} />
-                        ),
-                }}
-            />
-            <Tab.Screen
-                name="Event Note"
-                component={Reminder}
-                options={{
-                    tabBarLabel: () => <></>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Row style={{
-                                backgroundColor: App_Primary_color,
-                                height: 36,
-                                width: 80,
-                                borderRadius: 20,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 5,
-                            }}>
-                                <Chartgray height={20} width={20} />
-                            </Row>
-                        ) : (
-                            <Chartgray height={24} width={24} />
-                        ),
-                }}
-            />
-            <Tab.Screen
-                name="Classified"
-                component={Profile}
-                options={{
-                    tabBarLabel: () => <></>,
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Row style={{
-                                backgroundColor: App_Primary_color,
-                                height: 36,
-                                width: 80,
-                                borderRadius: 20,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 5,
-                            }}>
-                                <TabSet height={20} width={20} />
-                            </Row>
-                        ) : (
-                            <TabSet height={20} width={20} />
-                        ),
-                }}
-            />
-        </Tab.Navigator>
-    );
+      <Tab.Screen
+        name='Profile'
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.profile}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: App_Primary_color,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: App_Primary_color,
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Profile
+                </CustomText>
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.profile}
+                  style={{
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+                <CustomText
+                  style={{
+                    color: '#6B7280',
+                    fontSize: 10,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  Profile
+                </CustomText>
+              </View>
+            ),
+        }}
+      />
+    </Tab.Navigator>
+  )
 }
 
-export default TabNavigation;
+export default TabNavigation

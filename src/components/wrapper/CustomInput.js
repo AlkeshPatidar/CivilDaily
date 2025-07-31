@@ -11,7 +11,7 @@ const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeh
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   return (
     <View style={{ width: '100%' }}>
-      {label && <CustomText style={{ color: 'rgba(151, 151, 151, 1)', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
+      {label && <CustomText style={{ color: 'black', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
       <View style={styles.container}>
         <TextInput
           style={styles.input}
