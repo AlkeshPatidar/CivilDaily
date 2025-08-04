@@ -13,8 +13,12 @@ import {Back, BackArrow, EditIcon, ForwordChev} from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
 import {App_Primary_color} from '../../common/Colors/colors'
+import { clearAsyncStorage } from '../../utils/Apis'
+import { showError } from '../../utils/helperFunctions'
+import { useSelector } from 'react-redux'
+import { setEnabled } from 'react-native/Libraries/Performance/Systrace'
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   const menuItems = [
     {icon: '💳', title: 'Bank Account', onPress: () => {}},
     {icon: '📋', title: 'Delivery Details', onPress: () => {}},
@@ -28,6 +32,24 @@ const ProfileScreen = () => {
     {icon: '❓', title: 'Support', onPress: () => {}},
     {icon: 'ℹ️', title: 'About', onPress: () => {}},
   ]
+
+   let selector = useSelector(state => state?.user?.userData);
+    if (Object.keys(selector).length != 0) {
+        selector = JSON.parse(selector);
+    }
+
+    console.log(selector,'Selector');
+    
+
+   const onLogout = async () => {
+        try {
+            await clearAsyncStorage();
+            navigation?.replace('Splash1');
+        } catch (error) {
+            showError('Error while logging out');
+        }
+    };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,8 +74,8 @@ const ProfileScreen = () => {
         <View style={styles.profileSection}>
           <Image source={IMG.AvatorImage} style={styles.profileImage} />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Leslie Alexander</Text>
-            <Text style={styles.profileEmail}>leslie.alexander@gmail.com</Text>
+            <Text style={styles.profileName}>{selector?.FirstName}{selector?.LastName}</Text>
+            <Text style={styles.profileEmail}>{selector?.Email}</Text>
             <TouchableOpacity style={styles.editButton}>
               <EditIcon />
               <Text style={styles.editText}>Edit Profile</Text>
@@ -95,7 +117,9 @@ const ProfileScreen = () => {
         </View>
 
         {/* Log Out Button */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton}
+        onPress={onLogout}
+        >
           <Text style={styles.logoutIcon}>⟲</Text>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
@@ -119,7 +143,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     backgroundColor: App_Primary_color,
-    marginTop: 30,
+    // marginTop: 30,
   },
   backButton: {
     width: 30,
@@ -314,7 +338,7 @@ const styles = StyleSheet.create({
   },
   bottomIndicator: {
     width: 150,
-    height: 4,
+    height: 60,
     // backgroundColor: '#333',
     alignSelf: 'center',
     borderRadius: 2,

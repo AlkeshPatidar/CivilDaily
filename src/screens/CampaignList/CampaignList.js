@@ -136,8 +136,12 @@ const CampaignList = ({navigation}) => {
       <StatusBar backgroundColor='#D64A3A' barStyle='light-content' />
 
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+      <View style={styles.header}
+    
+      >
+        <TouchableOpacity style={styles.backButton}
+        onPress={()=>navigation.goBack()}
+        >
           <BackArrow />
         </TouchableOpacity>
         <View style={styles.headerActions}>

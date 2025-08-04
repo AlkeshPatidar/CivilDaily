@@ -49,6 +49,10 @@ import ForwordChev from './forwordChev.svg'
 import Settings from './settings.svg'
 import Transactions from './transactions.svg'
 
+import DeleteWithcross from './DeleteWithcross.svg'
+import RestoreBin from './restoreBin.svg'
+
+
 
 
 
@@ -110,5 +114,7 @@ export {
   Advertisiment,
   ForwordChev,
   Settings,
-  Transactions
+  Transactions,
+  RestoreBin,
+  DeleteWithcross
 }

@@ -60,7 +60,7 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
       date: new Date(selectedDate),
       time: selectedTime,
     });
-    handleClose();
+    // handleClose();
   };
 
   const onDayPress = (day) => {

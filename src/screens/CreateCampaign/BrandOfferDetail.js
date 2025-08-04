@@ -491,7 +491,8 @@ const BrandOfferDetail = ({navigation}) => {
         break
       case 'delete':
         // Handle delete action
-        console.log('Delete pressed')
+        // console.log('Delete pressed')
+        navigation.navigate('TrashScreen')
         break
       case 'share':
         // Handle share action

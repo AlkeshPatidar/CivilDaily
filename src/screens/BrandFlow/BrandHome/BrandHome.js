@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 18,
     gap: 10,
     height: 250,

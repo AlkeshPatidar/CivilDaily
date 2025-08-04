@@ -29,6 +29,9 @@ import BrandOfferDetail from '../../screens/CreateCampaign/BrandOfferDetail';
 import TabNavigation from '../TabNavigation.js/TabNavigation';
 import InfluenceTab from '../TabNavigation.js/InfluencerTab';
 import BrandDetailMap from '../../screens/InfluencerFlow/BrandDetailMap';
+import TrashScreen from '../../Trash/Trash';
+import SplashScreen from '../../screens/Splash/SplashScreen';
+import InfluencerCapaignListOfaBrand from '../../screens/InfluencerFlow/InfluencerCapaignListOfaBrand/InfluencerCapaignListOfaBrand';
 
 
 
@@ -47,7 +50,9 @@ const StackNavigation = () => {
           headerShown: false,
           cardStyle: { backgroundColor: '#000' },
         }}
-        initialRouteName="Splash1">
+        initialRouteName="SplashScreen">
+          
+        <Stack.Screen name={'SplashScreen'} component={SplashScreen} />
         <Stack.Screen name={'Splash1'} component={Splash1} />
         <Stack.Screen name={'OnboardingScreen'} component={OnboardingScreen} />
 
@@ -80,6 +85,12 @@ const StackNavigation = () => {
         <Stack.Screen name={'TabBrand'} component={TabNavigation} />
         <Stack.Screen name={'InfluenceTab'} component={InfluenceTab} />
         <Stack.Screen name={'BrandDetailMap'} component={BrandDetailMap} />
+
+        <Stack.Screen name={'TrashScreen'} component={TrashScreen} />
+
+        <Stack.Screen name={'InfluencerCapaignListOfaBrand'} component={InfluencerCapaignListOfaBrand} />
+
+
 
 
 

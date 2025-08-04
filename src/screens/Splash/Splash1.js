@@ -6,14 +6,18 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  StatusBar,
 } from 'react-native'
 import IMG from '../../assets/Images'
+import { App_Primary_color } from '../../common/Colors/colors'
 
 const {width} = Dimensions.get('window')
 
 const OnboardingScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+
       {/* Top Red Section */}
       <View style={styles.topSection}>
         <Text style={styles.skipText}>Skip</Text>

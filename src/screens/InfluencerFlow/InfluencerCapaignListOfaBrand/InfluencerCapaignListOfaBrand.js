@@ -10,61 +10,33 @@ import {
   Image,
   ImageBackground,
 } from 'react-native'
-import {BackArrow, EditIcon, ThreeDots} from '../../assets/SVGs'
-import {FONTS_FAMILY} from '../../assets/Fonts'
-import CampaignTypeModal from './ChooseOptionmodel'
-import CalendarModal from './CalendarModel'
-import useLoader from '../../utils/LoaderHook'
-import urls from '../../config/urls'
-import {apiGet, apiPost} from '../../utils/Apis'
-import PaidInputModel from './PaidInputCostModel'
-import ConfirmationCampaignModel from './ConfirmationCampaignModel'
-import {ToastMsg} from '../../utils/helperFunctions'
+import {BackArrow, EditIcon, ThreeDots} from '../../../assets/SVGs'
+import {FONTS_FAMILY} from '../../../assets/Fonts'
+import useLoader from '../../../utils/LoaderHook'
+import {apiGet} from '../../../utils/Apis'
+import urls from '../../../config/urls'
+import moment from 'moment'
 
-const RestDetailScreen = ({navigation, route}) => {
+const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
-  const [isPaidModelVisible, setIsInputModelVisible] = useState(false)
-  const [confirmationModelVisible, setIsConfirmationModelVisible] =
-    useState(false)
-
   const [selectedCampaignType, setSelectedCampaignType] = useState('')
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
   const [selectedDateTime, setSelectedDateTime] = useState(null)
-  const [getABrand, setGetABrand] = useState(null)
-  const [allOffers, setAllOffers] = useState([])
-  const [selectedType, setSelectedType] = useState(null)
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [cost, setCost] = useState(null)
-
+  const [campaigns, setCampaigns] = useState([])
   const {showLoader, hideLoader} = useLoader()
 
   useEffect(() => {
-    getABrands()
-    getAllOffersOfACampaign()
+    getAllCampaignsOfAbrand()
   }, [])
 
-  const getABrands = async () => {
-    try {
-      showLoader()
-      const res = await apiGet(`${urls?.getAbrand}/${route?.params?.brandId}`)
-      setGetABrand(res?.data)
-      // console.log('Detail::::::::', res?.data);
-
-      hideLoader()
-    } catch (error) {
-      console.log('Error')
-      hideLoader()
-    }
-  }
-
-  const getAllOffersOfACampaign = async () => {
+  const getAllCampaignsOfAbrand = async () => {
     try {
       showLoader()
       const res = await apiGet(
-        `${urls?.getAllOffersOfACampaignInfluncer}/${route?.params?.campaignId}`,
+        `${urls?.getAllCampaignsOfABrandInfluencer}/${route?.params?.id}`,
       )
-      setAllOffers(res?.data)
-      console.log('AllCampaings Offer::::::::', res?.data)
+      setCampaigns(res?.data)
+      console.log(res?.data, '++++++++++++++++==')
 
       hideLoader()
     } catch (error) {
@@ -114,91 +86,77 @@ const RestDetailScreen = ({navigation, route}) => {
       image:
         'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
     },
+    {
+      id: 5,
+      title: 'Christmas Special Discount',
+      category: 'Food & Beverage',
+      location: 'Graha Mandiri, Jakarta Pusat',
+      date: '20 Dec - 25 Dec',
+      time: '17:00 - 18:00',
+      image:
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+    },
+    {
+      id: 6,
+      title: 'Christmas Special Discount',
+      category: 'Food & Beverage',
+      location: 'Graha Mandiri, Jakarta Pusat',
+      date: '20 Dec - 25 Dec',
+      time: '17:00 - 18:00',
+      image:
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+    },
+    {
+      id: 7,
+      title: 'Christmas Special Discount',
+      category: 'Food & Beverage',
+      location: 'Graha Mandiri, Jakarta Pusat',
+      date: '20 Dec - 25 Dec',
+      time: '17:00 - 18:00',
+      image:
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+    },
+    {
+      id: 8,
+      title: 'Christmas Special Discount',
+      category: 'Food & Beverage',
+      location: 'Graha Mandiri, Jakarta Pusat',
+      date: '20 Dec - 25 Dec',
+      time: '17:00 - 18:00',
+      image:
+        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+    },
   ]
 
-  const handleNext = selectedType => {
+  const handleNext = () => {
     setIsCampModalVisible(false)
     setIsCalendarModalVisible(true)
-    setSelectedType(selectedType)
-  }
-
-  const handleDate = date => {
-    setIsCalendarModalVisible(false)
-    console.log(selectedType, '+++++++++++=')
-
-    if (selectedType == 'Paid Collaboration') {
-      setIsInputModelVisible(true)
-    } else {
-      setIsConfirmationModelVisible(true)
-    }
-    setSelectedDate(date)
-    console.log(date, 'Date')
-  }
-
-  const handlePaid = val => {
-    setIsInputModelVisible(false)
-    setCost(val)
-    console.log('+++++++++++++', val)
-    setIsConfirmationModelVisible(true)
-  }
-
-  const createCollabration = async () => {
-    try {
-      showLoader()
-
-      const isBarter = selectedType === 'Barter'
-
-      const data = {
-        Brand: route?.params?.brandId,
-        Campaign: route?.params?.campaignId,
-        Type: isBarter ? 'Barter' : 'Paid',
-        Date: selectedDate?.date,
-        Time: selectedDate?.time,
-        ContentSubmittedLinks: [],
-        Notes: isBarter
-          ? 'Please tag our official account in the post.'
-          : 'Please post the content before the deadline.',
-        ...(isBarter
-          ? {
-              ProductDetails:
-                'Free skincare product package including cleanser, toner, and moisturizer',
-            }
-          : {
-              PaymentAmount: cost,
-            }),
-      }
-
-      const res = await apiPost(urls?.createCollabrationOfInfluencer, data)
-      // Handle success (toast, navigation, etc.) if needed
-      ToastMsg(res?.message)
-      setIsCampModalVisible(false)
-      hideLoader()
-    } catch (error) {
-      // Handle error (optional)
-      hideLoader()
-    }
   }
 
   const OfferCard = ({offer}) => (
     <TouchableOpacity
       style={styles.offerCard}
-      onPress={() => navigation.navigate('OfferDetail')}>
+      // onPress={()=>navigation.navigate('InfluencersScreen')}
+      onPress={() =>
+        navigation.navigate('RestDetailScreen', {
+          brandId: offer?.Brand,
+          campaignId: offer?._id,
+        })
+      }>
       <View style={styles.offerImageContainer}>
-        <Image source={{uri: offer.Image}} style={styles.offerImage} />
+        <Image source={{uri: offer.Assets}} style={styles.offerImage} />
       </View>
       <View style={styles.offerContent}>
         <View style={styles.dateTimeContainer}>
           <View style={styles.dateDot} />
-          <Text style={styles.dateText}>{offer.StartDate}</Text>
-          <Text style={styles.timeText}>{offer.EndDate}</Text>
+          <Text style={styles.dateText}>
+            {moment(offer.createdAt).format('DD-MMM-YYYY')}
+          </Text>
+          <Text style={styles.timeText}>{offer.time}</Text>
         </View>
         <Text style={styles.offerTitle}>{offer.Title}</Text>
-        <Text style={styles.offerCategory}>
-          Average Impressions:{offer.AverageDailyImpressions}
-        </Text>
-        <Text style={styles.offerLocation}>
-          Duration Min:{offer.AdDurationMinutes}
-        </Text>
+        <Text style={styles.offerCategory}>{offer.Category}</Text>
+        <Text style={styles.offerLocation}>{offer.location}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -215,9 +173,7 @@ const RestDetailScreen = ({navigation, route}) => {
           <BackArrow />
         </TouchableOpacity>
         <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => navigation.navigate('MessageScreen')}>
+          <TouchableOpacity style={styles.editButton}>
             <EditIcon />
           </TouchableOpacity>
           <TouchableOpacity style={styles.moreButton}>
@@ -227,83 +183,12 @@ const RestDetailScreen = ({navigation, route}) => {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            backgroundColor: 'white',
-            padding: 8,
-            borderRadius: 8,
-            margin: 0,
-          }}>
-          <ImageBackground
-            source={{
-              uri: getABrand?.Image
-                ? getABrand?.Image
-                : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-            }} // You'll need to add your hero background image
-            style={styles.heroSection}
-            imageStyle={styles.heroImageStyle}>
-            <View style={styles.heroOverlay}>
-              {/* <View style={styles.playButton}>
-                <Text style={styles.playButtonText}>▶</Text>
-              </View> */}
-              <Text style={styles.heroText}>
-                {/* JINGLE{'\n'}MUNCH{'\n'}SAVE */}
-                {getABrand?.BrandName}
-              </Text>
-            </View>
-          </ImageBackground>
-          <View style={styles.restaurantInfo}>
-            <Text style={styles.restaurantName}>{getABrand?.BrandName}</Text>
-            <Text style={styles.restaurantCategory}>Food & Beverage</Text>
-          </View>
-        </View>
-
-        {/* Restaurant Info */}
-
-        {/* Offers Section */}
         <View style={styles.offersSection}>
-          <View style={styles.offersSectionHeader}>
-            <Text style={styles.offersTitle}>Offers</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See All ›</Text>
-            </TouchableOpacity>
-          </View>
-
-          {allOffers.map(offer => (
+          {campaigns.map(offer => (
             <OfferCard key={offer.id} offer={offer} />
           ))}
         </View>
       </ScrollView>
-
-      <TouchableOpacity
-        style={styles.requestSpotButton}
-        onPress={() => setIsCampModalVisible(true)}>
-        <Text style={styles.requestSpotButtonText}>Request Spot</Text>
-      </TouchableOpacity>
-
-      <View style={styles.homeIndicator} />
-      <CampaignTypeModal
-        isVisible={isCampModalVisible}
-        onClose={() => setIsCampModalVisible(false)}
-        onNext={selectedType => handleNext(selectedType)}
-      />
-      <CalendarModal
-        isVisible={isCalendarModalVisible}
-        onClose={() => setIsCalendarModalVisible(false)}
-        onSubmit={e => handleDate(e)}
-      />
-
-      <PaidInputModel
-        isVisible={isPaidModelVisible}
-        onClose={() => setIsInputModelVisible(false)}
-        onNext={val => handlePaid(val)}
-      />
-      <ConfirmationCampaignModel
-        isVisible={confirmationModelVisible}
-        onClose={() => setIsConfirmationModelVisible(false)}
-        // onNext={val => handlePaid(val)}
-        onNext={() => createCollabration()}
-      />
     </SafeAreaView>
   )
 }
@@ -360,6 +245,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    marginTop: 20,
   },
   heroSection: {
     height: 200,
@@ -503,7 +389,7 @@ const styles = StyleSheet.create({
   },
   offerTitle: {
     fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
     color: '#333',
     marginBottom: 4,
   },
@@ -543,4 +429,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RestDetailScreen
+export default InfluencerCapaignListOfaBrand

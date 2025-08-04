@@ -1,5 +1,13 @@
+
+
 import React, {useEffect, useState} from 'react'
-import {ScrollView, StatusBar, TouchableOpacity, View} from 'react-native'
+import {
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native'
 import CustomText from '../../components/TextComponent'
 import color, {App_Primary_color} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
@@ -14,13 +22,18 @@ import {
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import CustomInputField from '../../components/wrapper/CustomInput'
 import CustomButton from '../../components/Button'
-import {inValidNum} from '../../utils/CheckValidation'
+import {
+  inValidEmail,
+  inValidNum,
+  inValidPassword,
+} from '../../utils/CheckValidation'
 import {ToastMsg} from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
 import {apiPost, getItem, setItem} from '../../utils/Apis'
 import {useDispatch} from 'react-redux'
 import {setUser} from '../../redux/reducer/user'
+import { useLoginCheck } from '../../utils/Context'
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('')
@@ -28,21 +41,40 @@ const Login = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('Influencers')
   const {showLoader, hideLoader} = useLoader()
   const dispatch = useDispatch()
+    const {loggedInby, setloggedInby} = useLoginCheck()
+
 
   const onSubmit = async () => {
+    const emailError = inValidEmail(email)
+    if (emailError) {
+      ToastMsg(emailError)
+      return
+    }
+    const passwordError = inValidPassword(password)
+    if (passwordError) {
+      ToastMsg(passwordError)
+      return
+    }
     try {
+      const url =
+        activeTab == 'Influencers' ? urls.InfluencerLogin : urls.brandLogin
       showLoader()
       const data = {Email: email, Password: password}
-      const response = await apiPost(urls.login, data)
-      console.log('response', response)
+      const response = await apiPost(url, data)
+      // console.log('response', response)
 
       if (response?.statusCode === 200) {
-        dispatch(setUser(JSON.stringify(response?.data?.User)))
         if (response?.data?.token) {
           await setItem('token', response?.data?.token)
           const token = await getItem('token')
           if (token) {
-            navigation.replace('Tab')
+            if (activeTab == 'Influencers') {
+              dispatch(setUser(JSON.stringify(response?.data?.Influencer)))
+              navigation.replace('InfluenceTab')
+            } else {
+              dispatch(setUser(JSON.stringify(response?.data?.Brand)))
+              navigation.replace('TabBrand')
+            }
           }
         }
         ToastMsg(response?.message)
@@ -65,79 +97,64 @@ const Login = ({navigation}) => {
 
   const role = async () => {
     setItem('UserType', activeTab)
+    if (activeTab=='Influencers') {
+      setloggedInby('Influencers')
+    } else {
+      setloggedInby('Brands')
+    }
   }
 
   const renderHeader = () => {
     return (
-      <Row style={{marginTop: 50, marginHorizontal: 20, gap: 95}}>
+      <Row style={styles.headerRow}>
         <TouchableOpacity>
           <BackMsg />
         </TouchableOpacity>
-        <CustomText
-          style={{
-            color: 'black',
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            fontSize: 20,
-          }}>
-          Log in
-        </CustomText>
+        <CustomText style={styles.headerText}>Log in</CustomText>
       </Row>
     )
   }
 
   const renderTabs = () => {
     return (
-      <Row
-        style={{
-          marginHorizontal: 20,
-          marginTop: 20,
-          gap: 10,
-          alignItems: 'center',
-          backgroundColor: '#D43C3114',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 5,
-          borderRadius: 12,
-          alignSelf: 'center',
-        }}>
+      <Row style={styles.tabsContainer}>
         <TouchableOpacity
           onPress={() => setActiveTab('Influencers')}
-          style={{
-            backgroundColor:
-              activeTab === 'Influencers' ? App_Primary_color : 'transparent',
-            paddingHorizontal: 40,
-            paddingVertical: 8,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: App_Primary_color,
-          }}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                activeTab === 'Influencers' ? App_Primary_color : 'transparent',
+            },
+          ]}>
           <CustomText
-            style={{
-              color: activeTab === 'Influencers' ? 'white' : App_Primary_color,
-              fontFamily: FONTS_FAMILY.Poppins_Medium,
-              fontSize: 14,
-            }}>
+            style={[
+              styles.tabText,
+              {
+                color:
+                  activeTab === 'Influencers' ? 'white' : App_Primary_color,
+              },
+            ]}>
             Influencers
           </CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => setActiveTab('Brands')}
-          style={{
-            backgroundColor:
-              activeTab === 'Brands' ? App_Primary_color : 'transparent',
-            paddingHorizontal: 40,
-            paddingVertical: 8,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: App_Primary_color,
-          }}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                activeTab === 'Brands' ? App_Primary_color : 'transparent',
+            },
+          ]}>
           <CustomText
-            style={{
-              color: activeTab === 'Brands' ? 'white' : App_Primary_color,
-              fontFamily: FONTS_FAMILY.Poppins_Medium,
-              fontSize: 14,
-            }}>
+            style={[
+              styles.tabText,
+              {
+                color: activeTab === 'Brands' ? 'white' : App_Primary_color,
+              },
+            ]}>
             Brands
           </CustomText>
         </TouchableOpacity>
@@ -147,9 +164,9 @@ const Login = ({navigation}) => {
 
   const renderLogoAndInputItems = () => {
     return (
-      <View style={{alignItems: 'center', marginTop: 0, gap: 20}}>
+      <View style={styles.logoInputContainer}>
         {/* <LoginLogo /> */}
-        <View style={{gap: 25}}>
+        <View style={styles.inputContainer}>
           <CustomInputField
             placeholder={'Email'}
             onChangeText={setEmail}
@@ -165,12 +182,7 @@ const Login = ({navigation}) => {
             // keyboardType={'phone-pad'}
             isPassword
           />
-          <CustomText
-            style={{
-              alignSelf: 'flex-end',
-              color: 'rgba(202, 202, 202, 1)',
-              fontFamily: FONTS_FAMILY.Poppins_Medium,
-            }}>
+          <CustomText style={styles.forgotPasswordText}>
             Forgot your password ?
           </CustomText>
         </View>
@@ -180,16 +192,7 @@ const Login = ({navigation}) => {
 
   const renderWhiteBgItmes = () => {
     return (
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          marginTop: 30,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-          paddingHorizontal: 20,
-          paddingVertical: 20,
-        }}>
+      <ScrollView style={styles.scrollViewContainer}>
         {renderLogoAndInputItems()}
         {renderButton()}
       </ScrollView>
@@ -198,41 +201,22 @@ const Login = ({navigation}) => {
 
   const renderButton = () => {
     return (
-      <View style={{alignItems: 'center'}}>
+      <View style={styles.buttonContainer}>
         <CustomButton
-          style={{marginTop: 40}}
+          style={styles.loginButton}
           title={'Log in'}
           //  navigation.navigate('Tab')
-          // onSubmit()
-          onPress={() => navigation.navigate('Otpscreen')}
+          onPress={onSubmit}
+          // onPress={() => navigation.navigate('Otpscreen')}
         />
-        <Divider
-          style={{
-            marginVertical: 30,
-          }}
-        />
-        <Socials
-          style={{
-            marginVertical: 30,
-          }}
-        />
-        <Row style={{gap: 10, marginTop: 20}}>
-          <CustomText
-            style={{
-              fontSize: 12,
-              fontFamily: FONTS_FAMILY.Poppins_Medium,
-            }}>
+        <Divider style={styles.divider} />
+        <Socials style={styles.socials} />
+        <Row style={styles.signUpRow}>
+          <CustomText style={styles.signUpText}>
             Don't have an account?{' '}
           </CustomText>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <CustomText
-              style={{
-                fontSize: 12,
-                fontFamily: FONTS_FAMILY.Poppins_Medium,
-                color: App_Primary_color,
-              }}>
-              Sign Up{' '}
-            </CustomText>
+            <CustomText style={styles.signUpLink}>Sign Up </CustomText>
           </TouchableOpacity>
         </Row>
       </View>
@@ -240,11 +224,7 @@ const Login = ({navigation}) => {
   }
 
   return (
-    <View
-      style={{
-        backgroundColor: 'white',
-        flex: 1,
-      }}>
+    <View style={styles.container}>
       <StatusBar
         translucent={true}
         backgroundColor='transparent'
@@ -255,19 +235,104 @@ const Login = ({navigation}) => {
 
       {renderWhiteBgItmes()}
 
-      <View
-        style={{
-          height: 5,
-          width: 134,
-          backgroundColor: 'rgba(202, 202, 202, 1)',
-          alignSelf: 'center',
-          position: 'absolute',
-          bottom: 8,
-          borderRadius: 8,
-        }}
-      />
+      <View style={styles.bottomIndicator} />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  headerRow: {
+    marginTop: 50,
+    marginHorizontal: 20,
+    gap: 95,
+  },
+  headerText: {
+    color: 'black',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    fontSize: 20,
+  },
+  tabsContainer: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    gap: 10,
+    alignItems: 'center',
+    backgroundColor: '#D43C3114',
+    justifyContent: 'center',
+    padding: 5,
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+  tabButton: {
+    paddingHorizontal: 40,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: App_Primary_color,
+  },
+  tabText: {
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    fontSize: 14,
+  },
+  logoInputContainer: {
+    alignItems: 'center',
+    marginTop: 0,
+    gap: 20,
+  },
+  inputContainer: {
+    gap: 25,
+  },
+  forgotPasswordText: {
+    alignSelf: 'flex-end',
+    color: 'rgba(202, 202, 202, 1)',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    marginTop: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+  },
+  loginButton: {
+    marginTop: 40,
+  },
+  divider: {
+    marginVertical: 30,
+  },
+  socials: {
+    marginVertical: 30,
+  },
+  signUpRow: {
+    gap: 10,
+    marginTop: 20,
+  },
+  signUpText: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  signUpLink: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    color: App_Primary_color,
+  },
+  bottomIndicator: {
+    height: 5,
+    width: 134,
+    backgroundColor: 'rgba(202, 202, 202, 1)',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 8,
+    borderRadius: 8,
+  },
+})
 
 export default Login

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -19,10 +19,54 @@ import IMG from '../../../assets/Images'
 import {Badge, Doller, Notification, SearchIcons} from '../../../assets/SVGs'
 import CustomText from '../../../components/TextComponent'
 import CustomButton from '../../../components/Button'
+import {useLoginCheck} from '../../../utils/Context'
+import {apiGet} from '../../../utils/Apis'
+import urls from '../../../config/urls'
+import useLoader from '../../../utils/LoaderHook'
 
 const InfluencerHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Category')
+  const [AllBrands, setAllBrands] = useState([])
+  const [offers, setOffers] = useState([])
+
+  const{showLoader, hideLoader}=useLoader()
+
+  const {loggedInby, setloggedInby} = useLoginCheck()
+  // console.log("loggedInby:::::::::::");
+
+  useEffect(() => {
+    getAllBrands()
+    getOffers()
+  }, [])
+
+  const getAllBrands = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(urls?.getAllInfluencersBrands)
+      setAllBrands(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+
+    }
+  }
+
+  const getOffers = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(urls?.getAllOffersInfluencer)
+      setOffers(res?.data)
+      console.log('Offfers::::::::', res?.data);
+      
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+
+    }
+  }
 
   const categories = ['Category', 'Draft', 'Running']
 
@@ -85,34 +129,47 @@ const InfluencerHome = ({navigation}) => {
   const FoodCard = ({item, index}) => (
     <TouchableOpacity
       style={styles.foodCard}
-      // onPress={() => navigation.navigate('BrandBokingList')}
-      // onPress={() => navigation.navigate('RestaurantScreen')}
-      onPress={() => navigation.navigate('BrandDetailMap')}
 
-
+             onPress={() => navigation.navigate('InfluencerCapaignListOfaBrand',{id:item?._id})}
       >
+      
       <Image
-        source={{uri: item.image}}
+        source={{uri: item?.Image?item?.Image:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'}}
         style={styles.foodImage}
         // resizeMode="cover"
       />
       <View style={styles.overlay}>
-        <Text style={styles.foodTitle}>{item.subtitle}</Text>
-        <Text style={styles.foodCategory}>{item.category}</Text>
+        <Text style={styles.foodTitle}>{item?.BrandName||'Null'}</Text>
+        <Text style={styles.foodCategory}>{item?.category || 'Null'}</Text>
       </View>
-    
     </TouchableOpacity>
   )
 
-  const HorizontalSection = ({title, data}) => (
+  const LatestBrand = ({title, data}) => (
+    <View style={styles.sectionContainer}>
+      
+      <SpaceBetweenRow style={styles.sectionHeader}>
+        <CustomText style={styles.sectionTitle}>{title}</CustomText>
+        <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
+      </SpaceBetweenRow>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.horizontalScrollContainer}>
+        {data.map((item, index) => (
+          <View key={item.id} style={styles.horizontalCardItem}>
+            <FoodCard item={item} index={index} />
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  )
+
+    const HorizontalSection = ({title, data}) => (
     <View style={styles.sectionContainer}>
       <SpaceBetweenRow style={styles.sectionHeader}>
-        <CustomText style={styles.sectionTitle}>
-          {title}
-        </CustomText>
-        <CustomText style={styles.seeAllText}>
-          See All {">"}
-        </CustomText>
+        <CustomText style={styles.sectionTitle}>{title}</CustomText>
+        <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
       </SpaceBetweenRow>
       <ScrollView
         horizontal
@@ -128,36 +185,23 @@ const InfluencerHome = ({navigation}) => {
   )
 
   return (
+    <SafeAreaView style={styles.safeAreaView}>
     <ScrollView style={styles.container}>
       <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
 
       <View style={styles.header}>
         <SpaceBetweenRow>
-          <Row
-            style={{
-              gap: 20,
-            }}>
-              <TouchableOpacity onPress={()=>navigation.navigate('ProfileScreen')}>
-            <Image
-              source={IMG.userProfileImage}
-              style={{height: 30, width: 30}}
-            />
-
-              </TouchableOpacity>
-            <Row
-              style={{
-                gap: 8,
-                backgroundColor: '#FFFFFF26',
-                padding: 6,
-                borderRadius: 20,
-              }}>
+          <Row style={styles.headerLeftRow}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ProfileScreen')}>
+              <Image
+                source={IMG.userProfileImage}
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
+            <Row style={styles.coinsContainer}>
               <Doller />
-              <CustomText
-                style={{
-                  color: 'white',
-                  fontSize: 16,
-                  fontFamily: FONTS_FAMILY.Poppins_Medium,
-                }}>
+              <CustomText style={styles.coinsText}>
                 500k coins
               </CustomText>
             </Row>
@@ -167,40 +211,18 @@ const InfluencerHome = ({navigation}) => {
           </TouchableOpacity>
         </SpaceBetweenRow>
 
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 12,
-            padding: 20,
-            position: 'absolute',
-            alignSelf: 'center',
-            width: '100%',
-            bottom: -100,
-            zIndex: 100,
-          }}>
-          <Row
-            style={{
-              borderWidth: 1,
-              borderColor: '#D1D5DB',
-              paddingHorizontal: 5,
-              borderRadius: 8,
-            }}>
+        <View style={styles.searchContainer}>
+          <Row style={styles.searchInputContainer}>
             <SearchIcons />
             <TextInput
               placeholderTextColor={'gray'}
               placeholder='Place, location or billboard name'
-              style={{
-                fontSize: 14,
-                fontFamily: FONTS_FAMILY.Poppins_Regular,
-                flex: 1,
-              }}
+              style={styles.searchInput}
             />
           </Row>
           <CustomButton
             title={'Search Campaign'}
-            style={{
-              marginTop: 16,
-            }}
+            style={styles.searchButton}
           />
         </View>
       </View>
@@ -209,17 +231,20 @@ const InfluencerHome = ({navigation}) => {
       <ScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}>
-        
-        <HorizontalSection title="Latest Brand" data={foodItems} />
-        <HorizontalSection title="Hottest Offer" data={foodItems} />
-        <HorizontalSection title="Fast Favorite" data={foodItems} />
-
+        <LatestBrand title='Latest Brand' data={AllBrands} />
+        <HorizontalSection title='Hottest Offer' data={offers} />
+        <HorizontalSection title='Fast Favorite' data={foodItems} />
       </ScrollView>
     </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: App_Primary_color,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
@@ -227,10 +252,51 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: App_Primary_color,
     paddingHorizontal: 16,
-    marginTop: 30,
     paddingVertical: 18,
     gap: 10,
     height: 150,
+  },
+  headerLeftRow: {
+    gap: 20,
+  },
+  profileImage: {
+    height: 30,
+    width: 30,
+  },
+  coinsContainer: {
+    gap: 8,
+    backgroundColor: '#FFFFFF26',
+    padding: 6,
+    borderRadius: 20,
+  },
+  coinsText: {
+    color: 'white',
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  searchContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    position: 'absolute',
+    alignSelf: 'center',
+    width: '100%',
+    bottom: -100,
+    zIndex: 100,
+  },
+  searchInputContainer: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    paddingHorizontal: 5,
+    borderRadius: 8,
+  },
+  searchInput: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    flex: 1,
+  },
+  searchButton: {
+    marginTop: 16,
   },
   headerLeft: {
     flexDirection: 'row',
