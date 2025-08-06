@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -11,127 +11,97 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../assets/Fonts'
-import {App_Primary_color} from '../../common/Colors/colors'
+import color, {App_Primary_color} from '../../common/Colors/colors'
 import CustomText from '../../components/TextComponent'
+import useLoader from '../../utils/LoaderHook'
+import {apiGet} from '../../utils/Apis'
+import urls from '../../config/urls'
 
 const InfluencersScreen = ({navigation}) => {
-  const influencers = [
-    {
-      id: 1,
-      name: 'Alex Patrick',
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face',
-      rating: 5.0,
-      reviews: 125,
-      isVerified: true,
-    },
-    {
-      id: 2,
-      name: 'Alex Patrick',
+  const [allInfluencers, setAllInfluencers] = useState([])
+  const [activeTab, setActiveTab] = useState('All')
+  const {showLoader, hideLoader} = useLoader()
 
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
+  useEffect(() => {
+    getAllInfluencers()
+  }, [])
 
-      isVerified: true,
-    },
-    {
-      id: 3,
-      name: 'Alex Patrick',
-
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-      rating: 4.9,
-      reviews: 156,
-      isVerified: true,
-    },
-    {
-      id: 4,
-      name: 'Alex Patrick',
-
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
-      rating: 4.7,
-      reviews: 89,
-      isVerified: true,
-    },
-    {
-      id: 5,
-      name: 'Alex Patrick',
-
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
-      rating: 5.0,
-      reviews: 200,
-      isVerified: true,
-    },
-    {
-      id: 6,
-      name: 'Alex Patrick',
-
-      category: 'Angel Investor & Founder of  Crowwwn',
-      image:
-        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop&crop=face',
-      rating: 4.6,
-      reviews: 76,
-      isVerified: true,
-    },
-  ]
-
-  const renderStars = rating => {
-    const stars = []
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Icon
-          key={i}
-          name={i <= rating ? 'star' : 'star-outline'}
-          size={14}
-          color='#FFD700'
-        />,
-      )
+  const getAllInfluencers = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(urls?.getAllInfluencers)
+      setAllInfluencers(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
     }
-    return stars
   }
+
+  const tabs = ['All', 'Active', 'Completed']
+
+  const TabButton = ({title, isActive, onPress}) => (
+    <TouchableOpacity
+      style={[styles.tabButton, isActive && styles.activeTabButton]}
+      onPress={onPress}>
+      <Text style={[styles.tabText, isActive && styles.activeTabText]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  )
+
+  const FilterDropdown = ({title}) => (
+    <TouchableOpacity style={styles.filterDropdown}>
+      <Text style={styles.filterText}>{title}</Text>
+      <Icon name="chevron-down" size={16} color="#333" />
+    </TouchableOpacity>
+  )
 
   const InfluencerCard = ({item}) => (
     <TouchableOpacity style={styles.influencerCard}>
       <View style={styles.imageContainer}>
-        <Image source={{uri: item.image}} style={styles.profileImage} />
+        <Image
+          source={{
+            uri: item.Image
+              ? item.Image
+              : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop&crop=face',
+          }}
+          style={styles.profileImage}
+        />
       </View>
 
       <View style={styles.cardContent}>
         <Text style={styles.influencerName} numberOfLines={1}>
-          {item.name}
+          {item.FirstName}
+          {item?.LastName}
         </Text>
         <Text style={styles.influencerCategory} numberOfLines={2}>
-          {item.category}
+          {item.NicheInput}
         </Text>
-
-        <View style={styles.ratingContainer}>
-          <View style={styles.starsContainer}>
-            {renderStars(Math.floor(item.rating))}
-          </View>
-        </View>
-        <CustomText
+        <View
           style={{
-            color: App_Primary_color,
-            fontSize: 10,
-            marginTop: 10,
+            backgroundColor: '#00CD52',
+            padding: 4,
+            borderRadius: 19,
+            paddingHorizontal: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          View Profile
-        </CustomText>
+          <CustomText
+            style={{
+              fontFamily: FONTS_FAMILY.Poppins_Regular,
+              color: 'white',
+              fontSize: 10
+            }}>
+            ACTIVE
+          </CustomText>
+        </View>
       </View>
     </TouchableOpacity>
   )
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
-
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -142,19 +112,42 @@ const InfluencersScreen = ({navigation}) => {
         <Text style={styles.headerTitle}>Influencers</Text>
       </View>
 
+      {/* Tabs Section */}
+      <View style={styles.tabsContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsScrollContainer}>
+          {tabs.map((tab) => (
+            <TabButton
+              key={tab}
+              title={tab}
+              isActive={activeTab === tab}
+              onPress={() => setActiveTab(tab)}
+            />
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Filters Section */}
+      <View style={styles.filtersContainer}>
+        <FilterDropdown title="Date" />
+        <FilterDropdown title="Campaign" />
+      </View>
+
       {/* Influencers Grid */}
       <ScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}>
         <View style={styles.gridContainer}>
-          {influencers.map(item => (
+          {allInfluencers.map(item => (
             <View key={item.id} style={styles.gridItem}>
               <InfluencerCard item={item} />
             </View>
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -170,7 +163,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 18,
     paddingTop: 40,
-    gap:90,
+    gap: 90,
   },
   backButton: {
     marginRight: 12,
@@ -179,6 +172,61 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  // Tabs Styles
+  tabsContainer: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  tabsScrollContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tabButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginRight: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  activeTabButton: {
+    backgroundColor: '#fff',
+  },
+  tabText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  activeTabText: {
+    color: 'black',
+  },
+  // Filters Styles
+  filtersContainer: {
+    // backgroundColor: '#fff',
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    // borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  filterDropdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginRight: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  filterText: {
+    fontSize: 14,
+    color: '#333',
+    marginRight: 8,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   contentContainer: {

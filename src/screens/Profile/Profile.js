@@ -52,8 +52,8 @@ const ProfileScreen = ({navigation}) => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle='light-content' backgroundColor={App_Primary_color} />
+    <View style={styles.container}>
+      {/* <StatusBar barStyle='light-content' backgroundColor={App_Primary_color} /> */}
 
       {/* Header */}
       <View style={styles.header}>
@@ -127,7 +127,7 @@ const ProfileScreen = ({navigation}) => {
         {/* Bottom Indicator */}
         <View style={styles.bottomIndicator} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 

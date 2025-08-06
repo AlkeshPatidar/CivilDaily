@@ -32,6 +32,7 @@ import BrandDetailMap from '../../screens/InfluencerFlow/BrandDetailMap';
 import TrashScreen from '../../Trash/Trash';
 import SplashScreen from '../../screens/Splash/SplashScreen';
 import InfluencerCapaignListOfaBrand from '../../screens/InfluencerFlow/InfluencerCapaignListOfaBrand/InfluencerCapaignListOfaBrand';
+import ForgotPassword from '../../screens/Auth/ForgetPassword';
 
 
 
@@ -60,6 +61,8 @@ const StackNavigation = () => {
         <Stack.Screen name={'Login'} component={Login} />
         <Stack.Screen name={'SignUp'} component={SignUp} />
         <Stack.Screen name={'Otpscreen'} component={OtpScreen} />
+        <Stack.Screen name={'ForgotPassword'} component={ForgotPassword} />
+
 
 
 

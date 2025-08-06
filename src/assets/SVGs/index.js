@@ -51,6 +51,8 @@ import Transactions from './transactions.svg'
 
 import DeleteWithcross from './DeleteWithcross.svg'
 import RestoreBin from './restoreBin.svg'
+import Label from './label.svg'
+
 
 
 
@@ -116,5 +118,6 @@ export {
   Settings,
   Transactions,
   RestoreBin,
-  DeleteWithcross
+  DeleteWithcross,
+  Label
 }

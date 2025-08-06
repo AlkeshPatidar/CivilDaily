@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -19,51 +19,37 @@ import IMG from '../../../assets/Images'
 import {Badge, Doller, Notification, SearchIcons} from '../../../assets/SVGs'
 import CustomText from '../../../components/TextComponent'
 import CustomButton from '../../../components/Button'
+import { apiGet } from '../../../utils/Apis'
+import urls from '../../../config/urls'
+import useLoader from '../../../utils/LoaderHook'
 
 const BrandHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('Category')
+  const [selectedCategory, setSelectedCategory] = useState('Current Campaign')
 
-  const categories = ['Category', 'Draft', 'Running']
+  const categories = ['Current Campaign', 'Future Campaign', 'Past Campaign']
 
-  const foodItems = [
-    {
-      id: 1,
-      title: 'JUNGLE MUNCH SAVE',
-      subtitle: 'New Delight Hub',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'SIT DOWN TO FLAVOR',
-      subtitle: 'Burger House',
-      category: 'Food',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=300&h=200&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'HIGH FLAVOR SOLO MOMENTS',
-      subtitle: 'Warm Oven Cake Desserts',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=200&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'GRAND WISH TEA AFTER NOON',
-      subtitle: 'Indian The Dhaba',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=300&h=200&fit=crop',
-    },
-  ]
+   const [myCampaigns, setMyCampaigns] = useState([])
+
+  const{showLoader, hideLoader}=useLoader()
+
+
+  useEffect(() => {
+    getAllMyCampaigns()
+  }, [])
+
+  const getAllMyCampaigns = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(urls?.brandsGetAllMyCampaigns)
+      setMyCampaigns(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+
+    }
+  }
 
   const CategoryButton = ({title, isSelected, onPress}) => (
     <TouchableOpacity
@@ -82,43 +68,60 @@ const BrandHome = ({navigation}) => {
     </TouchableOpacity>
   )
 
-  const FoodCard = ({item, index}) => (
+  const CampaignCard = ({item, index}) => (
     <TouchableOpacity
-      style={styles.foodCard}
+      style={styles.campaignCard}
       onPress={() => navigation.navigate('BrandBokingList')}>
-      <Image
-        source={{uri: item.image}}
-        style={styles.foodImage}
-        // resizeMode="cover"
-      />
-      <View style={styles.overlay}>
-        <Text style={styles.foodTitle}>{item.subtitle}</Text>
-        <Text style={styles.foodCategory}>{item.category}</Text>
+      
+      {/* Card Image */}
+      <View style={styles.cardImageContainer}>
+        <Image
+          source={{uri: item.Assets}}
+          style={styles.cardImage}
+          // resizeMode="contain"
+        />
+        <View style={styles.cardOverlay}>
+          <Text style={styles.cardTitle}>RED AND WHITE</Text>
+          <Text style={styles.cardSubtitle}>BITE AFTER BITE</Text>
+        </View>
       </View>
-      <SpaceBetweenRow
-        style={{
-          marginHorizontal: 10,
-          // marginBottom: 20,
-        }}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#00CD52',
-            padding: 3,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 10,
-            paddingHorizontal: 8,
-          }}>
-          <CustomText
-            style={{
-              fontSize: 12,
-              color: 'white',
-            }}>
-            ACTIVE
-          </CustomText>
-        </TouchableOpacity>
-        <Badge />
-      </SpaceBetweenRow>
+
+      {/* Card Content */}
+      <View style={styles.cardContent}>
+        <Text style={styles.hubName}>{item?.Title}</Text>
+        <Text style={styles.categoryName}>{item?.Category}</Text>
+        
+        <Text style={styles.description}>
+          Nulla integer rutrum quam feugiat aliquet hac. Ut purus elit et massa eget ornare
+        </Text>
+
+        <SpaceBetweenRow style={styles.cardFooter}>
+          <View>
+            <Text style={styles.attendeesText}>Attendees</Text>
+          </View>
+          <View style={styles.attendeesContainer}>
+            <View style={styles.avatarContainer}>
+              {/* <View style={[styles.avatar, {backgroundColor: '#FF6B6B'}]} />
+              <View style={[styles.avatar, {backgroundColor: '#4ECDC4', marginLeft: -8}]} /> */}
+              <Image
+              source={IMG.AvatorImage}
+              style={{
+                height:22,
+                width:22
+              }}
+              />
+            </View>
+            <Text style={styles.attendeesCount}>12</Text>
+          </View>
+        </SpaceBetweenRow>
+
+        {/* Status Badge */}
+        <View style={styles.statusContainer}>
+          <View style={[styles.statusBadge, {backgroundColor: '#00CD52'}]}>
+            <Text style={styles.statusText}>{item?.Status}</Text>
+          </View>
+        </View>
+      </View>
     </TouchableOpacity>
   )
 
@@ -163,18 +166,10 @@ const BrandHome = ({navigation}) => {
           <Image
             source={IMG.Statistic}
             style={{
-              height: 112,
-              width: 159,
+              height: 132,
+              width: '100%',
             }}
-            resizeMode='contain'
-          />
-          <Image
-            source={IMG.Daily}
-            style={{
-              height: 112,
-              width: 159,
-            }}
-            resizeMode='contain'
+            resizeMode='stretch'
           />
         </SpaceBetweenRow>
         <View
@@ -185,7 +180,7 @@ const BrandHome = ({navigation}) => {
             position: 'absolute',
             alignSelf: 'center',
             width: '100%',
-            bottom: -100,
+            bottom: -110,
             zIndex: 100,
           }}>
           <Row
@@ -215,122 +210,59 @@ const BrandHome = ({navigation}) => {
         </View>
       </View>
 
-      {/* Food Items Grid */}
+      {/* Content Container */}
       <ScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}>
         
-        {/* First Campaign Section - Grid Layout */}
-        <SpaceBetweenRow
-          style={{
-            marginBottom: 20,
-          }}>
-          <CustomText
-            style={{
-              fontSize: 16,
-              fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            }}>
-            Campaign
+        {/* Filter Buttons */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterContainer}>
+          {categories.map((category) => (
+            <CategoryButton
+              key={category}
+              title={category}
+              isSelected={selectedCategory === category}
+              onPress={() => setSelectedCategory(category)}
+            />
+          ))}
+        </ScrollView>
+
+        {/* Section Header */}
+        <SpaceBetweenRow style={styles.sectionHeader}>
+          <CustomText style={styles.sectionTitle}>
+            {selectedCategory}
           </CustomText>
-          <CustomText
-            style={{
-              fontSize: 14,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-              color: '#3D0066',
-            }}>
-            See All {">"}
-          </CustomText>
+          <TouchableOpacity>
+            <CustomText style={styles.seeAllText}>
+              See All <Text>{">"}</Text>
+            </CustomText>
+          </TouchableOpacity>
         </SpaceBetweenRow>
-        <View style={styles.gridContainer}>
-          {foodItems.map((item, index) => (
-            <View key={item.id} style={styles.gridItem}>
-              <FoodCard item={item} index={index} />
-            </View>
+
+        {/* Campaign Cards */}
+        <View style={styles.cardsContainer}>
+          {myCampaigns.map((item, index) => (
+            <CampaignCard key={item.id || index} item={item} index={index} />
           ))}
         </View>
-
-        {/* Current Campaign Section - Horizontal Scroll */}
-        <SpaceBetweenRow
-          style={{
-            marginBottom: 20,
-          }}>
-          <CustomText
-            style={{
-              fontSize: 16,
-              fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            }}>
-            Current Campaign
-          </CustomText>
-          <CustomText
-            style={{
-              fontSize: 14,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-              color: '#3D0066',
-            }}>
-            See All {">"}
-          </CustomText>
-        </SpaceBetweenRow>
-        
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalScrollContainer}
-          style={styles.horizontalScrollView}>
-          {foodItems.map((item, index) => (
-            <View key={`current-${item.id}`} style={styles.horizontalCardItem}>
-              <FoodCard item={item} index={index} />
-            </View>
-          ))}
-        </ScrollView>
-
-        {/* Past Campaign Section - Horizontal Scroll */}
-        <SpaceBetweenRow
-          style={{
-            marginBottom: 20,
-            marginTop: 30,
-          }}>
-          <CustomText
-            style={{
-              fontSize: 16,
-              fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            }}>
-            Past Campaign
-          </CustomText>
-          <CustomText
-            style={{
-              fontSize: 14,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-              color: '#3D0066',
-            }}>
-            See All {">"}
-          </CustomText>
-        </SpaceBetweenRow>
-        
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalScrollContainer}
-          style={styles.horizontalScrollView}>
-          {foodItems.map((item, index) => (
-            <View key={`past-${item.id}`} style={styles.horizontalCardItem}>
-              <FoodCard item={item} index={index} />
-            </View>
-          ))}
-        </ScrollView>
         
         {/* Extra padding at bottom */}
-        <View style={{height: 20}} />
+        <View style={{height: 100}} />
         
       </ScrollView>
         
     </ScrollView>
-        <TouchableOpacity style={styles.floatingButton}
-        onPress={()=>navigation.navigate('CreateCampaign')}
-        >
-              <Icon name="add" size={24} color="#fff" />
-            </TouchableOpacity>
+    
+    {/* Floating Action Button */}
+    <TouchableOpacity 
+      style={styles.floatingButton}
+      onPress={()=>navigation.navigate('CreateCampaign')}>
+      <Icon name="add" size={24} color="#fff" />
+    </TouchableOpacity>
     </>
-
   )
 }
 
@@ -341,162 +273,207 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: App_Primary_color,
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'space-between',
     paddingHorizontal: 16,
-    // marginTop: 30,
     paddingVertical: 18,
     gap: 10,
     height: 250,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF26',
-    padding: 0,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-    marginLeft: 8,
-  },
-  categoryContainer: {
-    // backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  sortButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 12,
-  },
-  sortButtonText: {
-    fontSize: 14,
-    color: '#000',
-    marginRight: 4,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  categoryButton: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  selectedCategoryButton: {
-    backgroundColor: '#E53E3E',
-  },
-  categoryText: {
-    fontSize: 13,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  selectedCategoryText: {
-    color: '#fff',
   },
   contentContainer: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 130,
   },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    // paddingBottom: 80,
+  
+  // Filter Buttons
+  filterContainer: {
+    marginBottom: 20,
   },
-  gridItem: {
-    width: '48%',
+  categoryButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    borderRadius: 6,
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: App_Primary_color,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#E53E3E',
+    borderColor: '#E53E3E',
+  },
+  categoryText: {
+    fontSize: 12,
+    color: App_Primary_color,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+
+  // Section Header
+  sectionHeader: {
     marginBottom: 16,
   },
-  // New horizontal scroll styles
-  horizontalScrollView: {
-    // marginBottom: 10,
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: '#1F2937',
   },
-  horizontalScrollContainer: {
-    paddingRight: 16,
-  },
-  horizontalCardItem: {
-    width: 180,
-    marginRight: 12,
-  },
-  foodCard: {
-    height: 280,
-    borderRadius: 8,
-    overflow: 'hidden',
-    position: 'relative',
-    backgroundColor: 'white',
-  },
-  foodImage: {
-    // width: '100%',
-    height: 180,
-    // opacity: 0.7,
-  },
-  overlay: {
-    // position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 12,
-    backgroundColor: 'white',
-  },
-  foodTitle: {
-    color: 'black',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    textShadowOffset: {width: 1, height: 1},
-  },
-  foodSubtitle: {
-    color: '#fff',
-    fontSize: 11,
-    marginBottom: 2,
-    textShadowColor: 'rgba(0,0,0,0.8)',
-    textShadowOffset: {width: 1, height: 1},
-    textShadowRadius: 2,
-  },
-  foodCategory: {
-    color: '#3D0066',
-    fontSize: 9,
-    opacity: 0.9,
-    textShadowRadius: 2,
-  },
-  priceContainer: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    backgroundColor: '#E53E3E',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  priceText: {
-    color: '#fff',
+  seeAllText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#3D0066',
   },
+
+  // Cards Container
+  cardsContainer: {
+    gap: 16,
+  },
+
+  // Campaign Card Styles
+  campaignCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    marginBottom: 16,
+  },
+
+  // Card Image
+  cardImageContainer: {
+    height: 180,
+    position: 'relative',
+  },
+  cardImage: {
+    width: '100%',
+    height: '90%',
+  },
+  cardOverlay: {
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
+    // backgroundColor: 'rgba(218, 165, 32, 0.8)', // Golden overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 20,
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+  },
+
+  // Card Content
+  cardContent: {
+    padding: 16,
+    position: 'relative',
+  },
+  hubName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    marginBottom: 4,
+  },
+  categoryName: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    marginBottom: 12,
+  },
+  description: {
+    fontSize: 13,
+    color: '#6B7280',
+    lineHeight: 18,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    marginBottom: 16,
+  },
+
+  // Card Footer
+  cardFooter: {
+    alignItems: 'center',
+    backgroundColor:'#D43C3114',
+    paddingHorizontal:8,
+    borderRadius:20,
+    paddingVertical:5
+
+
+  },
+  attendeesText: {
+    fontSize: 14,
+    color: 'black',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  attendeesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+
+  },
+  avatarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  attendeesCount: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+
+  // Status Badge
+  statusContainer: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 18,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#fff',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+
+  // Floating Button
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 100,
     right: 20,
     backgroundColor: '#E53E3E',
     width: 56,
     height: 56,
-    borderRadius: 10,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 8,

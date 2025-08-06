@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,60 +13,135 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FONTS_FAMILY } from '../../../assets/Fonts';
 import { App_Primary_color } from '../../../common/Colors/colors';
+import { apiGet } from '../../../utils/Apis';
+import urls from '../../../config/urls';
+import useLoader from '../../../utils/LoaderHook';
 
 const BrandBokingList = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [allCampaigns, setAllCampaigns] = useState([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
 
   const categories = ['All', 'Completed', 'Cancelled'];
+  const { showLoader, hideLoader } = useLoader();
 
-  const foodItems = [
-    {
-      id: 1,
-      title: 'End of Year Promo Taman Sari',
-      subtitle: 'Taman Sari Billboard, Bandung',
-      category: 'Food & Beverage',
-      price: '12',
-      status: 'COMPLETED',
-      statusColor: '#3170FA',
-      date: '27 Dec 2023, 14:00',
-      image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Christmas Special Discount Istana...',
-      subtitle: 'Istana Plaza Billboard, Bandung',
-      category: 'Food',
-      price: '12',
-      status: 'COMPLETED',
-      statusColor: '#3170FA',
-      date: '15 Dec 2023, 09:20',
-      additionalItems: '+2 more Items',
-      image: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=300&h=200&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'Christmas Special Discount',
-      subtitle: 'Graha Mandiri Billboard, Jakarta Pusat',
-      category: 'Food & Beverage',
-      price: '12',
-      status: 'CANCELLED',
-      statusColor: '#F44336',
-      date: '14 Dec 2023, 11:20',
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=200&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'GRAND WISH TEA AFTER NOON',
-      subtitle: 'Indian The Dhaba',
-      category: 'Food & Beverage',
-      price: '12',
-      status: 'COMPLETED',
-      statusColor: '#3170FA',
-      date: '12 Dec 2023, 16:30',
-      image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=300&h=200&fit=crop',
+  useEffect(() => {
+    getAllCampaigns();
+  }, []);
+
+  useEffect(() => {
+    filterCampaigns();
+  }, [selectedCategory, allCampaigns]);
+
+  const getAllCampaigns = async () => {
+    try {
+      showLoader();
+      let allData = [];
+      
+      // Get all campaigns
+      const allRes = await apiGet(urls?.brandsGetAllMyCampaigns);
+      if (allRes?.data) {
+        allData = [...allRes.data];
+      }
+      
+      // Get completed campaigns
+      const completedRes = await apiGet(urls?.getAllMyCompletedCampaigns);
+      if (completedRes?.data) {
+        // Mark completed campaigns
+        const completedCampaigns = completedRes.data.map(campaign => ({
+          ...campaign,
+          Status: 'Completed'
+        }));
+        allData = [...allData, ...completedCampaigns];
+      }
+      
+      // Get cancelled campaigns
+      const cancelledRes = await apiGet(urls?.getAllMyCancelledCamaigns);
+      if (cancelledRes?.data) {
+        // Mark cancelled campaigns
+        const cancelledCampaigns = cancelledRes.data.map(campaign => ({
+          ...campaign,
+          Status: 'Cancelled'
+        }));
+        allData = [...allData, ...cancelledCampaigns];
+      }
+      
+      setAllCampaigns(allData);
+      hideLoader();
+    } catch (error) {
+      console.log('Error fetching campaigns:', error);
+      hideLoader();
     }
-  ];
+  };
+
+  const filterCampaigns = () => {
+    let filtered = [];
+    
+    switch (selectedCategory) {
+      case 'All':
+        filtered = allCampaigns;
+        break;
+      case 'Completed':
+        filtered = allCampaigns.filter(campaign => 
+          campaign.Status?.toLowerCase() === 'completed'
+        );
+        break;
+      case 'Cancelled':
+        filtered = allCampaigns.filter(campaign => 
+          campaign.Status?.toLowerCase() === 'cancelled'
+        );
+        break;
+      default:
+        filtered = allCampaigns;
+    }
+    
+    // Apply search filter if searchText exists
+    if (searchText.trim()) {
+      filtered = filtered.filter(campaign =>
+        campaign.Title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        campaign.Category?.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+    
+    setFilteredCampaigns(filtered);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return '#3170FA';
+      case 'cancelled':
+        return '#F44336';
+      case 'active':
+        return '#4CAF50';
+      default:
+        return '#666';
+    }
+  };
+
+  const getSubtitle = (category) => {
+    // Map category to location-based subtitles to match original UI
+    const subtitleMap = {
+      'Customer Goods': 'Taman Sari Billboard, Bandung',
+      'Food': 'Istana Plaza Billboard, Bandung',
+      'Food & Beverage': 'Graha Mandiri Billboard, Jakarta Pusat',
+      'default': 'Indian The Dhaba'
+    };
+    return subtitleMap[category] || subtitleMap.default;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   const CategoryButton = ({ title, isSelected, onPress }) => (
     <TouchableOpacity
@@ -85,40 +160,62 @@ const BrandBokingList = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  const FoodCard = ({ item, index }) => (
+  const CampaignCard = ({ item, index }) => (
     <TouchableOpacity style={styles.foodCard}
-      onPress={() => navigation.navigate('CampaignList')}
+      // onPress={() => navigation.navigate('CampaignList')}
+      
+      onPress={() => navigation.navigate('BrandOfferDetail',{campaignId:item?._id})}
     >
       <View style={styles.cardHeader}>
-        <Text style={styles.dateText}>{item.date}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: item.statusColor }]}>
-          <Text style={styles.statusText}>{item.status}</Text>
+        <Text style={styles.dateText}>
+          {formatDate(item.createdAt) || '27 Dec 2023, 14:00'}
+        </Text>
+        <View style={[
+          styles.statusBadge, 
+          { backgroundColor: getStatusColor(item.Status) }
+        ]}>
+          <Text style={styles.statusText}>
+            {item.Status?.toUpperCase() || 'COMPLETED'}
+          </Text>
         </View>
       </View>
       
       <View style={styles.cardContent}>
         <Image
-          source={{ uri: item.image }}
+          source={{ 
+            uri: item.Assets || 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'
+          }}
           style={styles.foodImage}
         />
         <View style={styles.cardDetails}>
-          <Text style={styles.foodTitle} numberOfLines={2}>{item.title}</Text>
-          <Text style={styles.foodSubtitle} numberOfLines={1}>{item.subtitle}</Text>
+          <Text style={styles.foodTitle} numberOfLines={2}>
+            {item.Title || 'End of Year Promo Taman Sari'}
+          </Text>
+          <Text style={styles.foodSubtitle} numberOfLines={1}>
+            {getSubtitle(item.Category)}
+          </Text>
           
-          {item.additionalItems && (
-            <Text style={styles.additionalItems}>{item.additionalItems}</Text>
+          {index === 1 && (
+            <Text style={styles.additionalItems}>+2 more Items</Text>
           )}
           
           <View style={styles.cardFooter}>
             <Text style={styles.orderTotalLabel}>Redeem</Text>
-            {/* <View style={styles.priceContainer}> */}
-              <Text style={styles.priceText}>{item.price}</Text>
-            {/* </View> */}
+            <Text style={styles.priceText}>12</Text>
           </View>
         </View>
       </View>
     </TouchableOpacity>
   );
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+    // Filter will be applied through useEffect
+  };
+
+  useEffect(() => {
+    filterCampaigns();
+  }, [searchText]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -128,9 +225,11 @@ const BrandBokingList = ({navigation}) => {
         <View style={styles.headerLeft}>
           <Icon name="search" size={20} color="#fff" style={{bottom:3}}/>
           <TextInput
-            style={{ flex: 1, color: '#fff', marginLeft: 8, fontFamily:FONTS_FAMILY.Poppins_Regular }}
-            placeholder='Campaign'
+            style={{ flex: 1, color: '#fff', marginLeft: 8, fontFamily: FONTS_FAMILY.Poppins_Regular }}
+            placeholder='Search campaigns...'
             placeholderTextColor={'#fff'}
+            value={searchText}
+            onChangeText={handleSearch}
           />
         </View>
         <View style={styles.categoryContainer}>
@@ -147,18 +246,24 @@ const BrandBokingList = ({navigation}) => {
         </View>
       </View>
 
-      {/* Food Items List */}
+      {/* Campaigns List */}
       <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.listContainer}>
-          {foodItems.map((item, index) => (
-            <View key={item.id} style={styles.listItem}>
-              <FoodCard item={item} index={index} />
+          {filteredCampaigns.length > 0 ? (
+            filteredCampaigns.map((item, index) => (
+              <View key={item._id || index} style={styles.listItem}>
+                <CampaignCard item={item} index={index} />
+              </View>
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                No campaigns found for "{selectedCategory}"
+              </Text>
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
-
-  
     </SafeAreaView>
   );
 };
@@ -173,7 +278,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    // marginTop:30,
     paddingVertical: 12,
     gap: 10,
   },
@@ -181,9 +285,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF26',
-    padding:0,
+    padding: 0,
     borderRadius: 8,
-    paddingHorizontal:10
+    paddingHorizontal: 10
   },
   headerTitle: {
     color: '#fff',
@@ -194,7 +298,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    alignSelf:'flex-start'
+    alignSelf: 'flex-start'
   },
   categoryRow: {
     flexDirection: 'row',
@@ -296,7 +400,7 @@ const styles = StyleSheet.create({
   cardFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // alignItems: 'center',
+    alignItems: 'center',
     marginTop: 10,
   },
   orderTotalLabel: {
@@ -304,15 +408,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
-    right:50
   },
-  priceContainer: {
-    backgroundColor: '#FF6B35',
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+  priceText: {
+    color: '#3D0066',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  additionalItems: {
+    color: '#FF6B35',
+    fontSize: 11,
+    marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  emptyContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    textAlign: 'center',
   },
   priceText: {
     color: '#3D0066',

@@ -1,5 +1,3 @@
-
-
 import React, {useEffect, useState} from 'react'
 import {
   ScrollView,
@@ -17,32 +15,27 @@ import {
   Divider,
   EyeIcon,
   LoginLogo,
-  Socials,
 } from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import CustomInputField from '../../components/wrapper/CustomInput'
 import CustomButton from '../../components/Button'
 import {
   inValidEmail,
-  inValidNum,
   inValidPassword,
 } from '../../utils/CheckValidation'
 import {ToastMsg} from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
-import {apiPost, getItem, setItem} from '../../utils/Apis'
-import {useDispatch} from 'react-redux'
-import {setUser} from '../../redux/reducer/user'
+import {apiPost, apiPut, getItem} from '../../utils/Apis'
 import { useLoginCheck } from '../../utils/Context'
 
-const Login = ({navigation}) => {
+const ForgotPassword = ({navigation}) => {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
   const [activeTab, setActiveTab] = useState('Influencers')
   const {showLoader, hideLoader} = useLoader()
-  const dispatch = useDispatch()
-    const {loggedInby, setloggedInby} = useLoginCheck()
-
+  const {loggedInby, setloggedInby} = useLoginCheck()
 
   const onSubmit = async () => {
     const emailError = inValidEmail(email)
@@ -50,41 +43,56 @@ const Login = ({navigation}) => {
       ToastMsg(emailError)
       return
     }
-    const passwordError = inValidPassword(password)
-    if (passwordError) {
-      ToastMsg(passwordError)
+    
+    const oldPasswordError = inValidPassword(oldPassword)
+    if (oldPasswordError) {
+      ToastMsg(`Old Password: ${oldPasswordError}`)
       return
     }
-    try {
-      const url =
-        activeTab == 'Influencers' ? urls.InfluencerLogin : urls.brandLogin
-      showLoader()
-      const data = {Email: email, Password: password}
-      const response = await apiPost(url, data)
-      // console.log('response', response)
+    
+    const newPasswordError = inValidPassword(newPassword)
+    if (newPasswordError) {
+      ToastMsg(`New Password: ${newPasswordError}`)
+      return
+    }
 
+    if (oldPassword === newPassword) {
+      ToastMsg('New password must be different from old password')
+      return
+    }
+
+    try {
+      // Determine the URL based on active tab
+      const url = activeTab === 'Influencers' 
+        ? urls.InfluencerForgotPassword 
+        : urls.brandForgotPassword
+      
+      showLoader()
+      
+      const data = {
+        Email: email,
+        OldPassword: oldPassword,
+        NewPassword: newPassword
+      }
+
+      console.log(data,'daatatata');
+      
+      
+      const response = await apiPut(url, data)
+      
       if (response?.statusCode === 200) {
-        if (response?.data?.token) {
-          await setItem('token', response?.data?.token)
-          const token = await getItem('token')
-          if (token) {
-            if (activeTab == 'Influencers') {
-              dispatch(setUser(JSON.stringify(response?.data?.Influencer)))
-              navigation.replace('InfluenceTab')
-            } else {
-              dispatch(setUser(JSON.stringify(response?.data?.Brand)))
-              navigation.replace('TabBrand')
-            }
-          }
-        }
-        ToastMsg(response?.message)
+        ToastMsg(response?.message || 'Password updated successfully')
         hideLoader()
+        // Navigate back to login screen
+        navigation.navigate('Login')
+      } else {
+        hideLoader()
+        ToastMsg(response?.message || 'Failed to update password')
       }
     } catch (error) {
       hideLoader()
       if (error?.message) {
         ToastMsg(error?.message)
-        // response?.message
       } else {
         ToastMsg('Network Error')
       }
@@ -96,8 +104,7 @@ const Login = ({navigation}) => {
   }, [activeTab])
 
   const role = async () => {
-    setItem('UserType', activeTab)
-    if (activeTab=='Influencers') {
+    if (activeTab === 'Influencers') {
       setloggedInby('Influencers')
     } else {
       setloggedInby('Brands')
@@ -107,10 +114,10 @@ const Login = ({navigation}) => {
   const renderHeader = () => {
     return (
       <Row style={styles.headerRow}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <BackMsg />
         </TouchableOpacity>
-        <CustomText style={styles.headerText}>Log in</CustomText>
+        <CustomText style={styles.headerText}>Reset Password</CustomText>
       </Row>
     )
   }
@@ -162,43 +169,51 @@ const Login = ({navigation}) => {
     )
   }
 
-  const renderLogoAndInputItems = () => {
+  const renderInputItems = () => {
     return (
       <View style={styles.logoInputContainer}>
-        {/* <LoginLogo /> */}
         <View style={styles.inputContainer}>
           <CustomInputField
             placeholder={'Email'}
             onChangeText={setEmail}
             label={'Email'}
+            value={email}
+            keyboardType={'email-address'}
+            autoCapitalize={'none'}
           />
 
           <CustomInputField
-            placeholder={'Password'}
+            placeholder={'Current Password'}
             icon={<EyeIcon />}
-            onChangeText={setPassword}
+            onChangeText={setOldPassword}
             secureTextEntry={true}
-            label={'Password'}
-            // keyboardType={'phone-pad'}
+            label={'Current Password'}
+            value={oldPassword}
             isPassword
           />
-          <TouchableOpacity
-          onPress={()=>navigation.navigate('ForgotPassword')}
-          >
-          <CustomText style={styles.forgotPasswordText}>
-            Forgot your password ?
+
+          <CustomInputField
+            placeholder={'New Password'}
+            icon={<EyeIcon />}
+            onChangeText={setNewPassword}
+            secureTextEntry={true}
+            label={'New Password'}
+            value={newPassword}
+            isPassword
+          />
+          
+          <CustomText style={styles.infoText}>
+            Please enter your email and current password to set a new password.
           </CustomText>
-            
-          </TouchableOpacity>
         </View>
       </View>
     )
   }
 
-  const renderWhiteBgItmes = () => {
+  const renderWhiteBgItems = () => {
     return (
       <ScrollView style={styles.scrollViewContainer}>
-        {renderLogoAndInputItems()}
+        {renderInputItems()}
         {renderButton()}
       </ScrollView>
     )
@@ -208,20 +223,17 @@ const Login = ({navigation}) => {
     return (
       <View style={styles.buttonContainer}>
         <CustomButton
-          style={styles.loginButton}
-          title={'Log in'}
-          //  navigation.navigate('Tab')
+          style={styles.resetButton}
+          title={'Reset Password'}
           onPress={onSubmit}
-          // onPress={() => navigation.navigate('Otpscreen')}
         />
-        <Divider style={styles.divider} />
-        <Socials style={styles.socials} />
-        <Row style={styles.signUpRow}>
-          <CustomText style={styles.signUpText}>
-            Don't have an account?{' '}
+        
+        <Row style={styles.backToLoginRow}>
+          <CustomText style={styles.backToLoginText}>
+            Remember your password?{' '}
           </CustomText>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <CustomText style={styles.signUpLink}>Sign Up </CustomText>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <CustomText style={styles.backToLoginLink}>Back to Login</CustomText>
           </TouchableOpacity>
         </Row>
       </View>
@@ -237,9 +249,7 @@ const Login = ({navigation}) => {
       />
       {renderHeader()}
       {renderTabs()}
-
-      {renderWhiteBgItmes()}
-
+      {renderWhiteBgItems()}
       <View style={styles.bottomIndicator} />
     </View>
   )
@@ -253,7 +263,7 @@ const styles = StyleSheet.create({
   headerRow: {
     marginTop: 50,
     marginHorizontal: 20,
-    gap: 95,
+    gap: 75,
   },
   headerText: {
     color: 'black',
@@ -290,10 +300,13 @@ const styles = StyleSheet.create({
   inputContainer: {
     gap: 25,
   },
-  forgotPasswordText: {
-    alignSelf: 'flex-end',
+  infoText: {
+    textAlign: 'center',
     color: 'rgba(202, 202, 202, 1)',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
+    fontSize: 12,
+    marginTop: 10,
+    lineHeight: 18,
   },
   scrollViewContainer: {
     flex: 1,
@@ -307,24 +320,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
   },
-  loginButton: {
+  resetButton: {
     marginTop: 40,
   },
-  divider: {
-    marginVertical: 30,
-  },
-  socials: {
-    marginVertical: 30,
-  },
-  signUpRow: {
+  backToLoginRow: {
     gap: 10,
-    marginTop: 20,
+    marginTop: 30,
   },
-  signUpText: {
+  backToLoginText: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
-  signUpLink: {
+  backToLoginLink: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
     color: App_Primary_color,
@@ -340,4 +347,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Login
+export default ForgotPassword
