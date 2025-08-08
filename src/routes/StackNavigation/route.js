@@ -33,6 +33,8 @@ import TrashScreen from '../../Trash/Trash';
 import SplashScreen from '../../screens/Splash/SplashScreen';
 import InfluencerCapaignListOfaBrand from '../../screens/InfluencerFlow/InfluencerCapaignListOfaBrand/InfluencerCapaignListOfaBrand';
 import ForgotPassword from '../../screens/Auth/ForgetPassword';
+import InfluencerOfferDetail from '../../screens/InfluencerFlow/InfluencerOfferDetail/InfluencerOfferDetail';
+import InfluencerCampaignDetail from '../../screens/InfluencerFlow/InfluencerCampaignDetail/InfluencerCampaignDetail';
 
 
 
@@ -92,6 +94,10 @@ const StackNavigation = () => {
         <Stack.Screen name={'TrashScreen'} component={TrashScreen} />
 
         <Stack.Screen name={'InfluencerCapaignListOfaBrand'} component={InfluencerCapaignListOfaBrand} />
+
+        <Stack.Screen name={'InfluencerOfferDetail'} component={InfluencerOfferDetail} />
+        <Stack.Screen name={'InfluencerCampaignDetail'} component={InfluencerCampaignDetail} />
+
 
 
 

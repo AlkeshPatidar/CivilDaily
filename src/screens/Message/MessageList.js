@@ -38,6 +38,7 @@ import useLoader from '../../utils/LoaderHook'
 import {apiGet} from '../../utils/Apis'
 import urls from '../../config/urls'
 import {useFocusEffect} from '@react-navigation/native'
+import {useLoginCheck} from '../../utils/Context'
 
 const MessageScreen = ({navigation}) => {
   useStatusBar(App_Primary_color, 'light-content')
@@ -45,11 +46,36 @@ const MessageScreen = ({navigation}) => {
   if (Object.keys(selector).length != 0) {
     selector = JSON.parse(selector)
   }
+  const {showLoader, hideLoader} = useLoader()
+
+  const [messageList, setMessageList] = useState([])
+
+  const {loggedInby, setloggedInby} = useLoginCheck()
+
+  useEffect(() => {
+    getMessageList()
+  }, [])
+
+  const getMessageList = async () => {
+    try {
+      const url =
+        loggedInby == 'Influencers'
+          ? urls?.mesageListOfInluencer
+          : urls?.mesageListOfBrand
+      showLoader()
+      const res = await apiGet(url)
+      setMessageList(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
 
   const renderHeader = () => {
     return (
       <Row style={{gap: 90, marginTop: 50, marginHorizontal: 20}}>
-        <TouchableOpacity onPress={()=>navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <BackArrow />
         </TouchableOpacity>
         <CustomText
@@ -85,7 +111,7 @@ const MessageScreen = ({navigation}) => {
     return (
       <View style={{flex: 1, marginBottom: 100}}>
         <FlatList
-          data={[1, 2, 3, 4, 5, 6, 7, 8]}
+          data={messageList}
           keyExtractor={item => item._id}
           renderItem={({item}) => (
             <TouchableOpacity
@@ -106,14 +132,12 @@ const MessageScreen = ({navigation}) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}
-              onPress={() =>
-                navigation.navigate('ChatScreen')
-              }>
+              onPress={() => navigation.navigate('ChatScreen')}>
               <SpaceBetweenRow style={{width: '100%'}}>
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                   <Image
-                    source={IMG.AvatorImage}
+                    source={item?.Image ? {uri: item?.Image} : IMG.profile}
                     style={{
                       height: 42,
                       width: 42,
@@ -126,7 +150,8 @@ const MessageScreen = ({navigation}) => {
                         fontFamily: FONTS_FAMILY.Poppins_SemiBold,
                         fontSize: 14,
                       }}>
-                      {'Alex Linderson'}
+                      {item?.FirstName}
+                      {item?.LastName}
                     </CustomText>
                     <CustomText
                       style={{
@@ -134,13 +159,27 @@ const MessageScreen = ({navigation}) => {
                         fontSize: 12,
                         color: 'rgba(151, 151, 151, 1)',
                       }}>
-                      How are you today?{' '}
+                      {item?.lastMessage}
                     </CustomText>
                   </View>
                 </View>
-                <CustomText style={{
-                  fontSize:12
-                }}>2 min ago</CustomText>
+                <CustomText style={{fontSize: 12}}>
+                  {(() => {
+                    const createdAt = new Date(item?.createdAt)
+                    const now = new Date()
+                    const diffMs = now - createdAt
+                    const diffSec = Math.floor(diffMs / 1000)
+                    const diffMin = Math.floor(diffSec / 60)
+                    const diffHour = Math.floor(diffMin / 60)
+                    const diffDay = Math.floor(diffHour / 24)
+
+                    if (diffSec < 60) return `${diffSec} sec ago`
+                    if (diffMin < 60) return `${diffMin} min ago`
+                    if (diffHour < 24)
+                      return `${diffHour} hour${diffHour > 1 ? 's' : ''} ago`
+                    return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`
+                  })()}
+                </CustomText>
               </SpaceBetweenRow>
             </TouchableOpacity>
           )}

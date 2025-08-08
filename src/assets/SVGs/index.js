@@ -53,6 +53,12 @@ import DeleteWithcross from './DeleteWithcross.svg'
 import RestoreBin from './restoreBin.svg'
 import Label from './label.svg'
 
+import Anytime from './anytime.svg'
+import Events from './events.svg'
+import Invites from './invite.svg'
+import Gifts from './gifts.svg'
+
+
 
 
 
@@ -119,5 +125,9 @@ export {
   Transactions,
   RestoreBin,
   DeleteWithcross,
-  Label
+  Label,
+  Anytime,
+  Events,
+  Gifts,
+  Invites
 }

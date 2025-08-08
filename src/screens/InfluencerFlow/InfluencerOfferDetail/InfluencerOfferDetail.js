@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -9,21 +9,127 @@ import {
   ScrollView,
   Image,
 } from 'react-native'
-import {BackArrow, Clock, EditIcon, EyeIcons, Location, ThreeDots} from '../../assets/SVGs'
-import {FONTS_FAMILY} from '../../assets/Fonts'
+import {BackArrow, Clock, EditIcon, EyeIcons, Location, ThreeDots} from '../../../assets/SVGs'
+import {FONTS_FAMILY} from '../../../assets/Fonts'
 import CampaignTypeModal from './ChooseOptionmodel'
 import CalendarModal from './CalendarModel'
+import { apiGet, apiPost } from '../../../utils/Apis'
+import urls from '../../../config/urls'
+import useLoader from '../../../utils/LoaderHook'
+import PaidInputModel from '../../Restaurent/PaidInputCostModel'
+import ConfirmationCampaignModel from './ConfirmationCampaignModel'
+import { ToastMsg } from '../../../utils/helperFunctions'
 
-const OfferDetail = ({navigation}) => {
+const InfluencerOfferDetail = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
   const [selectedCampaignType, setSelectedCampaignType] = useState('')
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
   const [selectedDateTime, setSelectedDateTime] = useState(null)
+  console.log(route?.params?.id,'+++++++++++=');
+  const [offerDetail, setOfferDetail]=useState(null)
+  const {showLoader, hideLoader}=useLoader()
 
-  const handleNext = () => {
+    const [isPaidModelVisible, setIsInputModelVisible] = useState(false)
+    const [confirmationModelVisible, setIsConfirmationModelVisible] =
+      useState(false)
+  
+    const [getABrand, setGetABrand] = useState(null)
+    const [allOffers, setAllOffers] = useState([])
+    const [selectedType, setSelectedType] = useState(null)
+    const [selectedDate, setSelectedDate] = useState(null)
+
+      const [cost, setCost] = useState(null)
+
+
+  useEffect(()=>{
+    getOfferDetail()
+  },[])
+
+    const handleNext = selectedType => {
     setIsCampModalVisible(false)
     setIsCalendarModalVisible(true)
+    setSelectedType(selectedType)
   }
+  
+    const handleDate = date => {
+      setIsCalendarModalVisible(false)
+      console.log(selectedType, '+++++++++++=')
+  
+      if (selectedType == 'Paid Collaboration') {
+        setIsInputModelVisible(true)
+      } else {
+        setIsConfirmationModelVisible(true)
+      }
+      setSelectedDate(date)
+      console.log(date, 'Date')
+    }
+  
+    const handlePaid = val => {
+      setIsInputModelVisible(false)
+      setCost(val)
+      console.log('+++++++++++++', val)
+      setIsConfirmationModelVisible(true)
+    }
+  
+    const createCollabration = async () => {
+      try {
+        showLoader()
+  
+        const isBarter = selectedType === 'Barter'
+  
+        const data = {
+          Brand: offerDetail?.Brand,
+          Campaign: offerDetail?.Campaign,
+          Type: isBarter ? 'Barter' : 'Paid',
+          Date: selectedDate?.date,
+          Time: selectedDate?.time,
+          ContentSubmittedLinks: [],
+          Notes: isBarter
+            ? 'Please tag our official account in the post.'
+            : 'Please post the content before the deadline.',
+          ...(isBarter
+            ? {
+                ProductDetails:
+                  'Free skincare product package including cleanser, toner, and moisturizer',
+              }
+            : {
+                PaymentAmount: cost,
+              }),
+        }
+  
+        const res = await apiPost(urls?.createCollabrationOfInfluencer, data)
+        // Handle success (toast, navigation, etc.) if needed
+        ToastMsg(res?.message)
+        setIsCampModalVisible(false)
+        console.log(res,'CreateCollabration::::::::::');
+        
+        hideLoader()
+      } catch (error) {
+        // Handle error (optional)
+        hideLoader()
+      }
+    }
+
+  const getOfferDetail=async () => {
+      try {
+        showLoader()
+        const response=await apiGet(`${urls.influencerOfferDetail}/${route?.params?.id}`)
+        console.log();
+        setOfferDetail(response?.data)
+        hideLoader()
+        
+        
+    } catch (error) {
+        console.log(error,'error');
+        hideLoader()
+
+        
+    }
+    
+  }
+  
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,7 +144,7 @@ const OfferDetail = ({navigation}) => {
         >
           <BackArrow />
         </TouchableOpacity>
-        <View style={styles.headerActions}>
+        {/* <View style={styles.headerActions}>
           <TouchableOpacity style={styles.editButton}
           onPress={()=>navigation.navigate('MessageScreen')}
           >
@@ -47,14 +153,14 @@ const OfferDetail = ({navigation}) => {
           <TouchableOpacity style={styles.moreButton}>
             <ThreeDots />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Offer Title */}
         <View style={styles.titleSection}>
-          <Text style={styles.offerTitle}>Christmas Special Discount</Text>
-          <Text style={styles.offerCategory}>Food & Beverage</Text>
+          <Text style={styles.offerTitle}>{offerDetail?.Title}</Text>
+          <Text style={styles.offerCategory}>Daily Impression Average:{offerDetail?.AverageDailyImpressions}</Text>
         </View>
 
         {/* Offer Images - Horizontal Scroll */}
@@ -66,33 +172,39 @@ const OfferDetail = ({navigation}) => {
             style={styles.imageScrollView}
           >
             <Image 
-              source={{uri: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'}} 
+              source={{uri: offerDetail?.Image}} 
               style={styles.offerImage} 
             />
-            <Image 
+             <Image 
+              source={{uri: offerDetail?.Image}} 
+              style={styles.offerImage} 
+            />
+             <Image 
+              source={{uri: offerDetail?.Image}} 
+              style={styles.offerImage} 
+            />
+            {/* <Image 
               source={{uri: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&h=200&fit=crop'}} 
               style={styles.offerImage} 
             />
             <Image 
               source={{uri: 'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=300&h=200&fit=crop'}} 
               style={styles.offerImage} 
-            />
+            /> */}
           </ScrollView>
         </View>
 
         {/* Offer Details */}
         <View style={styles.detailsSection}>
           {/* Location */}
-          <View style={styles.detailRow}>
+          {/* <View style={styles.detailRow}>
             <View style={styles.iconCircle}>
-              {/* <Text style={styles.iconText}>📍</Text> */}
               <Location/>
             </View>
             <View style={styles.detailContent}>
               <Text style={styles.detailLabel}>Jl. Pasir Kaliki, Cicendo, Bandung, Jawa Barat 40172</Text>
-              {/* <Text style={styles.detailSubtext}>Jl. Boulevard Gading Serpong</Text> */}
             </View>
-          </View>
+          </View> */}
 
           {/* Time */}
           <View style={styles.detailRow}>
@@ -112,34 +224,34 @@ const OfferDetail = ({navigation}) => {
               <Clock/>
             </View>
             <View style={styles.detailContent}>
-              <Text style={styles.detailLabel}>20 Dec - :25 Dec</Text>
+              <Text style={styles.detailLabel}>{offerDetail?.StartDate} - {offerDetail?.EndDate}</Text>
             </View>
           </View>
 
           {/* Time Range */}
-          <View style={styles.detailRow}>
+          {/* <View style={styles.detailRow}>
             <View style={styles.iconCircle}>
-              {/* <Text style={styles.iconText}>⏰</Text> */}
               <Clock/>
             </View>
             <View style={styles.detailContent}>
               <Text style={styles.detailLabel}>17:00 - 18:00</Text>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* Description Section */}
         <View style={styles.descriptionSection}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.descriptionText}>
-            Enjoy a festive culinary experience with special discounts! Get 
+            {/* Enjoy a festive culinary experience with special discounts! Get 
             up to 25% off on selected menu items at New Delights 
             Hub. From appetizers to desserts, savor the holiday spirit with 
             delicious dishes and beverages. Hurry and grab this offer before 
-            it expires on 25 December.
+            it expires on 25 December..... */}
+            {offerDetail?.Description}
           </Text>
           <TouchableOpacity>
-            <Text style={styles.seeMoreText}>See More {'>'}</Text>
+            {/* <Text style={styles.seeMoreText}>See More {'>'}</Text> */}
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -152,15 +264,27 @@ const OfferDetail = ({navigation}) => {
 
       <View style={styles.homeIndicator} />
       
-      <CampaignTypeModal
+     <CampaignTypeModal
         isVisible={isCampModalVisible}
         onClose={() => setIsCampModalVisible(false)}
-        onNext={handleNext}
+        onNext={selectedType => handleNext(selectedType)}
       />
       <CalendarModal
         isVisible={isCalendarModalVisible}
         onClose={() => setIsCalendarModalVisible(false)}
-        onSubmit={()=>console.log('---------')}
+        onSubmit={e => handleDate(e)}
+      />
+
+      <PaidInputModel
+        isVisible={isPaidModelVisible}
+        onClose={() => setIsInputModelVisible(false)}
+        onNext={val => handlePaid(val)}
+      />
+      <ConfirmationCampaignModel
+        isVisible={confirmationModelVisible}
+        onClose={() => setIsConfirmationModelVisible(false)}
+        // onNext={val => handlePaid(val)}
+        onNext={() => createCollabration()}
       />
     </SafeAreaView>
   )
@@ -178,7 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D64A3A',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginTop: 30,
+    // marginTop: 30,
     height: 64,
   },
   backButton: {
@@ -244,6 +368,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
+    alignItems:'center'
+
   },
   iconCircle: {
     width: 32,
@@ -317,4 +443,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default OfferDetail
+export default InfluencerOfferDetail

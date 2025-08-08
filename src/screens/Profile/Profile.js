@@ -53,13 +53,13 @@ const ProfileScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle='light-content' backgroundColor={App_Primary_color} /> */}
-
+  <StatusBar 
+        barStyle='light-content' 
+        backgroundColor={App_Primary_color}
+        translucent={false}
+      />
       {/* Header */}
       <View style={styles.header}>
-        {/* <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backArrow}>‹</Text>
-        </TouchableOpacity> */}
         <BackArrow />
         <Text style={styles.headerTitle}>My Profile</Text>
         <TouchableOpacity style={styles.settingsButton}>

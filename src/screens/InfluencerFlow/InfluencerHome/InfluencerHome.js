@@ -9,6 +9,7 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  FlatList,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
@@ -16,98 +17,119 @@ import {App_Primary_color} from '../../../common/Colors/colors'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
 import Row from '../../../components/wrapper/row'
 import IMG from '../../../assets/Images'
-import {Badge, Doller, Notification, SearchIcons} from '../../../assets/SVGs'
+import {
+  Anytime,
+  Badge,
+  Doller,
+  Events,
+  Gifts,
+  Invites,
+  Notification,
+  SearchIcons,
+} from '../../../assets/SVGs'
 import CustomText from '../../../components/TextComponent'
 import CustomButton from '../../../components/Button'
 import {useLoginCheck} from '../../../utils/Context'
 import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
+import { useSelector } from 'react-redux'
 
 const InfluencerHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('Category')
-  const [AllBrands, setAllBrands] = useState([])
-  const [offers, setOffers] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('Anytime')
+  const [selectedSortBy, setSelectedSortBy] = useState('Sort By')
+  const [selectedFilter, setSelectedFilter] = useState('Category')
+  const [selectedInvite, setSelectedInvite] = useState('Anytime')
+  const [invite, setInvite] = useState('Invite')
 
-  const{showLoader, hideLoader}=useLoader()
+  const [latestBrand, setLatestBrand] = useState([])
+  const [Hottestoffers, setHottestOffers] = useState([])
+  const [fatsFav, setFastFav] = useState([])
+
+     let selector = useSelector(state => state?.user?.userData);
+    if (Object.keys(selector).length != 0) {
+        selector = JSON.parse(selector);
+    }
+
+  const {showLoader, hideLoader} = useLoader()
 
   const {loggedInby, setloggedInby} = useLoginCheck()
   // console.log("loggedInby:::::::::::");
 
   useEffect(() => {
-    getAllBrands()
-    getOffers()
+    getLatestBrands()
+    getHottestOffers()
+    getFastFavourite()
   }, [])
 
-  const getAllBrands = async () => {
+  const getLatestBrands = async () => {
     try {
       showLoader()
-      const res = await apiGet(urls?.getAllInfluencersBrands)
-      setAllBrands(res?.data)
+      const res = await apiGet(urls?.LatestBrand)
+      setLatestBrand(res?.data)
       hideLoader()
     } catch (error) {
       console.log('Error')
       hideLoader()
-
     }
   }
 
-  const getOffers = async () => {
+  const getHottestOffers = async () => {
     try {
       showLoader()
-      const res = await apiGet(urls?.getAllOffersInfluencer)
-      setOffers(res?.data)
-      console.log('Offfers::::::::', res?.data);
-      
+      const res = await apiGet(urls?.HottestCamp)
+      setHottestOffers(res?.data)
+      console.log('Offfers::::::::', res?.data)
+
       hideLoader()
     } catch (error) {
       console.log('Error')
       hideLoader()
-
     }
   }
 
-  const categories = ['Category', 'Draft', 'Running']
+    const getFastFavourite = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(urls?.fastFavourite)
+      setFastFav(res?.data)
+      console.log('Offfers::::::::', res?.data)
 
-  const foodItems = [
-    {
-      id: 1,
-      title: 'JUNGLE MUNCH SAVE',
-      subtitle: 'New Delight Hub',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'SIT DOWN TO FLAVOR',
-      subtitle: 'Burger House',
-      category: 'Food',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=300&h=200&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'HIGH FLAVOR SOLO MOMENTS',
-      subtitle: 'Warm Oven Cake Desserts',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=200&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'GRAND WISH TEA AFTER NOON',
-      subtitle: 'Indian The Dhaba',
-      category: 'Food & Beverage',
-      price: '$',
-      image:
-        'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=300&h=200&fit=crop',
-    },
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+  const categories = [
+    {title: 'Anytime', icon: <Anytime />},
+    {title: 'Events', icon: <Events />},
+    {title: 'Invites', icon: <Invites />},
+    {title: 'Gifts', icon: <Gifts />},
   ]
+
+
+
+  const FilterButton = ({title, isSelected, onPress, hasDropdown = true}) => (
+    <TouchableOpacity
+      style={[styles.filterButton, isSelected && styles.selectedFilterButton]}
+      onPress={onPress}>
+      <Text
+        style={[styles.filterText, isSelected && styles.selectedFilterText]}>
+        {title}
+      </Text>
+      {hasDropdown && (
+        <Icon
+          name='chevron-down'
+          size={16}
+          color={isSelected ? '#fff' : '#666'}
+          style={styles.dropdownIcon}
+        />
+      )}
+    </TouchableOpacity>
+  )
 
   const CategoryButton = ({title, isSelected, onPress}) => (
     <TouchableOpacity
@@ -116,126 +138,259 @@ const InfluencerHome = ({navigation}) => {
         isSelected && styles.selectedCategoryButton,
       ]}
       onPress={onPress}>
+        {title.icon}
       <Text
         style={[
           styles.categoryText,
           isSelected && styles.selectedCategoryText,
         ]}>
-        {title}
+        {title?.title}
       </Text>
     </TouchableOpacity>
   )
 
-  const FoodCard = ({item, index}) => (
-    <TouchableOpacity
-      style={styles.foodCard}
-
-             onPress={() => navigation.navigate('InfluencerCapaignListOfaBrand',{id:item?._id})}
-      >
-      
-      <Image
-        source={{uri: item?.Image?item?.Image:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'}}
-        style={styles.foodImage}
-        // resizeMode="cover"
-      />
-      <View style={styles.overlay}>
-        <Text style={styles.foodTitle}>{item?.BrandName||'Null'}</Text>
-        <Text style={styles.foodCategory}>{item?.category || 'Null'}</Text>
-      </View>
-    </TouchableOpacity>
-  )
-
-  const LatestBrand = ({title, data}) => (
+  const renderLatestBrand = () => (
     <View style={styles.sectionContainer}>
-      
       <SpaceBetweenRow style={styles.sectionHeader}>
-        <CustomText style={styles.sectionTitle}>{title}</CustomText>
+        <CustomText style={styles.sectionTitle}>Latest Brand</CustomText>
         <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
       </SpaceBetweenRow>
-      <ScrollView
+      <FlatList
+        data={latestBrand}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalScrollContainer}>
-        {data.map((item, index) => (
-          <View key={item.id} style={styles.horizontalCardItem}>
-            <FoodCard item={item} index={index} />
+        contentContainerStyle={styles.horizontalScrollContainer}
+        renderItem={({item, index}) => (
+          <View style={styles.horizontalCardItem}>
+            <TouchableOpacity
+              style={styles.brandCard}
+              onPress={() =>
+                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+              }>
+              <Image
+                source={{
+                  uri: item?.Image
+                    ? item?.Image
+                    : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+                }}
+                style={styles.brandImage}
+              />
+              <View style={styles.brandOverlay}>
+                <Text style={styles.brandTitle}>{item?.BrandName || 'Brand Name'}</Text>
+                <Text style={styles.brandCategory}>{item?.category || 'Category'}</Text>
+                <View style={styles.brandBadge}>
+                  <Text style={styles.brandBadgeText}>NEW</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
-        ))}
-      </ScrollView>
+        )}
+        keyExtractor={(item, index) => `latest-brand-${item.id || index}`}
+      />
     </View>
   )
 
-    const HorizontalSection = ({title, data}) => (
+  const renderHottestOffer = () => (
     <View style={styles.sectionContainer}>
       <SpaceBetweenRow style={styles.sectionHeader}>
-        <CustomText style={styles.sectionTitle}>{title}</CustomText>
+        <CustomText style={styles.sectionTitle}>Hottest Offer</CustomText>
         <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
       </SpaceBetweenRow>
-      <ScrollView
+      <FlatList
+        data={Hottestoffers}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalScrollContainer}>
-        {data.map((item, index) => (
-          <View key={item.id} style={styles.horizontalCardItem}>
-            <FoodCard item={item} index={index} />
+        contentContainerStyle={styles.horizontalScrollContainer}
+        renderItem={({item, index}) => (
+          <View style={styles.horizontalCardItem}>
+            <TouchableOpacity
+              style={styles.offerCard}
+              onPress={() =>
+                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+              }>
+            
+              <Image
+                source={{
+                  uri: item?.Assets
+                    ? item?.Assets
+                    : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+                }}
+                style={styles.offerImage}
+              />
+              <View style={styles.offerOverlay}>
+                <Text style={styles.offerTitle}>{item?.Title}</Text>
+                <Text style={styles.offerSubtitle}>{item?.Category}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        ))}
-      </ScrollView>
+        )}
+        keyExtractor={(item, index) => `hottest-offer-${item.id || index}`}
+      />
+    </View>
+  )
+
+  const renderFastFavourite = () => (
+    <View style={styles.sectionContainer}>
+      <SpaceBetweenRow style={styles.sectionHeader}>
+        <CustomText style={styles.sectionTitle}>Fast Favorite</CustomText>
+        <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
+      </SpaceBetweenRow>
+      <FlatList
+        data={fatsFav}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.horizontalScrollContainer}
+        renderItem={({item, index}) => (
+          <View style={styles.horizontalCardItem}>
+            <TouchableOpacity
+              style={styles.offerCard}
+              onPress={() =>
+                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+              }>
+              <Image
+                source={{
+                  uri: item?.Assets
+                    ? item?.Assets
+                    : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+                }}
+                style={styles.offerImage}
+              />
+            
+              <View style={styles.offerOverlay}>
+                <Text style={styles.offerTitle}>{item?.Title || 'Null'}</Text>
+                <Text style={styles.offerSubtitle}>{item?.Category || 'Null'}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        keyExtractor={(item, index) => `fast-favourite-${item._id || index}`}
+      />
     </View>
   )
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-    <ScrollView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+      <ScrollView style={styles.container}>
+        <StatusBar
+          backgroundColor={App_Primary_color}
+          barStyle='light-content'
+        />
 
-      <View style={styles.header}>
-        <SpaceBetweenRow>
-          <Row style={styles.headerLeftRow}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ProfileScreen')}>
-              <Image
-                source={IMG.userProfileImage}
-                style={styles.profileImage}
-              />
-            </TouchableOpacity>
-            <Row style={styles.coinsContainer}>
-              <Doller />
-              <CustomText style={styles.coinsText}>
-                500k coins
-              </CustomText>
+        <View style={styles.header}>
+          <SpaceBetweenRow>
+            <Row style={styles.headerLeftRow}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProfileScreen')}>
+                <Image
+                  source={IMG.userProfileImage}
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
+              <Row style={styles.coinsContainer}>
+                <Doller />
+                <CustomText style={styles.coinsText}>{selector?.Credits} coins</CustomText>
+              </Row>
             </Row>
-          </Row>
-          <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-            <Notification />
-          </TouchableOpacity>
-        </SpaceBetweenRow>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Notification')}>
+              <Notification />
+            </TouchableOpacity>
+          </SpaceBetweenRow>
 
-        <View style={styles.searchContainer}>
-          <Row style={styles.searchInputContainer}>
-            <SearchIcons />
-            <TextInput
-              placeholderTextColor={'gray'}
-              placeholder='Place, location or billboard name'
-              style={styles.searchInput}
+          <View style={styles.searchContainer}>
+            <Row style={styles.searchInputContainer}>
+              <SearchIcons />
+              <TextInput
+                placeholderTextColor={'gray'}
+                placeholder='Place, location or billboard name'
+                style={styles.searchInput}
+              />
+            </Row>
+            <CustomButton
+              title={'Search Campaign'}
+              style={styles.searchButton}
             />
-          </Row>
-          <CustomButton
-            title={'Search Campaign'}
-            style={styles.searchButton}
-          />
+          </View>
         </View>
-      </View>
 
-      {/* Content with Horizontal Scrolling Sections */}
-      <ScrollView
-        style={styles.contentContainer}
-        showsVerticalScrollIndicator={false}>
-        <LatestBrand title='Latest Brand' data={AllBrands} />
-        <HorizontalSection title='Hottest Offer' data={offers} />
-        <HorizontalSection title='Fast Favorite' data={foodItems} />
+        {/* Filter Section */}
+        <View style={styles.filterSection}>
+          {/* Top Row - Category Buttons */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoryScrollContainer}
+            style={styles.categoryRow}>
+            {categories.map(category => (
+              <CategoryButton
+                key={category}
+                title={category}
+                isSelected={selectedCategory === category?.title}
+                onPress={() => setSelectedCategory(category.title)}
+              />
+            ))}
+          </ScrollView>
+
+          {/* Bottom Row - Filter Buttons */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterScrollContainer}
+            style={styles.filterRow}>
+            <Row style={styles.filterContainer}>
+              <TouchableOpacity style={styles.filterIconButton}>
+                <Icon name='options' size={20} color='#666' />
+              </TouchableOpacity>
+
+              <FilterButton
+                title={selectedSortBy}
+                isSelected={selectedSortBy !== 'Sort By'}
+                onPress={() => {
+                  // Handle sort dropdown - you can implement dropdown logic here
+                  console.log('Sort By pressed')
+                }}
+              />
+
+              <FilterButton
+                title={selectedFilter}
+                isSelected={selectedFilter !== 'Category'}
+                onPress={() => {
+                  // Handle category filter dropdown
+                  console.log('Category filter pressed')
+                }}
+              />
+
+              <FilterButton
+                title={selectedInvite}
+                isSelected={selectedInvite !== 'Anytime'}
+                onPress={() => {
+                  // Handle invite filter dropdown
+                  console.log('Invite filter pressed')
+                }}
+              />
+
+              <FilterButton
+                title={invite}
+                isSelected={invite !== 'Invite'}
+                onPress={() => {
+                  // Handle invite filter dropdown
+                  console.log('Invite filter pressed')
+                }}
+              />
+            </Row>
+          </ScrollView>
+        </View>
+
+        {/* Content with Horizontal Scrolling Sections */}
+        <ScrollView
+          style={styles.contentContainer}
+          showsVerticalScrollIndicator={false}>
+          {renderLatestBrand()}
+          {renderHottestOffer()}
+          {renderFastFavourite()}
+          <View style={{height:100}}/>
+        </ScrollView>
       </ScrollView>
-    </ScrollView>
     </SafeAreaView>
   )
 }
@@ -298,6 +453,93 @@ const styles = StyleSheet.create({
   searchButton: {
     marginTop: 16,
   },
+  // New Filter Section Styles
+  filterSection: {
+    // backgroundColor: '#f5f5f5',
+    paddingTop: 110,
+    paddingBottom: 10,
+  },
+  categoryRow: {
+    marginBottom: 12,
+  },
+  categoryScrollContainer: {
+    paddingHorizontal: 16,
+  },
+  filterRow: {
+    marginBottom: 0,
+  },
+  filterScrollContainer: {
+    paddingHorizontal: 16,
+  },
+  filterContainer: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  filterIconButton: {
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 4,
+    borderWidth:1,
+    borderColor:'#D43C312E'
+  },
+  selectedFilterButton: {
+    backgroundColor: App_Primary_color,
+  },
+  filterText: {
+    fontSize: 14,
+    color: 'black',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  selectedFilterText: {
+    color: '#fff',
+  },
+  dropdownIcon: {
+    marginLeft: 4,
+  },
+  inviteButton: {
+    backgroundColor: '#E53E3E',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  inviteButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  categoryButton: {
+    backgroundColor: 'white',
+    padding: 18,
+    // paddingVertical: 8,
+    borderRadius: 11,
+    marginRight: 15,
+    alignItems:'center'
+  },
+  selectedCategoryButton: {
+    // backgroundColor: '#E53E3E',
+    borderWidth:1,
+    borderColor:App_Primary_color
+  },
+  categoryText: {
+    fontSize: 14,
+    color: 'black',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    marginTop:10
+  },
+  selectedCategoryText: {
+    color: 'black',
+  },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -316,10 +558,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   sortButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -335,27 +573,9 @@ const styles = StyleSheet.create({
     marginRight: 4,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
-  categoryButton: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  selectedCategoryButton: {
-    backgroundColor: '#E53E3E',
-  },
-  categoryText: {
-    fontSize: 13,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  selectedCategoryText: {
-    color: '#fff',
-  },
   contentContainer: {
     flex: 1,
-    paddingTop: 130,
+    paddingTop: 10,
   },
   // New styles for horizontal scrolling
   sectionContainer: {
@@ -379,49 +599,216 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   horizontalCardItem: {
-    width: 180,
+    // width: 180,
     marginRight: 16,
   },
-  // Updated card styles for horizontal layout
-  foodCard: {
+  // Brand Card Styles
+  brandCard: {
+  height: 191,
+    borderRadius: 8,
+    overflow: 'hidden',
+    // position: 'relative',
+    backgroundColor: 'white',
+    width: 240,
+    elevation: 2,
+    shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    padding:10
+  },
+  brandImage: {
+     height: 120,
+    width: '99%',
+    // padding:20,
+    alignSelf:'center',
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10,
+  },
+  brandOverlay: {
+    bottom: 0,
+    left: 5,
+    right: 0,
+    // padding: 12,
+    backgroundColor: 'white',
+    position: 'relative',
+  },
+  brandTitle: {
+    color: 'black',
+    fontSize: 14,
+    marginBottom: 3,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    marginTop:4
+  },
+  brandCategory: {
+     color: '#3D0066',
+    fontSize: 12,
+    // marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  brandBadge: {
+    position: 'absolute',
+    top: -50,
+    right: 8,
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  brandBadgeText: {
+    color: 'white',
+    fontSize: 8,
+    fontWeight: 'bold',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+  
+  // Offer Card Styles
+  offerCard: {
+    height: 191,
+    borderRadius: 8,
+    overflow: 'hidden',
+    // position: 'relative',
+    backgroundColor: 'white',
+    width: 240,
+    elevation: 2,
+    shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    padding:10
+  },
+  offerImage: {
+    height: 120,
+    width: '99%',
+    // padding:20,
+    alignSelf:'center',
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10,
+
+  },
+  offerOverlay: {
+    bottom: 0,
+    left: 5,
+    right: 0,
+    // padding: 12,
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  offerTitle: {
+    color: 'black',
+    fontSize: 14,
+    marginBottom: 3,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    marginTop:4
+  },
+  offerSubtitle: {
+    color: '#3D0066',
+    fontSize: 12,
+    // marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  offerPriceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  offerPrice: {
+    color: '#E53E3E',
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+  },
+  offerOriginalPrice: {
+    color: '#999',
+    fontSize: 11,
+    textDecorationLine: 'line-through',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  offerDiscountBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: '#FF4444',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 1,
+  },
+  offerDiscountText: {
+    color: 'white',
+    fontSize: 9,
+    fontWeight: 'bold',
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+  },
+
+  // Favorite Card Styles
+  favoriteCard: {
     height: 240,
     borderRadius: 8,
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: 'white',
     width: '100%',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  foodImage: {
-    height: 180,
+  favoriteImage: {
+    height: 150,
     width: '100%',
   },
-  overlay: {
+  favoriteOverlay: {
     bottom: 0,
     left: 0,
     right: 0,
     padding: 12,
     backgroundColor: 'white',
+    flex: 1,
   },
-  foodTitle: {
+  favoriteTitle: {
     color: 'black',
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 4,
-    textShadowOffset: {width: 1, height: 1},
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
   },
-  foodSubtitle: {
-    color: '#fff',
-    fontSize: 11,
-    marginBottom: 2,
-    textShadowColor: 'rgba(0,0,0,0.8)',
-    textShadowOffset: {width: 1, height: 1},
-    textShadowRadius: 2,
+  favoriteSubtitle: {
+    color: '#666',
+    fontSize: 10,
+    marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
-  foodCategory: {
-    color: '#3D0066',
-    fontSize: 9,
-    opacity: 0.9,
-    textShadowRadius: 2,
+  favoriteRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  favoriteRating: {
+    color: '#666',
+    fontSize: 10,
+    marginLeft: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  favoritePrice: {
+    color: '#E53E3E',
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+  },
+  favoriteHeartContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'white',
+    padding: 6,
+    borderRadius: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   priceContainer: {
     position: 'absolute',

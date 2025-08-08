@@ -304,6 +304,8 @@ import { getItem } from '../../utils/Apis'
 
 const CreateCampaign = ({navigation}) => {
   const [campaignTitle, setCampaignTitle] = useState('')
+  const [description, setDescription] = useState('')
+
   const [category, setCategory] = useState('')
   const [color, setColor] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
@@ -356,6 +358,10 @@ const CreateCampaign = ({navigation}) => {
      ToastMsg('Please enter campaign title')
       return false
     }
+       if (!description.trim()) {
+     ToastMsg('Please enter description')
+      return false
+    }
     if (!category) {
       ToastMsg( 'Please select a category')
       return false
@@ -396,6 +402,12 @@ const CreateCampaign = ({navigation}) => {
       formdata.append('Title', campaignTitle.trim())
       formdata.append('Category', category)
       formdata.append('Color', color)
+
+      formdata.append('HottestOffer', true)
+      formdata.append('FastFavorite', true)
+      formdata.append('Description', description)
+
+
 
       const requestOptions = {
         method: 'POST',
@@ -464,6 +476,25 @@ const CreateCampaign = ({navigation}) => {
                   value={campaignTitle}
                   onChangeText={setCampaignTitle}
                   placeholder="Enter campaign title"
+                  placeholderTextColor={'gray'}
+                />
+              </View>
+            </View>
+          </View>
+
+            <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>Description</Text>
+              </Row>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={description}
+                  multiline
+                  onChangeText={setDescription}
+                  placeholder="Enter description"
                   placeholderTextColor={'gray'}
                 />
               </View>

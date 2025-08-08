@@ -22,34 +22,187 @@ import CustomButton from '../../../components/Button'
 import { apiGet } from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
+import { useSelector } from 'react-redux'
 
 const BrandHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Current Campaign')
+  const [myCampaigns, setMyCampaigns] = useState([])
+  const [filteredCampaigns, setFilteredCampaigns] = useState([])
+  const [statistics, setStatistics] = useState({
+    totalCampaigns: 0,
+    activeCampaigns: 0,
+    totalBudget: 0,
+    totalReach: 0
+  })
 
   const categories = ['Current Campaign', 'Future Campaign', 'Past Campaign']
 
-   const [myCampaigns, setMyCampaigns] = useState([])
-
   const{showLoader, hideLoader}=useLoader()
 
+  let selector = useSelector(state => state?.user?.userData);
+  if (Object.keys(selector).length != 0) {
+      selector = JSON.parse(selector);
+  }
 
   useEffect(() => {
     getAllMyCampaigns()
   }, [])
 
-  const getAllMyCampaigns = async () => {
+  // Filter campaigns based on search text and category
+  useEffect(() => {
+    filterCampaigns()
+  }, [myCampaigns, searchText, selectedCategory])
+
+  const getAllMyCampaigns = async (searchQuery = '') => {
     try {
       showLoader()
-      const res = await apiGet(urls?.brandsGetAllMyCampaigns)
-      setMyCampaigns(res?.data)
+      // Construct URL with search parameter if provided
+      const url = searchQuery 
+        ? `${urls?.brandsGetAllMyCampaigns}?search=${encodeURIComponent(searchQuery)}`
+        : urls?.brandsGetAllMyCampaigns
+      
+      const res = await apiGet(url)
+      setMyCampaigns(res?.data || [])
+      
+      // Calculate statistics from campaigns data
+      if (res?.data) {
+        const stats = calculateStatistics(res.data)
+        setStatistics(stats)
+      }
+      
       hideLoader()
     } catch (error) {
-      console.log('Error')
+      console.log('Error fetching campaigns:', error)
       hideLoader()
-
     }
   }
+
+  const filterCampaigns = () => {
+    let filtered = [...myCampaigns]
+
+    // Filter by search text (searches in Title, Category, and Status)
+    if (searchText.trim()) {
+      const searchLower = searchText.toLowerCase().trim()
+      filtered = filtered.filter(campaign => 
+        campaign?.Title?.toLowerCase().includes(searchLower) ||
+        campaign?.Category?.toLowerCase().includes(searchLower) ||
+        campaign?.Status?.toLowerCase().includes(searchLower)
+      )
+    }
+
+    // Filter by category (you can implement category-based filtering logic here)
+    // For now, showing all campaigns regardless of selected category
+    // You might want to add a category field mapping in your API data
+    
+    setFilteredCampaigns(filtered)
+  }
+
+  const handleSearch = () => {
+    if (searchText.trim()) {
+      // Call API with search parameter
+      getAllMyCampaigns(searchText.trim())
+    } else {
+      // Reset to all campaigns if search is empty
+      getAllMyCampaigns()
+    }
+  }
+
+  const handleSearchTextChange = (text) => {
+    setSearchText(text)
+    
+    // Optional: Implement real-time search (uncomment if needed)
+    // if (text.length === 0) {
+    //   getAllMyCampaigns() // Reset to all campaigns when search is cleared
+    // }
+  }
+
+  const calculateStatistics = (campaigns) => {
+    const totalCampaigns = campaigns.length
+    const activeCampaigns = campaigns.filter(campaign => 
+      campaign.Status?.toLowerCase() === 'active' || 
+      campaign.Status?.toLowerCase() === 'running'
+    ).length
+    
+    // Mock calculations - replace with actual data fields from your API
+    const totalBudget = campaigns.reduce((sum, campaign) => 
+      sum + (campaign.Budget || Math.floor(Math.random() * 50000) + 10000), 0)
+    const totalReach = campaigns.reduce((sum, campaign) => 
+      sum + (campaign.Reach || Math.floor(Math.random() * 100000) + 50000), 0)
+
+    return {
+      totalCampaigns,
+      activeCampaigns,
+      totalBudget,
+      totalReach
+    }
+  }
+
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M'
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K'
+    }
+    return num.toString()
+  }
+
+  const StatisticsCard = () => (
+    <View style={styles.statisticsCard}>
+      {/* Header Section */}
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardHeaderText}>Campaign</Text>
+        <Icon name="calendar-outline" size={18} color="#fff" />
+      </View>
+
+      {/* Main Stats */}
+      <View style={styles.mainStats}>
+        <Text style={styles.mainNumber}>{statistics.totalCampaigns}</Text>
+        <Text style={styles.mainLabel}>Active</Text>
+      </View>
+
+      {/* Bottom Stats Row */}
+      <View style={styles.bottomStats}>
+        <View style={styles.bottomStatItem}>
+          <View style={{
+            height:6,
+            width:6,
+            borderRadius:100,
+            backgroundColor:'#3170FA'
+          }}/>
+          <Text style={styles.bottomStatNumber}>4</Text>
+        </View>
+        <View style={styles.bottomStatItem}>
+            <View style={{
+            height:6,
+            width:6,
+            borderRadius:100,
+            backgroundColor:'#FFA100'
+          }}/>
+          <Text style={styles.bottomStatNumber}>2</Text>
+        </View>
+        <View style={styles.bottomStatItem}>
+              <View style={{
+            height:6,
+            width:6,
+            borderRadius:100,
+            backgroundColor:App_Primary_color
+          }}/>
+          <Text style={styles.bottomStatNumber}>2</Text>
+        </View>
+        <View style={styles.bottomStatItem}>
+          
+           <View style={{
+            height:6,
+            width:6,
+            borderRadius:100,
+            backgroundColor:'#9CA3AF'
+          }}/>
+          <Text style={styles.bottomStatNumber}>10</Text>
+        </View>
+      </View>
+    </View>
+  )
 
   const CategoryButton = ({title, isSelected, onPress}) => (
     <TouchableOpacity
@@ -80,10 +233,6 @@ const BrandHome = ({navigation}) => {
           style={styles.cardImage}
           // resizeMode="contain"
         />
-        <View style={styles.cardOverlay}>
-          <Text style={styles.cardTitle}>RED AND WHITE</Text>
-          <Text style={styles.cardSubtitle}>BITE AFTER BITE</Text>
-        </View>
       </View>
 
       {/* Card Content */}
@@ -91,9 +240,9 @@ const BrandHome = ({navigation}) => {
         <Text style={styles.hubName}>{item?.Title}</Text>
         <Text style={styles.categoryName}>{item?.Category}</Text>
         
-        <Text style={styles.description}>
+        {/* <Text style={styles.description}>
           Nulla integer rutrum quam feugiat aliquet hac. Ut purus elit et massa eget ornare
-        </Text>
+        </Text> */}
 
         <SpaceBetweenRow style={styles.cardFooter}>
           <View>
@@ -101,8 +250,6 @@ const BrandHome = ({navigation}) => {
           </View>
           <View style={styles.attendeesContainer}>
             <View style={styles.avatarContainer}>
-              {/* <View style={[styles.avatar, {backgroundColor: '#FF6B6B'}]} />
-              <View style={[styles.avatar, {backgroundColor: '#4ECDC4', marginLeft: -8}]} /> */}
               <Image
               source={IMG.AvatorImage}
               style={{
@@ -128,49 +275,33 @@ const BrandHome = ({navigation}) => {
   return (
     <>
     <ScrollView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content'
+      translucent={false}
+      />
 
       <View style={styles.header}>
         <SpaceBetweenRow>
           <Row
             style={{
-              gap: 20,
+              // gap: 20,
             }}>
             <Image
               source={IMG.userProfileImage}
               style={{height: 30, width: 30}}
             />
-            <Row
-              style={{
-                gap: 8,
-                backgroundColor: '#FFFFFF26',
-                padding: 6,
-                borderRadius: 20,
-              }}>
-              <Doller />
-              <CustomText
-                style={{
-                  color: 'white',
-                  fontSize: 16,
-                  fontFamily: FONTS_FAMILY.Poppins_Medium,
-                }}>
-                500k coins
-              </CustomText>
-            </Row>
+          
           </Row>
           <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
             <Notification />
           </TouchableOpacity>
         </SpaceBetweenRow>
+        <CustomText style={{
+          color:'white',
+          fontSize:24,
+          fontFamily:FONTS_FAMILY.Poppins_Medium
+        }}>Welcome {selector?.FirstName}</CustomText>
         <SpaceBetweenRow>
-          <Image
-            source={IMG.Statistic}
-            style={{
-              height: 132,
-              width: '100%',
-            }}
-            resizeMode='stretch'
-          />
+          <StatisticsCard />
         </SpaceBetweenRow>
         <View
           style={{
@@ -193,19 +324,36 @@ const BrandHome = ({navigation}) => {
             <SearchIcons />
             <TextInput
               placeholderTextColor={'gray'}
-              placeholder='Place, location or billboard name'
+              placeholder='Search by campaign name, category or status'
               style={{
                 fontSize: 14,
                 fontFamily: FONTS_FAMILY.Poppins_Regular,
                 flex: 1,
+                color:'black'
               }}
+              value={searchText}
+              onChangeText={handleSearchTextChange}
+              // returnKeyType="search"
+              onSubmitEditing={handleSearch}
             />
+            {searchText.length > 0 && (
+              <TouchableOpacity 
+                onPress={() => {
+                  setSearchText('')
+                  getAllMyCampaigns() // Reset to all campaigns
+                }}
+                style={{paddingHorizontal: 5}}
+              >
+                <Icon name="close-circle" size={20} color="#gray" />
+              </TouchableOpacity>
+            )}
           </Row>
           <CustomButton
             title={'Search Campaign'}
             style={{
               marginTop: 16,
             }}
+            onPress={handleSearch}
           />
         </View>
       </View>
@@ -234,6 +382,11 @@ const BrandHome = ({navigation}) => {
         <SpaceBetweenRow style={styles.sectionHeader}>
           <CustomText style={styles.sectionTitle}>
             {selectedCategory}
+            {searchText.trim() && (
+              <Text style={styles.searchResultsText}>
+                {` (${filteredCampaigns.length} results for "${searchText}")`}
+              </Text>
+            )}
           </CustomText>
           <TouchableOpacity>
             <CustomText style={styles.seeAllText}>
@@ -244,9 +397,31 @@ const BrandHome = ({navigation}) => {
 
         {/* Campaign Cards */}
         <View style={styles.cardsContainer}>
-          {myCampaigns.map((item, index) => (
-            <CampaignCard key={item.id || index} item={item} index={index} />
-          ))}
+          {filteredCampaigns.length > 0 ? (
+            filteredCampaigns.map((item, index) => (
+              <CampaignCard key={item._id || index} item={item} index={index} />
+            ))
+          ) : (
+            <View style={styles.noResultsContainer}>
+              <Icon name="search" size={50} color="#9CA3AF" />
+              <Text style={styles.noResultsText}>
+                {searchText.trim() 
+                  ? `No campaigns found for "${searchText}"` 
+                  : 'No campaigns available'}
+              </Text>
+              {searchText.trim() && (
+                <TouchableOpacity 
+                  onPress={() => {
+                    setSearchText('')
+                    getAllMyCampaigns()
+                  }}
+                  style={styles.clearSearchButton}
+                >
+                  <Text style={styles.clearSearchText}>Clear Search</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
         </View>
         
         {/* Extra padding at bottom */}
@@ -276,12 +451,63 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 18,
     gap: 10,
-    height: 250,
+    height: 280,
   },
   contentContainer: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 130,
+  },
+
+  // Statistics Card Styles
+  statisticsCard: {
+    backgroundColor: '#FFFFFF26',
+    borderRadius: 12,
+    padding: 10,
+    width: '100%',
+    height: 112,
+    justifyContent: 'space-between',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardHeaderText: {
+    fontSize: 10,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#fff',
+  },
+  mainStats: {
+    alignItems: 'flex-start',
+    flexDirection:'row'
+  },
+  mainNumber: {
+    fontSize: 24,
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+    color: '#fff',
+    // lineHeight: 40,
+  },
+  mainLabel: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#fff',
+    marginTop: 8,
+  },
+  bottomStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bottomStatItem: {
+    alignItems: 'center',
+    flexDirection:'row',
+    gap:3
+  },
+  bottomStatNumber: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Comfortaa_Medium,
+    color: '#fff',
   },
   
   // Filter Buttons
@@ -319,10 +545,40 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
     color: '#1F2937',
   },
+  searchResultsText: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#6B7280',
+  },
   seeAllText: {
     fontSize: 14,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     color: '#3D0066',
+  },
+
+  // No Results Styles
+  noResultsContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  noResultsText: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  clearSearchButton: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  clearSearchText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
 
   // Cards Container
@@ -344,27 +600,24 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     marginBottom: 16,
+    padding:10,
   },
 
   // Card Image
   cardImageContainer: {
-    height: 180,
-    position: 'relative',
+    height: 160,
+    // position: 'relative',
   },
   cardImage: {
     width: '100%',
-    height: '90%',
+    height: '95%',
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10
+    
   },
   cardOverlay: {
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-    // right: 0,
-    // bottom: 0,
-    // backgroundColor: 'rgba(218, 165, 32, 0.8)', // Golden overlay
     justifyContent: 'center',
     alignItems: 'center',
-    // padding: 20,
   },
   cardTitle: {
     fontSize: 24,
@@ -384,8 +637,8 @@ const styles = StyleSheet.create({
 
   // Card Content
   cardContent: {
-    padding: 16,
-    position: 'relative',
+    // padding: 16,
+    // position: 'relative',
   },
   hubName: {
     fontSize: 16,
@@ -415,8 +668,6 @@ const styles = StyleSheet.create({
     paddingHorizontal:8,
     borderRadius:20,
     paddingVertical:5
-
-
   },
   attendeesText: {
     fontSize: 14,
@@ -427,7 +678,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-
   },
   avatarContainer: {
     flexDirection: 'row',

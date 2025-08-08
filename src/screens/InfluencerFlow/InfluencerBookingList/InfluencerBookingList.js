@@ -1,0 +1,423 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { FONTS_FAMILY } from '../../../assets/Fonts';
+import { App_Primary_color } from '../../../common/Colors/colors';
+import { apiGet } from '../../../utils/Apis';
+import urls from '../../../config/urls';
+import useLoader from '../../../utils/LoaderHook';
+
+const InfluencerBookingList = ({navigation}) => {
+  const [searchText, setSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [allCampaigns, setAllCampaigns] = useState([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+
+  const categories = ['All', 'Completed', 'Pending'];
+  const { showLoader, hideLoader } = useLoader();
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, []);
+
+  // Filter campaigns whenever category or search text changes
+  useEffect(() => {
+    filterCampaigns();
+  }, [selectedCategory, searchText, allCampaigns]);
+
+  const getAllCampaigns = async () => {
+    try {
+      showLoader();
+      let allData = [];
+      
+      // Get all campaigns (these are likely pending/active campaigns)
+      const allRes = await apiGet(urls?.AllCollabrationReqInfluencer);
+      if (allRes?.data && Array.isArray(allRes.data)) {
+        // Mark these as active/pending since they come from "all" endpoint
+        const activeCampaigns = allRes.data.map(campaign => ({
+          ...campaign,
+          Status: campaign.Status || 'Active' // Use existing status or default to Active
+        }));
+        allData = [...activeCampaigns];
+      }
+      
+      // Get completed campaigns
+      const completedRes = await apiGet(urls?.completedCollabrationReqInfluencer);
+      if (completedRes?.data && Array.isArray(completedRes.data)) {
+        const completedCampaigns = completedRes.data.map(campaign => ({
+          ...campaign,
+          Status: 'Completed' // Override status to Completed
+        }));
+        allData = [...allData, ...completedCampaigns];
+      }
+      
+      // Get cancelled campaigns
+      const cancelledRes = await apiGet(urls?.cancelledCollabrationReqInfluencer);
+      if (cancelledRes?.data && Array.isArray(cancelledRes.data)) {
+        const cancelledCampaigns = cancelledRes.data.map(campaign => ({
+          ...campaign,
+          Status: 'Cancelled' // Override status to Cancelled
+        }));
+        allData = [...allData, ...cancelledCampaigns];
+      }
+      
+      // Remove duplicates based on _id if any exist
+      const uniqueCampaigns = allData.filter((campaign, index, self) => 
+        index === self.findIndex(c => c._id === campaign._id)
+      );
+      
+      setAllCampaigns(uniqueCampaigns);
+      hideLoader();
+    } catch (error) {
+      console.log('Error fetching campaigns:', error);
+      hideLoader();
+    }
+  };
+
+  const filterCampaigns = () => {
+    let filtered = [];
+    
+    // First filter by category
+    switch (selectedCategory) {
+      case 'All':
+        filtered = [...allCampaigns];
+        break;
+      case 'Completed':
+        filtered = allCampaigns.filter(campaign => 
+          campaign.Status?.toLowerCase() === 'completed'
+        );
+        break;
+      case 'Pending':
+        filtered = allCampaigns.filter(campaign => 
+          campaign.Status?.toLowerCase() === 'pending'
+        );
+        break;
+      default:
+        filtered = [...allCampaigns];
+    }
+    
+    // Then apply search filter if searchText exists
+    if (searchText.trim()) {
+      filtered = filtered.filter(campaign => {
+        const title = campaign?.Campaign?.Title || campaign?.Title || '';
+        const category = campaign?.Campaign?.Category || campaign?.Category || '';
+        const description = campaign?.Campaign?.Description || campaign?.Description || '';
+        
+        const searchLower = searchText.toLowerCase();
+        return (
+          title.toLowerCase().includes(searchLower) ||
+          category.toLowerCase().includes(searchLower) ||
+          description.toLowerCase().includes(searchLower)
+        );
+      });
+    }
+    
+    setFilteredCampaigns(filtered);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return '#4CAF50'; // Green for completed
+      case 'pending':
+        return '#F44336'; // Red for cancelled
+      case 'active':
+        return '#3170FA'; // Blue for active
+      case 'pending':
+        return '#FF9800'; // Orange for pending
+      default:
+        return '#666';
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
+  const CategoryButton = ({ title, isSelected, onPress }) => (
+    <TouchableOpacity
+      style={[
+        styles.categoryButton,
+        isSelected && styles.selectedCategoryButton
+      ]}
+      onPress={onPress}
+    >
+      <Text style={[
+        styles.categoryText,
+        isSelected && styles.selectedCategoryText
+      ]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const CampaignCard = ({ item, index }) => (
+    <TouchableOpacity 
+      style={styles.foodCard}
+      onPress={() => navigation.navigate('BrandOfferDetail', {campaignId: item?._id})}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={styles.dateText}>
+          {formatDate(item.createdAt)}
+        </Text>
+        <View style={[
+          styles.statusBadge, 
+          { backgroundColor: getStatusColor(item.Status) }
+        ]}>
+          <Text style={styles.statusText}>
+            {(item.Status || 'ACTIVE').toUpperCase()}
+          </Text>
+        </View>
+      </View>
+      
+      <View style={styles.cardContent}>
+        <Image
+          source={{ 
+            uri: item?.Campaign?.Assets || item?.Assets || 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'
+          }}
+          style={styles.foodImage}
+        />
+        <View style={styles.cardDetails}>
+          <Text style={styles.foodTitle} numberOfLines={2}>
+            {item?.Campaign?.Title || item?.Title || 'Campaign Title'}
+          </Text>
+          <Text style={styles.foodSubtitle} numberOfLines={1}>
+            {item?.Campaign?.Category || item?.Category || 'General'}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+    // filterCampaigns will be called automatically through useEffect
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    // filterCampaigns will be called automatically through useEffect
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={App_Primary_color} barStyle="light-content" />
+      
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Icon name="search" size={20} color="#fff" style={{bottom: 3}}/>
+          <TextInput
+            style={styles.searchInput}
+            placeholder='Search campaigns...'
+            placeholderTextColor={'#fff'}
+            value={searchText}
+            onChangeText={handleSearch}
+          />
+        </View>
+        <View style={styles.categoryContainer}>
+          <View style={styles.categoryRow}>
+            {categories.map((category, index) => (
+              <CategoryButton
+                key={index}
+                title={category}
+                isSelected={selectedCategory === category}
+                onPress={() => handleCategorySelect(category)}
+              />
+            ))}
+          </View>
+        </View>
+      </View>
+
+      {/* Campaigns List */}
+      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <View style={styles.listContainer}>
+          {filteredCampaigns.length > 0 ? (
+            filteredCampaigns.map((item, index) => (
+              <View key={item._id || index} style={styles.listItem}>
+                <CampaignCard item={item} index={index} />
+              </View>
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                {searchText.trim() 
+                  ? `No campaigns found matching "${searchText}"` 
+                  : `No ${selectedCategory.toLowerCase()} campaigns found`
+                }
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default InfluencerBookingList;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    backgroundColor: App_Primary_color,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF26',
+    padding: 0,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    width: '100%',
+  },
+  searchInput: {
+    flex: 1, 
+    color: '#fff', 
+    marginLeft: 8, 
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    paddingVertical: 8,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  categoryContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    alignSelf: 'flex-start'
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryButton: {
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#E53E3E',
+  },
+  categoryText: {
+    fontSize: 13,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  listContainer: {
+    paddingBottom: 80,
+  },
+  listItem: {
+    marginBottom: 16,
+  },
+  foodCard: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  dateText: {
+    fontSize: 12,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '600',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  foodImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  cardDetails: {
+    flex: 1,
+  },
+  foodTitle: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  foodSubtitle: {
+    color: '#666',
+    fontSize: 12,
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    textAlign: 'center',
+  },
+});

@@ -547,6 +547,8 @@ const BrandOfferDetail = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('Attendees') // New state for tabs
   const [activeSubTab, setActiveSubTab] = useState('Paid Collaboration') // New state for tabs
 
+  
+
   // Sample data for different tabs
   const attendeesData = [
     {
@@ -607,6 +609,8 @@ const BrandOfferDetail = ({navigation}) => {
         'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
     },
   ]
+
+
 
   const rescheduleData = [
     {

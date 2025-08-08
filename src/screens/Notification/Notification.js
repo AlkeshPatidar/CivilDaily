@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -16,12 +16,43 @@ import {App_Primary_color, font_gray} from '../../common/Colors/colors'
 import {Back, BackArrow, Settings, Transactions} from '../../assets/SVGs'
 import CustomText from '../../components/TextComponent'
 import Row from '../../components/wrapper/row'
+import { useLoginCheck } from '../../utils/Context'
+import urls from '../../config/urls'
+import { apiGet } from '../../utils/Apis'
+import moment from 'moment'
+import useLoader from '../../utils/LoaderHook'
 
 const Notification = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
-  const categories = ['All', 'Completed', 'Cancelled']
+   const {showLoader, hideLoader} = useLoader()
+
+  const [notification, setNotification] = useState([])
+
+  const {loggedInby, setloggedInby} = useLoginCheck()
+
+  useEffect(() => {
+    GetNotification()
+  }, [])
+
+  const GetNotification = async () => {
+    try {
+      const url =
+        loggedInby == 'Influencers'
+          ? urls?.influencerNotification
+          : urls?.brandNotification
+      showLoader()
+      const res = await apiGet(url)
+      setNotification(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+
 
   const foodItems = [
     {
@@ -90,23 +121,23 @@ const Notification = ({navigation}) => {
             gap: 10,
           }}>
           <Transactions />
-          <Text style={styles.dateText}>{'Transaction'}</Text>
+          <Text style={styles.dateText}>{item?.Category}</Text>
         </Row>
-        <Text style={styles.statusText}>{'27 Dec 2023, 14:01'}</Text>
+        <Text style={styles.statusText}>{moment(item?.createdAt).format('DD-MMM-YYYY') }</Text>
       </View>
 
       <View style={styles.cardContent}>
         <View style={styles.cardDetails}>
           <Text style={styles.foodTitle} numberOfLines={2}>
-            {item.title}
+            {item.Title}
           </Text>
           <Text style={styles.foodSubtitle} numberOfLines={2}>
-            {item.subtitle}
+            {item.Text}
           </Text>
 
-          {item.additionalItems && (
+          {/* {item.additionalItems && (
             <Text style={styles.additionalItems}>{item.additionalItems}</Text>
-          )}
+          )} */}
         </View>
       </View>
     </TouchableOpacity>
@@ -136,7 +167,7 @@ const Notification = ({navigation}) => {
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}>
         <View style={styles.listContainer}>
-          {foodItems.map((item, index) => (
+          {notification.map((item, index) => (
             <View key={item.id} style={styles.listItem}>
               <FoodCard item={item} index={index} />
             </View>
@@ -158,7 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginTop: 30,
+    // marginTop: 30,
     paddingVertical: 12,
     gap: 10,
   },

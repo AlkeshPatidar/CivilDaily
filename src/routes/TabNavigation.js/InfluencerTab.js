@@ -14,6 +14,7 @@ import ProfileScreen from '../../screens/Profile/Profile'
 import InfluencersScreen from '../../screens/Influencer/Influencerlist'
 import InfluencerHome from '../../screens/InfluencerFlow/InfluencerHome/InfluencerHome'
 import BrandBokingList from '../../screens/BrandFlow/BrandHome/BookingList'
+import InfluencerBookingList from '../../screens/InfluencerFlow/InfluencerBookingList/InfluencerBookingList'
 
 const Tab = createBottomTabNavigator()
 
@@ -111,7 +112,7 @@ function InfluenceTab () {
       />
       <Tab.Screen
         name='Fav'
-        component={BrandBokingList}
+        component={InfluencerBookingList}
         options={{
           tabBarLabel: () => <></>,
           tabBarIcon: ({focused}) =>

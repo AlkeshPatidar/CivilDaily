@@ -6,39 +6,53 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  FlatList,
+  ScrollView,
   Image,
   ImageBackground,
+  FlatList,
 } from 'react-native'
 import {BackArrow, EditIcon, ThreeDots} from '../../../assets/SVGs'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
 import useLoader from '../../../utils/LoaderHook'
-import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
-import moment from 'moment'
+import {apiGet, apiPost} from '../../../utils/Apis'
+import {ToastMsg} from '../../../utils/helperFunctions'
+import PaidInputModel from '../../Restaurent/PaidInputCostModel'
+import CalendarModal from '../InfluencerOfferDetail/CalendarModel'
+import CampaignTypeModal from '../InfluencerOfferDetail/ChooseOptionmodel'
+import ConfirmationCampaignModel from '../InfluencerOfferDetail/ConfirmationCampaignModel'
 
-const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
-  const [isCampModalVisible, setIsCampModalVisible] = useState(false)
-  const [selectedCampaignType, setSelectedCampaignType] = useState('')
-  const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
-  const [selectedDateTime, setSelectedDateTime] = useState(null)
-  const [campaigns, setCampaigns] = useState([])
+const InfluencerCampaignDetail = ({navigation, route}) => {
+ 
+  const [getABrand, setGetABrand] = useState(null)
+  const [allOffers, setAllOffers] = useState([])
   const {showLoader, hideLoader} = useLoader()
 
-  console.log()
-  
   useEffect(() => {
-    getAllCampaignsOfAbrand()
+    getABrands()
+    getAllOffersOfACampaign()
   }, [])
 
-  const getAllCampaignsOfAbrand = async () => {
+  const getABrands = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(`${urls?.getAbrand}/${route?.params?.brandId}`)
+      setGetABrand(res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+  const getAllOffersOfACampaign = async () => {
     try {
       showLoader()
       const res = await apiGet(
-        `${urls?.getAllCampaignsOfABrandInfluencer}/${route?.params?.id}`,
+        `${urls?.getAllOffersOfACampaignInfluncer}/${route?.params?.campaignId}`,
       )
-      setCampaigns(res?.data)
-      console.log(res?.data, '++++++++++++++++==')
+      setAllOffers(res?.data)
+      console.log('AllCampaings Offer::::::::', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -47,50 +61,43 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
     }
   }
 
-  const handleNext = () => {
-    setIsCampModalVisible(false)
-    setIsCalendarModalVisible(true)
-  }
-
   const OfferCard = ({offer}) => (
     <TouchableOpacity
       style={styles.offerCard}
-      onPress={() =>
-        navigation.navigate('InfluencerCampaignDetail', {
-          brandId: offer?.Brand,
-          campaignId: offer?._id,
-        })
-      }>
+      onPress={() => navigation.navigate('InfluencerOfferDetail',{id:offer?._id})}
+      >
       <View style={styles.offerImageContainer}>
-        <Image source={{uri: offer.Assets}} style={styles.offerImage} />
+        <Image source={{uri: offer.Image}} style={styles.offerImage} />
       </View>
       <View style={styles.offerContent}>
         <View style={styles.dateTimeContainer}>
           <View style={styles.dateDot} />
-          <Text style={styles.dateText}>
-            {moment(offer.createdAt).format('DD-MMM-YYYY')}
-          </Text>
-          <Text style={styles.timeText}>{offer.time}</Text>
+          <Text style={styles.dateText}>{offer.StartDate}</Text>
+          <Text style={styles.timeText}>{offer.EndDate}</Text>
         </View>
         <Text style={styles.offerTitle}>{offer.Title}</Text>
-        <Text style={styles.offerCategory}>{offer.Category}</Text>
-        <Text style={styles.offerLocation}>{offer.location}</Text>
+        <Text style={styles.offerCategory}>
+          Average Impressions:{offer.AverageDailyImpressions}
+        </Text>
+        <Text style={styles.offerLocation}>
+          Duration Min:{offer.AdDurationMinutes}
+        </Text>
       </View>
     </TouchableOpacity>
   )
 
-  const EmptyListComponent = () => (
-    <View style={styles.emptyContainer}>
+  const EmptyOffersComponent = () => (
+    <View style={styles.emptyOffersContainer}>
       <View style={styles.emptyIconContainer}>
-        <Text style={styles.emptyIcon}>📋</Text>
+        <Text style={styles.emptyIcon}>🎯</Text>
       </View>
-      <Text style={styles.emptyTitle}>No Campaigns Found</Text>
+      <Text style={styles.emptyTitle}>No Offers Available</Text>
       <Text style={styles.emptyDescription}>
-        There are currently no campaigns available for this brand.
+        This campaign currently has no offers available. Check back later for new opportunities.
       </Text>
       <TouchableOpacity 
         style={styles.refreshButton}
-        onPress={getAllCampaignsOfAbrand}
+        onPress={getAllOffersOfACampaign}
       >
         <Text style={styles.refreshButtonText}>Refresh</Text>
       </TouchableOpacity>
@@ -105,6 +112,15 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
     return item?._id?.toString() || item?.id?.toString() || index.toString()
   }
 
+  const ListHeaderComponent = () => (
+    <View style={styles.offersSectionHeader}>
+      <Text style={styles.offersTitle}>Offers</Text>
+      <TouchableOpacity>
+        {/* <Text style={styles.seeAllText}>See All ›</Text> */}
+      </TouchableOpacity>
+    </View>
+  )
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor='#D64A3A' barStyle='light-content' />
@@ -117,7 +133,9 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
           <BackArrow />
         </TouchableOpacity>
         {/* <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.editButton}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => navigation.navigate('MessageScreen')}>
             <EditIcon />
           </TouchableOpacity>
           <TouchableOpacity style={styles.moreButton}>
@@ -126,19 +144,49 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
         </View> */}
       </View>
 
-      <FlatList
-        data={campaigns}
-        renderItem={renderOfferCard}
-        keyExtractor={keyExtractor}
-        contentContainerStyle={[
-          styles.flatListContainer,
-          campaigns.length === 0 && styles.emptyContentContainer
-        ]}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={EmptyListComponent}
-        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-        style={styles.content}
-      />
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            padding: 8,
+            borderRadius: 8,
+            margin: 0,
+          }}>
+          <ImageBackground
+            source={{
+              uri: getABrand?.Image
+                ? getABrand?.Image
+                : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+            }} 
+            style={styles.heroSection}
+            imageStyle={styles.heroImageStyle}>
+            <View style={styles.heroOverlay}>
+              <Text style={styles.heroText}>
+                {getABrand?.BrandName}
+              </Text>
+            </View>
+          </ImageBackground>
+          <View style={styles.restaurantInfo}>
+            <Text style={styles.restaurantName}>{getABrand?.BrandName}</Text>
+            <Text style={styles.restaurantCategory}>Food & Beverage</Text>
+          </View>
+        </View>
+
+        {/* Offers Section with FlatList */}
+        <View style={styles.offersSection}>
+          <FlatList
+            data={allOffers}
+            renderItem={renderOfferCard}
+            keyExtractor={keyExtractor}
+            ListHeaderComponent={ListHeaderComponent}
+            ListEmptyComponent={EmptyOffersComponent}
+            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+            showsVerticalScrollIndicator={false}
+            scrollEnabled={false} // Disable scroll since we're inside ScrollView
+            contentContainerStyle={styles.flatListContainer}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -194,75 +242,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginTop: 20,
   },
-  flatListContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-  },
-  emptyContentContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  itemSeparator: {
-    height: 12,
-  },
-  // Empty state styles
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-    paddingVertical: 60,
-  },
-  emptyIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  emptyIcon: {
-    fontSize: 32,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#333',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  emptyDescription: {
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 32,
-  },
-  refreshButton: {
-    backgroundColor: '#D64A3A',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  refreshButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  // Existing offer card styles
   heroSection: {
     height: 200,
     marginHorizontal: 16,
@@ -320,6 +300,12 @@ const styles = StyleSheet.create({
   offersSection: {
     paddingHorizontal: 16,
   },
+  flatListContainer: {
+    flexGrow: 1,
+  },
+  itemSeparator: {
+    height: 12,
+  },
   offersSectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -336,6 +322,59 @@ const styles = StyleSheet.create({
     color: '#8B5CF6',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
+  // Empty state styles
+  emptyOffersContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptyIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  emptyIcon: {
+    fontSize: 32,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: '#333',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyDescription: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  refreshButton: {
+    backgroundColor: '#D64A3A',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  refreshButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  // Existing offer card styles
   offerCard: {
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -402,7 +441,7 @@ const styles = StyleSheet.create({
   },
   offerTitle: {
     fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
     color: '#333',
     marginBottom: 4,
   },
@@ -442,4 +481,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default InfluencerCapaignListOfaBrand
+export default InfluencerCampaignDetail

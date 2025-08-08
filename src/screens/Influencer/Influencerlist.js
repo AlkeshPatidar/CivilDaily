@@ -29,7 +29,8 @@ const InfluencersScreen = ({navigation}) => {
   const getAllInfluencers = async () => {
     try {
       showLoader()
-      const res = await apiGet(urls?.getAllInfluencers)
+      const res = await apiGet('/api/brand/GetCollaborationAttendanceList')
+      
       setAllInfluencers(res?.data)
       hideLoader()
     } catch (error) {
