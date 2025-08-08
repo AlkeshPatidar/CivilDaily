@@ -388,7 +388,7 @@ const BrandHome = ({navigation}) => {
               </Text>
             )}
           </CustomText>
-          <TouchableOpacity>
+          <TouchableOpacity     onPress={() => navigation.navigate('BrandBokingList')}>
             <CustomText style={styles.seeAllText}>
               See All <Text>{">"}</Text>
             </CustomText>

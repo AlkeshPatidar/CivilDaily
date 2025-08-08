@@ -1,282 +1,4 @@
-// import React, {useState} from 'react'
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   TouchableOpacity,
-//   StyleSheet,
-//   SafeAreaView,
-//   StatusBar,
-//   Image,
-//   Alert,
-// } from 'react-native'
-// import Icon from 'react-native-vector-icons/MaterialIcons'
-// import {FONTS_FAMILY} from '../../assets/Fonts'
-// import IMG from '../../assets/Images'
-// import {App_Primary_color} from '../../common/Colors/colors'
-// import {BackArrow, Label} from '../../assets/SVGs'
-// import Row from '../../components/wrapper/row'
-
-// const CreateCampaign = ({navigation}) => {
-//   const [campaignTitle, setCampaignTitle] = useState('')
-//   const [selectedCategory, setSelectedCategory] = useState('')
-//   const [selectedFile, setSelectedFile] = useState('')
-
-//   const handleImageUpload = () => {
-//     Alert.alert(
-//       'Upload Image',
-//       'Image upload functionality would be implemented here',
-//     )
-//   }
-
-//   const handleSubmit = () => {
-//     navigation.navigate('BrandHome')
-//   }
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <StatusBar barStyle='light-content' backgroundColor={App_Primary_color} />
-
-//       {/* Header */}
-//       <View style={styles.header}>
-//         <TouchableOpacity
-//           style={styles.backButton}
-//           onPress={() => navigation.goBack()}>
-//           <BackArrow />
-//         </TouchableOpacity>
-//         <Text style={styles.headerTitle}>Create Campaign</Text>
-//         <View style={styles.placeholder} />
-//       </View>
-
-//       <View style={styles.content}>
-//         {/* Campaign Title */}
-//         <View
-//           style={{
-//             // borderWidth: 2,
-//             padding: 10,
-//             borderRadius: 12,
-//             // borderColor: '#D1D5DB',
-//             backgroundColor: 'white',
-//           }}>
-//           <View style={styles.section}>
-//             <View style={styles.inputContainer}>
-//               <TextInput
-//                 style={styles.textInput}
-//                 value={campaignTitle}
-//                 onChangeText={setCampaignTitle}
-//                 placeholder='Campaign Title'
-//                 placeholderTextColor={'gray'}
-//               />
-//             </View>
-//           </View>
-//           {/* Category Selection */}
-//           <View style={styles.section}>
-//             <Row style={{
-//               gap:15
-//             }}>
-//               <Label />
-//               <Text style={styles.radioText}>Enter Description</Text>
-//             </Row>
-           
-//           </View>
-//         </View>
-
-//           <View
-//           style={{
-//             // borderWidth: 2,
-//             padding: 10,
-//             borderRadius: 12,
-//             // borderColor: '#D1D5DB',
-//             backgroundColor: 'white',
-//             marginTop:10
-//           }}>
-//           <View style={styles.section}>
-//             <View style={styles.inputContainer}>
-//               <TextInput
-//                 style={styles.textInput}
-//                 value={campaignTitle}
-//                 onChangeText={setCampaignTitle}
-//                 placeholder='Campaign Title'
-//                 placeholderTextColor={'gray'}
-//               />
-//             </View>
-//           </View>
-//           {/* Category Selection */}
-//           <View style={styles.section}>
-//             <Row style={{
-//               gap:15
-//             }}>
-//               <Label />
-//               <Text style={styles.radioText}>Enter Description</Text>
-//             </Row>
-           
-//           </View>
-//         </View>
-
-//         <Image
-//           source={IMG.Asset}
-//           style={{
-//             alignSelf: 'center',
-//             height: 310,
-//             width: '100%',
-//             marginTop: 16,
-//           }}
-//           resizeMode='contain'
-//         />
-
-//         {/* Submit Button */}
-//         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-//           <Text style={styles.submitButtonText}>Create Campaign</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </SafeAreaView>
-//   )
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     // backgroundColor: '#fff',
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     paddingHorizontal: 16,
-//     paddingVertical: 12,
-//     borderBottomColor: '#f0f0f0',
-//     // marginTop: 30,
-//     backgroundColor: App_Primary_color,
-//   },
-//   backButton: {
-//     width: 40,
-//     height: 40,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   headerTitle: {
-//     flex: 1,
-//     fontSize: 18,
-//     fontWeight: '600',
-//     color: 'white',
-//     textAlign: 'center',
-//   },
-//   placeholder: {
-//     width: 40,
-//   },
-//   content: {
-//     flex: 1,
-//     paddingHorizontal: 20,
-//     paddingTop: 20,
-//   },
-//   section: {
-//     // marginBottom: 32,
-//   },
-//   sectionTitle: {
-//     fontSize: 16,
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//     color: '#333',
-//     marginBottom: 12,
-//   },
-//   inputContainer: {
-//     // borderWidth: 1,
-//     borderColor: '#e0e0e0',
-//     borderRadius: 8,
-//     paddingHorizontal: 12,
-//     paddingVertical: 0,
-//     minHeight: 48,
-//   },
-//   textInput: {
-//     fontSize: 18,
-//     color: '#333',
-//     flex: 1,
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//   },
-//   radioContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginBottom: 16,
-//   },
-//   radio: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 10,
-//     borderWidth: 2,
-//     borderColor: '#e0e0e0',
-//     marginRight: 12,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   radioSelected: {
-//     borderColor: '#E53E3E',
-//   },
-//   radioInner: {
-//     width: 10,
-//     height: 10,
-//     borderRadius: 5,
-//     backgroundColor: '#E53E3E',
-//   },
-//   radioText: {
-//     fontSize: 14,
-//     color: '#333',
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//   },
-//   uploadContainer: {
-//     borderWidth: 1,
-//     borderColor: '#e0e0e0',
-//     borderRadius: 8,
-//     paddingVertical: 40,
-//     paddingHorizontal: 20,
-//     alignItems: 'center',
-//     backgroundColor: '#fafafa',
-//   },
-//   uploadIcon: {
-//     width: 48,
-//     height: 48,
-//     borderRadius: 24,
-//     backgroundColor: '#fff',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginBottom: 16,
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 4,
-//     elevation: 3,
-//   },
-//   uploadTitle: {
-//     fontSize: 16,
-//     fontWeight: '600',
-//     color: '#333',
-//     marginBottom: 8,
-//   },
-//   uploadSubtitle: {
-//     fontSize: 14,
-//     color: '#666',
-//     textAlign: 'center',
-//     lineHeight: 20,
-//   },
-//   submitButton: {
-//     backgroundColor: App_Primary_color,
-//     borderRadius: 8,
-//     paddingVertical: 13,
-//     alignItems: 'center',
-//     marginTop: 'auto',
-//     marginBottom: 20,
-//   },
-//   submitButtonText: {
-//     fontSize: 16,
-//     fontWeight: '600',
-//     color: '#fff',
-//   },
-// })
-
-// export default CreateCampaign
-
-
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
   View,
   Text,
@@ -300,17 +22,21 @@ import {BackArrow, Label} from '../../assets/SVGs'
 import Row from '../../components/wrapper/row'
 import useLoader from '../../utils/LoaderHook'
 import { ToastMsg } from '../../utils/helperFunctions'
-import { getItem } from '../../utils/Apis'
+import { getItem, apiGet } from '../../utils/Apis'
+import { urls } from '../../utils/Apis' // Assuming urls is exported from Apis
 
-const CreateCampaign = ({navigation}) => {
+const CreateCampaign = ({navigation, route}) => {
   const [campaignTitle, setCampaignTitle] = useState('')
   const [description, setDescription] = useState('')
-
   const [category, setCategory] = useState('')
   const [color, setColor] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
+  const [campaignDetail, setCampaignDetail] = useState(null)
+  const [isEditMode, setIsEditMode] = useState(false)
   const {showLoader, hideLoader}=useLoader()
 
+  console.log(route?.params?.campaignId);
+  
   const categories = [
     'Customer Goods',
     'Electronics',
@@ -332,6 +58,49 @@ const CreateCampaign = ({navigation}) => {
     {name: 'Purple', value: 'purple'},
     {name: 'Orange', value: 'orange'},
   ]
+
+  // Check if we're in edit mode and fetch campaign details
+  useEffect(() => {
+    if (route?.params?.campaignId) {
+      setIsEditMode(true)
+      getBrandCampaignDetail()
+    }
+  }, [route?.params?.campaignId])
+
+  // Populate form when campaign details are loaded
+  useEffect(() => {
+    if (campaignDetail && isEditMode) {
+      setCampaignTitle(campaignDetail.Title || '')
+      setDescription(campaignDetail.Description || '')
+      setCategory(campaignDetail.Category || '')
+      setColor(campaignDetail.Color || '')
+      
+      // Set existing image as selected file (for display purposes)
+      if (campaignDetail.Assets) {
+        setSelectedFile({
+          uri: campaignDetail.Assets,
+          fileName: 'existing_image.jpg',
+          type: 'image/jpeg'
+        })
+      }
+    }
+  }, [campaignDetail, isEditMode])
+
+  const getBrandCampaignDetail = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(
+        `/api/brand/GetCampaigndetail/${route?.params?.campaignId}`,
+      )
+      setCampaignDetail(res?.data)
+      console.log('Brand Campaign Detail', res?.data)
+      hideLoader()
+    } catch (error) {
+      console.log('Error fetching campaign details:', error)
+      ToastMsg('Failed to load campaign details')
+      hideLoader()
+    }
+  }
 
   const handleImageUpload = () => {
     const options = {
@@ -358,20 +127,20 @@ const CreateCampaign = ({navigation}) => {
      ToastMsg('Please enter campaign title')
       return false
     }
-       if (!description.trim()) {
+    if (!description.trim()) {
      ToastMsg('Please enter description')
       return false
     }
     if (!category) {
-      ToastMsg( 'Please select a category')
+      ToastMsg('Please select a category')
       return false
     }
     if (!color) {
-      ToastMsg( 'Please select a color')
+      ToastMsg('Please select a color')
       return false
     }
     if (!selectedFile) {
-      ToastMsg( 'Please select an image')
+      ToastMsg('Please select an image')
       return false
     }
     return true
@@ -385,7 +154,7 @@ const CreateCampaign = ({navigation}) => {
     try {
       showLoader()
 
-      const token= await getItem('token')
+      const token = await getItem('token')
 
       const myHeaders = new Headers()
       myHeaders.append(
@@ -394,32 +163,35 @@ const CreateCampaign = ({navigation}) => {
       )
 
       const formdata = new FormData()
-      formdata.append('Assets', {
-        uri: selectedFile.uri,
-        type: selectedFile.type,
-        name: selectedFile.fileName || 'campaign_image.jpg',
-      })
+      
+      // Only append image if it's a new file (not the existing URL)
+      if (selectedFile && !selectedFile.uri.startsWith('http')) {
+        formdata.append('Assets', {
+          uri: selectedFile.uri,
+          type: selectedFile.type,
+          name: selectedFile.fileName || 'campaign_image.jpg',
+        })
+      }
+
       formdata.append('Title', campaignTitle.trim())
       formdata.append('Category', category)
       formdata.append('Color', color)
-
       formdata.append('HottestOffer', true)
       formdata.append('FastFavorite', true)
       formdata.append('Description', description)
 
-
+      const apiUrl = isEditMode 
+        ? `https://influencer-brands-backend.vercel.app/api/brand/UpdateCamapign/${route?.params?.campaignId}`
+        : 'https://influencer-brands-backend.vercel.app/api/brand/CreateCampaign'
 
       const requestOptions = {
-        method: 'POST',
+        method: isEditMode ? 'PUT' : 'POST',
         headers: myHeaders,
         body: formdata,
         redirect: 'follow',
       }
 
-      const response = await fetch(
-        'https://influencer-brands-backend.vercel.app/api/brand/CreateCampaign',
-        requestOptions
-      )
+      const response = await fetch(apiUrl, requestOptions)
 
       const result = await response.text()
       console.log('API Response:', result)
@@ -427,15 +199,15 @@ const CreateCampaign = ({navigation}) => {
       hideLoader()
 
       if (response.ok) {
-        ToastMsg('Campaign created successfully!')
+        ToastMsg(isEditMode ? 'Campaign updated successfully!' : 'Campaign created successfully!')
         navigation.goBack()
       } else {
-        ToastMsg( 'Failed to create campaign. Please try again.')
+        ToastMsg(isEditMode ? 'Failed to update campaign. Please try again.' : 'Failed to create campaign. Please try again.')
       }
     } catch (error) {
       hideLoader()
       console.error('API Error:', error)
-      ToastMsg( 'Network error. Please check your connection and try again.')
+      ToastMsg('Network error. Please check your connection and try again.')
     }
   }
 
@@ -450,7 +222,9 @@ const CreateCampaign = ({navigation}) => {
           onPress={() => navigation.goBack()}>
           <BackArrow />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Create Campaign</Text>
+        <Text style={styles.headerTitle}>
+          {isEditMode ? 'Edit Campaign' : 'Create Campaign'}
+        </Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -482,7 +256,7 @@ const CreateCampaign = ({navigation}) => {
             </View>
           </View>
 
-            <View style={styles.formSection}>
+          <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
                 <Label />
@@ -596,16 +370,11 @@ const CreateCampaign = ({navigation}) => {
             </View>
           </View>
 
-          {/* Asset Image */}
-          {/* <Image
-            source={IMG.Asset}
-            style={styles.assetImage}
-            resizeMode="contain"
-          /> */}
-
           {/* Submit Button */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Create Campaign</Text>
+            <Text style={styles.submitButtonText}>
+              {isEditMode ? 'Update Campaign' : 'Create Campaign'}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

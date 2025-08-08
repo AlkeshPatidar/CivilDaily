@@ -33,6 +33,8 @@ export default {
   getAllInfluencers: '/api/admin/GetAllInfluencer',
   mesageListOfBrand:'/api/brand/GetAllContactOfBrand',
   brandNotification:'/api/brand/GetBrandNotification',
+getBrandCampaignDetail:'/api/brand/GetCampaigndetail'
+
 
 
 }

@@ -25,7 +25,7 @@ import InfluencerHome from '../../screens/InfluencerFlow/InfluencerHome/Influenc
 import OfferDetail from '../../screens/Restaurent/OfferDetail';
 import ProfileScreen from '../../screens/Profile/Profile';
 import CreateCampaign from '../../screens/CreateCampaign/CreateCampaign';
-import BrandOfferDetail from '../../screens/CreateCampaign/BrandOfferDetail';
+import BrandOfferDetail from '../../screens/CreateCampaign/BrandCampaignDetail';
 import TabNavigation from '../TabNavigation.js/TabNavigation';
 import InfluenceTab from '../TabNavigation.js/InfluencerTab';
 import BrandDetailMap from '../../screens/InfluencerFlow/BrandDetailMap';
@@ -35,6 +35,7 @@ import InfluencerCapaignListOfaBrand from '../../screens/InfluencerFlow/Influenc
 import ForgotPassword from '../../screens/Auth/ForgetPassword';
 import InfluencerOfferDetail from '../../screens/InfluencerFlow/InfluencerOfferDetail/InfluencerOfferDetail';
 import InfluencerCampaignDetail from '../../screens/InfluencerFlow/InfluencerCampaignDetail/InfluencerCampaignDetail';
+import AtedessReq from '../../screens/InfluencerFlow/AttendeeesReq/AttendeesReq';
 
 
 
@@ -81,12 +82,14 @@ const StackNavigation = () => {
         <Stack.Screen name={'BrandHome'} component={BrandHome} />
         <Stack.Screen name={'BrandBokingList'} component={BrandBokingList} />
         <Stack.Screen name={'CampaignList'} component={CampaignList} />
+
         <Stack.Screen name={'InfluencersScreen'} component={InfluencersScreen} />
         <Stack.Screen name={'InfluencerHome'} component={InfluencerHome} />
         <Stack.Screen name={'OfferDetail'} component={OfferDetail} />
         <Stack.Screen name={'ProfileScreen'} component={ProfileScreen} />
+
         <Stack.Screen name={'CreateCampaign'} component={CreateCampaign} />
-        <Stack.Screen name={'BrandOfferDetail'} component={BrandOfferDetail} />
+        <Stack.Screen name={'BrandCapmaignDetail'} component={BrandOfferDetail} />
         <Stack.Screen name={'TabBrand'} component={TabNavigation} />
         <Stack.Screen name={'InfluenceTab'} component={InfluenceTab} />
         <Stack.Screen name={'BrandDetailMap'} component={BrandDetailMap} />
@@ -97,6 +100,8 @@ const StackNavigation = () => {
 
         <Stack.Screen name={'InfluencerOfferDetail'} component={InfluencerOfferDetail} />
         <Stack.Screen name={'InfluencerCampaignDetail'} component={InfluencerCampaignDetail} />
+        <Stack.Screen name={'AtedessReq'} component={AtedessReq} />
+
 
 
 

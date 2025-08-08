@@ -508,7 +508,7 @@
 
 // export default BrandOfferDetail
 
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -535,10 +535,14 @@ import color, {App_Primary_color, font_gray} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import IMG from '../../assets/Images'
 import SpaceBetweenRow from '../../components/wrapper/spacebetween'
+import {apiDelete, apiGet} from '../../utils/Apis'
+import urls from '../../config/urls'
+import useLoader from '../../utils/LoaderHook'
+import { useIsFocused } from '@react-navigation/native'
 
 const {width, height} = Dimensions.get('window')
 
-const BrandOfferDetail = ({navigation}) => {
+const BrandCampaignDetail = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
   const [selectedCampaignType, setSelectedCampaignType] = useState('')
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
@@ -547,7 +551,82 @@ const BrandOfferDetail = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('Attendees') // New state for tabs
   const [activeSubTab, setActiveSubTab] = useState('Paid Collaboration') // New state for tabs
 
-  
+  const [campaignDetail, setCampaignDetial] = useState(null)
+  const {showLoader, hideLoader} = useLoader()
+  const [atendess, setAttendees] = useState()
+  const [req, setReq] = useState()
+
+  const isFocused= useIsFocused()
+
+
+  useEffect(() => {
+    getBrandCampaignDetial()
+    getAtendess()
+    getCollabrationReq()
+  }, [isFocused])
+
+  const getBrandCampaignDetial = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(
+        `${urls?.getBrandCampaignDetail}/${route?.params?.campaignId}`,
+      )
+      setCampaignDetial(res?.data)
+      console.log('Brand CamPaignDetial', res?.data)
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+  const DeleteCampaign = async () => {
+    try {
+      showLoader()
+      const res = await apiDelete(
+        `/api/brand/DeleteCampaign/${route?.params?.campaignId}`,
+      )
+      navigation.goBack()
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+  const getAtendess = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(`/api/brand/GetCollaborationAttendanceListaCampaign/${route?.params?.campaignId}`,
+      )
+      setAttendees(res.data)
+      console.log('Atesndess', res?.data);
+      
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+    const getCollabrationReq = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(`/api/brand/GetAllCollaborationRequestOfaCampaign/${route?.params?.campaignId}`,
+      )
+      setReq(res.data)
+      console.log('Atesndess', res?.data);
+      
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
 
   // Sample data for different tabs
   const attendeesData = [
@@ -610,23 +689,6 @@ const BrandOfferDetail = ({navigation}) => {
     },
   ]
 
-
-
-  const rescheduleData = [
-    {
-      id: 1,
-      title: 'Christmas Special Discount',
-      category: 'Food & Beverage',
-      location: 'Graha Mandiri, Jakarta Pusat',
-      originalDate: '20 Dec - 25 Dec',
-      requestedDate: '22 Dec - 27 Dec',
-      time: '17:00 - 18:00',
-      status: 'Rescheduled',
-      image:
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-  ]
-
   const tabs = ['Attendees', 'Request', 'Reschedule Request']
 
   const handleNext = () => {
@@ -642,7 +704,8 @@ const BrandOfferDetail = ({navigation}) => {
         navigation.navigate('CreateCampaign')
         break
       case 'delete':
-        navigation.navigate('TrashScreen')
+        // navigation.navigate('TrashScreen')
+        DeleteCampaign()
         break
       case 'share':
         console.log('Share pressed')
@@ -657,10 +720,10 @@ const BrandOfferDetail = ({navigation}) => {
 
   const AttendeeCard = ({attendee}) => (
     <TouchableOpacity style={styles.attendeeCard}>
-      <Image source={{uri: attendee.avatar}} style={styles.attendeeAvatar} />
+      <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
       <View style={styles.attendeeInfo}>
-        <Text style={styles.attendeeName}>{attendee.name}</Text>
-        <Text style={styles.attendeeRole}>{attendee.role}</Text>
+        <Text style={styles.attendeeName}>{attendee.FirstName}{atendess?.LastName}</Text>
+        <Text style={styles.attendeeRole}>{attendee.NicheInput}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -792,15 +855,15 @@ const BrandOfferDetail = ({navigation}) => {
       case 'Attendees':
         return (
           <View style={styles.tabContent}>
-            {attendeesData.map(attendee => (
-              <AttendeeCard key={attendee.id} attendee={attendee} />
+            {atendess?.map(attendee => (
+              <AttendeeCard key={attendee?._id} attendee={attendee} />
             ))}
           </View>
         )
       case 'Request':
         return (
           <View style={styles.tabContent}>
-            {requestsData.map(request => (
+            {requestsData?.map(request => (
               <RequestCard key={request.id} request={request} />
             ))}
           </View>
@@ -863,7 +926,7 @@ const BrandOfferDetail = ({navigation}) => {
         <View style={styles.headerActions}>
           <TouchableOpacity
             style={styles.editButton}
-            onPress={() => navigation.navigate('MessageScreen')}>
+            onPress={() => navigation.navigate('CreateCampaign', {campaignId:route?.params?.campaignId})}>
             <EditIcon />
           </TouchableOpacity>
           <TouchableOpacity
@@ -879,7 +942,7 @@ const BrandOfferDetail = ({navigation}) => {
         <View style={styles.heroContainer}>
           <ImageBackground
             source={{
-              uri: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+              uri: campaignDetail?.Assets,
             }}
             style={styles.heroSection}
             imageStyle={styles.heroImageStyle}>
@@ -887,16 +950,16 @@ const BrandOfferDetail = ({navigation}) => {
               <View style={styles.playButton}>
                 <Text style={styles.playButtonText}>▶</Text>
               </View>
-              <Text style={styles.heroText}>
+              {/* <Text style={styles.heroText}>
                 JINGLE{'\n'}MUNCH{'\n'}SAVE
-              </Text>
+              </Text> */}
             </View>
           </ImageBackground>
           <View style={styles.restaurantInfo}>
-            <Text style={styles.restaurantName}>
-              Christmas Special Discount
+            <Text style={styles.restaurantName}>{campaignDetail?.Title}</Text>
+            <Text style={styles.restaurantCategory}>
+              {campaignDetail?.Category}
             </Text>
-            <Text style={styles.restaurantCategory}>Food & Beverage</Text>
           </View>
 
           <SpaceBetweenRow>
@@ -918,7 +981,15 @@ const BrandOfferDetail = ({navigation}) => {
                 DRAFT
               </CustomText>
             </View>
-            <Badge />
+            {/* <Badge /> */}
+            <View
+              style={{
+                borderWidth: 5,
+                borderColor: campaignDetail?.Color,
+                padding: 5,
+                borderRadius: 100,
+              }}
+            />
           </SpaceBetweenRow>
         </View>
 
@@ -992,7 +1063,7 @@ const BrandOfferDetail = ({navigation}) => {
                 marginHorizontal: 20,
                 marginTop: 15,
                 // width:'100%'
-                gap:36
+                gap: 36,
               }}>
               <CustomText
                 style={{
@@ -1355,4 +1426,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default BrandOfferDetail
+export default BrandCampaignDetail

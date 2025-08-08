@@ -13,14 +13,15 @@ import {Back, BackArrow, EditIcon, ForwordChev} from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
 import {App_Primary_color} from '../../common/Colors/colors'
-import { clearAsyncStorage } from '../../utils/Apis'
-import { showError } from '../../utils/helperFunctions'
-import { useSelector } from 'react-redux'
-import { setEnabled } from 'react-native/Libraries/Performance/Systrace'
+import {clearAsyncStorage} from '../../utils/Apis'
+import {showError} from '../../utils/helperFunctions'
+import {useSelector} from 'react-redux'
+import {setEnabled} from 'react-native/Libraries/Performance/Systrace'
 
 const ProfileScreen = ({navigation}) => {
   const menuItems = [
     {icon: '💳', title: 'Bank Account', onPress: () => {}},
+    {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
     {icon: '📋', title: 'Delivery Details', onPress: () => {}},
     {icon: '📊', title: 'Linked Social Midea', onPress: () => {}},
     {icon: '🔔', title: 'Notification Settings', onPress: () => {}},
@@ -33,28 +34,26 @@ const ProfileScreen = ({navigation}) => {
     {icon: 'ℹ️', title: 'About', onPress: () => {}},
   ]
 
-   let selector = useSelector(state => state?.user?.userData);
-    if (Object.keys(selector).length != 0) {
-        selector = JSON.parse(selector);
+  let selector = useSelector(state => state?.user?.userData)
+  if (Object.keys(selector).length != 0) {
+    selector = JSON.parse(selector)
+  }
+
+  console.log(selector, 'Selector')
+
+  const onLogout = async () => {
+    try {
+      await clearAsyncStorage()
+      navigation?.replace('Splash1')
+    } catch (error) {
+      showError('Error while logging out')
     }
-
-    console.log(selector,'Selector');
-    
-
-   const onLogout = async () => {
-        try {
-            await clearAsyncStorage();
-            navigation?.replace('Splash1');
-        } catch (error) {
-            showError('Error while logging out');
-        }
-    };
-
+  }
 
   return (
     <View style={styles.container}>
-  <StatusBar 
-        barStyle='light-content' 
+      <StatusBar
+        barStyle='light-content'
         backgroundColor={App_Primary_color}
         translucent={false}
       />
@@ -74,7 +73,10 @@ const ProfileScreen = ({navigation}) => {
         <View style={styles.profileSection}>
           <Image source={IMG.AvatorImage} style={styles.profileImage} />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{selector?.FirstName}{selector?.LastName}</Text>
+            <Text style={styles.profileName}>
+              {selector?.FirstName}
+              {selector?.LastName}
+            </Text>
             <Text style={styles.profileEmail}>{selector?.Email}</Text>
             <TouchableOpacity style={styles.editButton}>
               <EditIcon />
@@ -117,9 +119,7 @@ const ProfileScreen = ({navigation}) => {
         </View>
 
         {/* Log Out Button */}
-        <TouchableOpacity style={styles.logoutButton}
-        onPress={onLogout}
-        >
+        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
           <Text style={styles.logoutIcon}>⟲</Text>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>

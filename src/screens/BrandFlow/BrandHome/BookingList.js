@@ -164,7 +164,7 @@ const BrandBokingList = ({navigation}) => {
     <TouchableOpacity style={styles.foodCard}
       // onPress={() => navigation.navigate('CampaignList')}
       
-      onPress={() => navigation.navigate('BrandOfferDetail',{campaignId:item?._id})}
+      onPress={() => navigation.navigate('BrandCapmaignDetail',{campaignId:item?._id})}
     >
       <View style={styles.cardHeader}>
         <Text style={styles.dateText}>
@@ -219,7 +219,9 @@ const BrandBokingList = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle="light-content" />
+      <StatusBar backgroundColor={App_Primary_color} barStyle="light-content"
+      translucent={false}
+      />
       
       <View style={styles.header}>
         <View style={styles.headerLeft}>

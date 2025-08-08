@@ -274,6 +274,7 @@ const InfluencerHome = ({navigation}) => {
         <StatusBar
           backgroundColor={App_Primary_color}
           barStyle='light-content'
+          translucent={false}
         />
 
         <View style={styles.header}>

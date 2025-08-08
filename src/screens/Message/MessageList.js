@@ -132,7 +132,8 @@ const MessageScreen = ({navigation}) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}
-              onPress={() => navigation.navigate('ChatScreen')}>
+              onPress={() => navigation.navigate('ChatScreen',{id:item?.id})}>
+               
               <SpaceBetweenRow style={{width: '100%'}}>
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
