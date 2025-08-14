@@ -36,6 +36,14 @@ import ForgotPassword from '../../screens/Auth/ForgetPassword';
 import InfluencerOfferDetail from '../../screens/InfluencerFlow/InfluencerOfferDetail/InfluencerOfferDetail';
 import InfluencerCampaignDetail from '../../screens/InfluencerFlow/InfluencerCampaignDetail/InfluencerCampaignDetail';
 import AtedessReq from '../../screens/InfluencerFlow/AttendeeesReq/AttendeesReq';
+import EditInfluencerProfileScreen from '../../screens/Profile/EditInfluencerProfile';
+import AddOffer from '../../screens/CreateCampaign/AddOffer';
+import BrandCampaignDetail from '../../screens/CreateCampaign/BrandCampaignDetail';
+import BrandOfferDetialScreen from '../../screens/CreateCampaign/BrandOfferDetail';
+import TermsAndConditionsScreen from '../../screens/StaticScreens/TermsAndCondition';
+import PrivacyPolicyScreen from '../../screens/StaticScreens/PrivacyPolicy';
+import About from '../../screens/StaticScreens/About';
+import Support from '../../screens/StaticScreens/Support';
 
 
 
@@ -89,7 +97,7 @@ const StackNavigation = () => {
         <Stack.Screen name={'ProfileScreen'} component={ProfileScreen} />
 
         <Stack.Screen name={'CreateCampaign'} component={CreateCampaign} />
-        <Stack.Screen name={'BrandCapmaignDetail'} component={BrandOfferDetail} />
+        <Stack.Screen name={'BrandCapmaignDetail'} component={BrandCampaignDetail} />
         <Stack.Screen name={'TabBrand'} component={TabNavigation} />
         <Stack.Screen name={'InfluenceTab'} component={InfluenceTab} />
         <Stack.Screen name={'BrandDetailMap'} component={BrandDetailMap} />
@@ -101,6 +109,21 @@ const StackNavigation = () => {
         <Stack.Screen name={'InfluencerOfferDetail'} component={InfluencerOfferDetail} />
         <Stack.Screen name={'InfluencerCampaignDetail'} component={InfluencerCampaignDetail} />
         <Stack.Screen name={'AtedessReq'} component={AtedessReq} />
+        <Stack.Screen name={'EditInfluencerProfileScreen'} component={EditInfluencerProfileScreen} />
+        <Stack.Screen name={'AddOffer'} component={AddOffer} />
+        <Stack.Screen name={'BrandOfferDetail'} component={BrandOfferDetialScreen} />
+        <Stack.Screen name={'TermsAndConditionsScreen'} component={TermsAndConditionsScreen} />
+        <Stack.Screen name={'PrivacyPolicyScreen'} component={PrivacyPolicyScreen} />
+        <Stack.Screen name={'About'} component={About} />
+        <Stack.Screen name={'Support'} component={Support} />
+
+
+
+
+
+
+        
+
 
 
 

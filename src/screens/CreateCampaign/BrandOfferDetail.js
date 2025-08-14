@@ -9,18 +9,14 @@ import {
   ScrollView,
   Image,
 } from 'react-native'
-import {BackArrow, Clock, EditIcon, EyeIcons, Location, ThreeDots} from '../../../assets/SVGs'
-import {FONTS_FAMILY} from '../../../assets/Fonts'
-import CampaignTypeModal from './ChooseOptionmodel'
-import CalendarModal from './CalendarModel'
-import { apiGet, apiPost } from '../../../utils/Apis'
-import urls from '../../../config/urls'
-import useLoader from '../../../utils/LoaderHook'
-import PaidInputModel from '../../Restaurent/PaidInputCostModel'
-import ConfirmationCampaignModel from './ConfirmationCampaignModel'
-import { ToastMsg } from '../../../utils/helperFunctions'
+import {BackArrow, Clock, EditIcon, EyeIcons, Location, ThreeDots} from '../../assets/SVGs'
+import {FONTS_FAMILY} from '../../assets/Fonts'
+import { apiGet, apiPost } from '../../utils/Apis'
+import urls from '../../config/urls'
+import useLoader from '../../utils/LoaderHook'
+import { ToastMsg } from '../../utils/helperFunctions'
 
-const InfluencerOfferDetail = ({navigation, route}) => {
+const BrandOfferDetialScreen = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
   const [selectedCampaignType, setSelectedCampaignType] = useState('')
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
@@ -114,8 +110,8 @@ const InfluencerOfferDetail = ({navigation, route}) => {
   const getOfferDetail=async () => {
       try {
         showLoader()
-        const response=await apiGet(`${urls.influencerOfferDetail}/${route?.params?.id}`)
-        console.log();
+        const response=await apiGet(`/api/brand/GetAOfferDetail/${route?.params?.id}`)
+        console.log(response,'response:::::::::::::::::::::::::::::::::::::::::::::::::::');
         setOfferDetail(response?.data)
         hideLoader()
         
@@ -264,29 +260,7 @@ const InfluencerOfferDetail = ({navigation, route}) => {
       </TouchableOpacity> */}
 
       <View style={styles.homeIndicator} />
-      
-     <CampaignTypeModal
-        isVisible={isCampModalVisible}
-        onClose={() => setIsCampModalVisible(false)}
-        onNext={selectedType => handleNext(selectedType)}
-      />
-      <CalendarModal
-        isVisible={isCalendarModalVisible}
-        onClose={() => setIsCalendarModalVisible(false)}
-        onSubmit={e => handleDate(e)}
-      />
-
-      <PaidInputModel
-        isVisible={isPaidModelVisible}
-        onClose={() => setIsInputModelVisible(false)}
-        onNext={val => handlePaid(val)}
-      />
-      <ConfirmationCampaignModel
-        isVisible={confirmationModelVisible}
-        onClose={() => setIsConfirmationModelVisible(false)}
-        // onNext={val => handlePaid(val)}
-        onNext={() => createCollabration()}
-      />
+   
     </SafeAreaView>
   )
 }
@@ -444,4 +418,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default InfluencerOfferDetail
+export default BrandOfferDetialScreen

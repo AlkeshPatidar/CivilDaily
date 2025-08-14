@@ -22,16 +22,16 @@ const ProfileScreen = ({navigation}) => {
   const menuItems = [
     {icon: '💳', title: 'Bank Account', onPress: () => {}},
     {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
-    {icon: '📋', title: 'Delivery Details', onPress: () => {}},
-    {icon: '📊', title: 'Linked Social Midea', onPress: () => {}},
+    {icon: '📋', title: 'Delivery Details', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
+    {icon: '📊', title: 'Linkes Social Midea', onPress: () => {}},
     {icon: '🔔', title: 'Notification Settings', onPress: () => {}},
-    {icon: '🌐', title: 'Language Settings', onPress: () => {}},
-    {icon: '📄', title: 'Disclaimer', onPress: () => {}},
-    {icon: '❌', title: 'Cancellation', onPress: () => {}},
-    {icon: '🔒', title: 'Terms & Condition', onPress: () => {}},
-    {icon: '🔒', title: 'Privacy Policy', onPress: () => {}},
-    {icon: '❓', title: 'Support', onPress: () => {}},
-    {icon: 'ℹ️', title: 'About', onPress: () => {}},
+    // {icon: '🌐', title: 'Language Settings', onPress: () => {}},
+    // {icon: '📄', title: 'Disclaimer', onPress: () => {}},
+    // {icon: '❌', title: 'Cancellation', onPress: () => {}},
+    {icon: '🔒', title: 'Terms & Condition', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
+    {icon: '🔒', title: 'Privacy Policy', onPress: () => {navigation.navigate('PrivacyPolicyScreen')}},
+    {icon: '❓', title: 'Support', onPress: () => {navigation.navigate('Support')}},
+    {icon: 'ℹ️', title: 'About', onPress: () => {navigation.navigate('About')}},
   ]
 
   let selector = useSelector(state => state?.user?.userData)
@@ -71,35 +71,34 @@ const ProfileScreen = ({navigation}) => {
         showsVerticalScrollIndicator={false}>
         {/* Profile Section */}
         <View style={styles.profileSection}>
-          <Image source={IMG.AvatorImage} style={styles.profileImage} />
+          <Image source={selector?.Image?{uri:selector?.Image}:IMG.AvatorImage} style={styles.profileImage} />
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>
               {selector?.FirstName}
               {selector?.LastName}
             </Text>
             <Text style={styles.profileEmail}>{selector?.Email}</Text>
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity style={styles.editButton}
+            onPress={() => navigation.navigate('EditInfluencerProfileScreen')}>
               <EditIcon />
               <Text style={styles.editText}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Balance Card */}
-        <View style={styles.balanceCard}>
+        {/* <View style={styles.balanceCard}>
           <View style={styles.balanceHeader}>
             <View style={styles.dollarIcon}>
               <Text style={styles.dollarText}>$</Text>
             </View>
             <TouchableOpacity style={styles.viewHistoryButton}>
               <Text style={styles.viewHistoryText}>View History</Text>
-              {/* <Text style={styles.viewHistoryArrow}>›</Text> */}
               <ForwordChev />
             </TouchableOpacity>
           </View>
           <Text style={styles.balanceAmount}>500.000</Text>
           <Text style={styles.balanceEquivalent}>Equivalent to Rp 500.000</Text>
-        </View>
+        </View> */}
 
         {/* Menu Items */}
         <View style={styles.menuContainer}>

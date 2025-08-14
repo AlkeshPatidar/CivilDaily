@@ -193,7 +193,7 @@ const InfluencerHome = ({navigation}) => {
   const renderHottestOffer = () => (
     <View style={styles.sectionContainer}>
       <SpaceBetweenRow style={styles.sectionHeader}>
-        <CustomText style={styles.sectionTitle}>Hottest Offer</CustomText>
+        <CustomText style={styles.sectionTitle}>Hottest Campaign</CustomText>
         <CustomText style={styles.seeAllText}>See All {'>'}</CustomText>
       </SpaceBetweenRow>
       <FlatList
@@ -208,6 +208,7 @@ const InfluencerHome = ({navigation}) => {
               onPress={() =>
                 navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
               }>
+              
             
               <Image
                 source={{
@@ -247,6 +248,8 @@ const InfluencerHome = ({navigation}) => {
               onPress={() =>
                 navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
               }>
+                  {console.log('Offer Item:', item)
+                }
               <Image
                 source={{
                   uri: item?.Assets
@@ -333,7 +336,7 @@ const InfluencerHome = ({navigation}) => {
           </ScrollView>
 
           {/* Bottom Row - Filter Buttons */}
-          <ScrollView
+          {/* <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.filterScrollContainer}
@@ -347,7 +350,6 @@ const InfluencerHome = ({navigation}) => {
                 title={selectedSortBy}
                 isSelected={selectedSortBy !== 'Sort By'}
                 onPress={() => {
-                  // Handle sort dropdown - you can implement dropdown logic here
                   console.log('Sort By pressed')
                 }}
               />
@@ -356,7 +358,6 @@ const InfluencerHome = ({navigation}) => {
                 title={selectedFilter}
                 isSelected={selectedFilter !== 'Category'}
                 onPress={() => {
-                  // Handle category filter dropdown
                   console.log('Category filter pressed')
                 }}
               />
@@ -365,7 +366,6 @@ const InfluencerHome = ({navigation}) => {
                 title={selectedInvite}
                 isSelected={selectedInvite !== 'Anytime'}
                 onPress={() => {
-                  // Handle invite filter dropdown
                   console.log('Invite filter pressed')
                 }}
               />
@@ -374,12 +374,11 @@ const InfluencerHome = ({navigation}) => {
                 title={invite}
                 isSelected={invite !== 'Invite'}
                 onPress={() => {
-                  // Handle invite filter dropdown
                   console.log('Invite filter pressed')
                 }}
               />
             </Row>
-          </ScrollView>
+          </ScrollView> */}
         </View>
 
         {/* Content with Horizontal Scrolling Sections */}
@@ -439,6 +438,16 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: -100,
     zIndex: 100,
+        shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5
   },
   searchInputContainer: {
     borderWidth: 1,
@@ -450,6 +459,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     flex: 1,
+    color:'black'
   },
   searchButton: {
     marginTop: 16,
@@ -525,7 +535,17 @@ const styles = StyleSheet.create({
     // paddingVertical: 8,
     borderRadius: 11,
     marginRight: 15,
-    alignItems:'center'
+    alignItems:'center',
+        shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5
   },
   selectedCategoryButton: {
     // backgroundColor: '#E53E3E',
@@ -608,15 +628,23 @@ const styles = StyleSheet.create({
   height: 191,
     borderRadius: 8,
     overflow: 'hidden',
-    // position: 'relative',
     backgroundColor: 'white',
     width: 240,
     elevation: 2,
     shadowColor: '#000',
-    // shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    padding:10
+    padding:10,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5
   },
   brandImage: {
      height: 120,
@@ -676,7 +704,17 @@ const styles = StyleSheet.create({
     // shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    padding:10
+    padding:10,
+        shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5
   },
   offerImage: {
     height: 120,

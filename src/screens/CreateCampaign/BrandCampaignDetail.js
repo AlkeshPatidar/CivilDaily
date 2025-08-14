@@ -548,13 +548,16 @@ const BrandCampaignDetail = ({navigation, route}) => {
   const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
   const [selectedDateTime, setSelectedDateTime] = useState(null)
   const [showThreeDotsMenu, setShowThreeDotsMenu] = useState(false)
-  const [activeTab, setActiveTab] = useState('Attendees') // New state for tabs
+  const [activeTab, setActiveTab] = useState('Offers') // New state for tabs
   const [activeSubTab, setActiveSubTab] = useState('Paid Collaboration') // New state for tabs
 
   const [campaignDetail, setCampaignDetial] = useState(null)
   const {showLoader, hideLoader} = useLoader()
   const [atendess, setAttendees] = useState()
   const [req, setReq] = useState()
+
+  const [offers, setOffers] = useState([])
+  
 
   const isFocused= useIsFocused()
 
@@ -563,6 +566,8 @@ const BrandCampaignDetail = ({navigation, route}) => {
     getBrandCampaignDetial()
     getAtendess()
     getCollabrationReq()
+    getOffers()
+
   }, [isFocused])
 
   const getBrandCampaignDetial = async () => {
@@ -611,6 +616,23 @@ const BrandCampaignDetail = ({navigation, route}) => {
       hideLoader()
     }
   }
+
+   const getOffers = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(`/api/brand/GetAllOffersofMyCampaign/${route?.params?.campaignId}`,
+      )
+      setOffers(res.data)
+      console.log('Offers::::::::::::::::::::::::::::', res?.data);
+      
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
 
     const getCollabrationReq = async () => {
     try {
@@ -689,7 +711,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
     },
   ]
 
-  const tabs = ['Attendees', 'Request', 'Reschedule Request']
+  const tabs = ['Offers','Attendees', 'Request', 'Reschedule Request']
 
   const handleNext = () => {
     setIsCampModalVisible(false)
@@ -720,10 +742,26 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const AttendeeCard = ({attendee}) => (
     <TouchableOpacity style={styles.attendeeCard}>
+      {console.log('Attendee::::::::::::::', attendee)
+      }
       <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
       <View style={styles.attendeeInfo}>
         <Text style={styles.attendeeName}>{attendee.FirstName}{atendess?.LastName}</Text>
         <Text style={styles.attendeeRole}>{attendee.NicheInput}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+
+    const OfferCard = ({attendee}) => (
+    <TouchableOpacity style={styles.attendeeCard}
+    onPress={()=>navigation.navigate('BrandOfferDetail', {id: attendee._id})}
+    >
+      {console.log('Attetddoffff', attendee?._id)
+      }
+      <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
+      <View style={styles.attendeeInfo}>
+        <Text style={styles.attendeeName}>{attendee.Title}</Text>
+        {/* <Text style={styles.attendeeRole}>{attendee.NicheInput}</Text> */}
       </View>
     </TouchableOpacity>
   )
@@ -852,6 +890,14 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
+         case 'Offers':
+        return (
+          <View style={styles.tabContent}>
+            {offers?.map(attendee => (
+              <OfferCard key={attendee?._id} attendee={attendee} />
+            ))}
+          </View>
+        )
       case 'Attendees':
         return (
           <View style={styles.tabContent}>
@@ -947,9 +993,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
             style={styles.heroSection}
             imageStyle={styles.heroImageStyle}>
             <View style={styles.heroOverlay}>
-              <View style={styles.playButton}>
-                <Text style={styles.playButtonText}>▶</Text>
-              </View>
+            
               {/* <Text style={styles.heroText}>
                 JINGLE{'\n'}MUNCH{'\n'}SAVE
               </Text> */}
@@ -981,15 +1025,19 @@ const BrandCampaignDetail = ({navigation, route}) => {
                 DRAFT
               </CustomText>
             </View>
-            {/* <Badge /> */}
-            <View
-              style={{
-                borderWidth: 5,
-                borderColor: campaignDetail?.Color,
-                padding: 5,
-                borderRadius: 100,
-              }}
-            />
+         <TouchableOpacity style={{
+          padding:5,
+          backgroundColor: App_Primary_color,
+          borderRadius: 4,
+         }}
+         onPress={() => navigation.navigate('AddOffer', {campaignId:route?.params?.campaignId})}
+         >
+          <CustomText style={{
+            color: 'white',
+            fontSize: 12,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+          }}>Add Offer</CustomText>
+         </TouchableOpacity>
           </SpaceBetweenRow>
         </View>
 
@@ -1030,7 +1078,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
                 }}>
                 {activeTab}
               </CustomText>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   gap: 4,
@@ -1053,7 +1101,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
                     transform: [{rotate: '90deg'}],
                   }}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </SpaceBetweenRow>
           )}
 

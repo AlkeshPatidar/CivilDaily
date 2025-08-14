@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   },
   influencerCard: {
     backgroundColor: 'white',
-    borderRadius: 4,
+    borderRadius: 7,
     padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -255,6 +255,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 1,
+        shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5
   },
   imageContainer: {
     position: 'relative',

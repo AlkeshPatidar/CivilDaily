@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FONTS_FAMILY } from '../../../assets/Fonts';
-import { App_Primary_color } from '../../../common/Colors/colors';
+import color, { App_Primary_color } from '../../../common/Colors/colors';
 import { apiGet } from '../../../utils/Apis';
 import urls from '../../../config/urls';
 import useLoader from '../../../utils/LoaderHook';
+import CustomText from '../../../components/TextComponent';
 
 const InfluencerBookingList = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
@@ -208,6 +209,18 @@ const InfluencerBookingList = ({navigation}) => {
           </Text>
         </View>
       </View>
+      <TouchableOpacity style={{
+        alignSelf:'flex-end',
+backgroundColor: App_Primary_color,
+padding:4,
+borderRadius: 4,
+      }}>
+        <CustomText style={{
+          color: 'white',
+          fontSize: 12,
+          fontFamily: FONTS_FAMILY.Poppins_Medium,
+        }}>Reschedule</CustomText>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 

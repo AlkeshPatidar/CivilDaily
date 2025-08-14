@@ -531,14 +531,17 @@ import {
 } from '../../../assets/SVGs'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
 import CustomText from '../../../components/TextComponent'
-import color, {App_Primary_color, font_gray} from '../../../common/Colors/colors'
+import color, {
+  App_Primary_color,
+  font_gray,
+} from '../../../common/Colors/colors'
 import Row from '../../../components/wrapper/row'
 import IMG from '../../../assets/Images'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
 import {apiDelete, apiGet, apiPut} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
-import { useIsFocused } from '@react-navigation/native'
+import {useIsFocused} from '@react-navigation/native'
 
 const {width, height} = Dimensions.get('window')
 
@@ -556,22 +559,18 @@ const AtedessReq = ({navigation, route}) => {
   const [atendess, setAttendees] = useState()
   const [req, setReq] = useState()
 
-  const isFocused= useIsFocused()
-
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     getAtendess()
   }, [isFocused])
 
-
   const getAtendess = async () => {
     try {
       showLoader()
-      const res = await apiGet(`/api/brand/GetAllCollaborationRequest`,
-      )
+      const res = await apiGet(`/api/brand/GetAllCollaborationRequest`)
       setAttendees(res.data)
-      console.log('Atessssssssndess', res?.data);
-      
+      console.log('Atessssssssndess', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -580,19 +579,19 @@ const AtedessReq = ({navigation, route}) => {
     }
   }
 
-    const acceptReject = async (id, status) => {
+  const acceptReject = async (id, status) => {
     try {
-        const data={
-            Status:status
-        }
+      const data = {
+        Status: status,
+      }
       showLoader()
-      const res = await apiPut(`/api/brand/AccepteRejectCollaborationRequest/${id}`,
-        data
+      const res = await apiPut(
+        `/api/brand/AccepteRejectCollaborationRequest/${id}`,
+        data,
       )
       setReq(res.data)
-      console.log('Atesndess', res?.data);
+      console.log('Atesndess', res?.data)
       navigation.goBack()
-      
 
       hideLoader()
     } catch (error) {
@@ -602,10 +601,6 @@ const AtedessReq = ({navigation, route}) => {
       hideLoader()
     }
   }
-
- 
-
- 
 
   const handleNext = () => {
     setIsCampModalVisible(false)
@@ -636,53 +631,60 @@ const AtedessReq = ({navigation, route}) => {
 
   const AttendeeCard = ({attendee}) => (
     <TouchableOpacity style={styles.attendeeCard}>
-      <Image source={{uri: attendee.Influencer?.Image}} style={styles.attendeeAvatar} />
+      <Image
+        source={{uri: attendee.Influencer?.Image}}
+        style={styles.attendeeAvatar}
+      />
       <View style={styles.attendeeInfo}>
-        <Text style={styles.attendeeName}>{attendee.Influencer?.FirstName}{atendess?.Influencer?.LastName}</Text>
-        <Text style={styles.attendeeRole}>{attendee?.Influencer?.NicheInput}</Text>
+        <Text style={styles.attendeeName}>
+          {attendee.Influencer?.FirstName}
+          {atendess?.Influencer?.LastName}
+        </Text>
+        <Text style={styles.attendeeRole}>
+          {attendee?.Influencer?.NicheInput}
+        </Text>
       </View>
-      <Row style={{
-        gap:10
-      }}>
-      <TouchableOpacity style={{
-        backgroundColor:'#00CD52',
-        borderRadius:999,
-        paddingHorizontal:10,
-        paddingVertical:3,
-        alignItems:'center'
-      }}
-      onPress={()=>acceptReject(attendee?._id,'Accepted')}
-      >
-        <CustomText style={{
-            color:'white',
-            fontSize:12
-
-        }}>ACCEPT</CustomText>
-      </TouchableOpacity>
+      <Row
+        style={{
+          gap: 10,
+        }}>
         <TouchableOpacity
-        style={{
-        backgroundColor:App_Primary_color,
-        borderRadius:999,
-        paddingHorizontal:10,
-        paddingVertical:3,
-        alignItems:'center'
-      }}
-      onPress={()=>acceptReject(attendee?._id, 'Rejected')}
-
-        >
-        <CustomText
-        style={{
-            color:'white',
-            fontSize:12
-        }}
-        >REJECT</CustomText>
-      </TouchableOpacity>
-
+          style={{
+            backgroundColor: '#00CD52',
+            borderRadius: 999,
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            alignItems: 'center',
+          }}
+          onPress={() => acceptReject(attendee?._id, 'Accepted')}>
+          <CustomText
+            style={{
+              color: 'white',
+              fontSize: 12,
+            }}>
+            ACCEPT
+          </CustomText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: App_Primary_color,
+            borderRadius: 999,
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            alignItems: 'center',
+          }}
+          onPress={() => acceptReject(attendee?._id, 'Rejected')}>
+          <CustomText
+            style={{
+              color: 'white',
+              fontSize: 12,
+            }}>
+            REJECT
+          </CustomText>
+        </TouchableOpacity>
       </Row>
     </TouchableOpacity>
   )
-
- 
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -694,7 +696,7 @@ const AtedessReq = ({navigation, route}) => {
             ))}
           </View>
         )
-      
+
       default:
         return null
     }
@@ -742,25 +744,22 @@ const AtedessReq = ({navigation, route}) => {
           onPress={() => navigation.goBack()}>
           <BackArrow />
         </TouchableOpacity>
-     <CustomText style={{
-        color:'white',
-        fontFamily:FONTS_FAMILY.Poppins_Regular
-     }}>All Attendees</CustomText>
+        <CustomText
+          style={{
+            color: 'white',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+          }}>
+          All Attendees
+        </CustomText>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-  
-
-       
-
         {renderTabContent()}
-
         {/* Extra padding at bottom */}
         <View style={{height: 20}} />
       </ScrollView>
 
       <View style={styles.homeIndicator} />
-
       {/* Three Dots Menu */}
       <ThreeDotsMenu />
     </SafeAreaView>
@@ -775,13 +774,13 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     // justifyContent: 'space-between',
-    gap:90,
+    gap: 90,
     alignItems: 'center',
     backgroundColor: '#D64A3A',
     paddingHorizontal: 16,
     paddingVertical: 12,
     height: 64,
-    marginBottom:15
+    marginBottom: 15,
   },
   backButton: {
     width: 32,

@@ -58,6 +58,10 @@ import Events from './events.svg'
 import Invites from './invite.svg'
 import Gifts from './gifts.svg'
 
+import CalendarIcon from './CalendarIcon.svg'
+import SearchWhite from './SearchWhite.svg'
+
+
 
 
 
@@ -129,5 +133,7 @@ export {
   Anytime,
   Events,
   Gifts,
-  Invites
+  Invites,
+  CalendarIcon,
+  SearchWhite
 }

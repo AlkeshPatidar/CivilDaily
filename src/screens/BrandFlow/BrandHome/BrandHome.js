@@ -224,7 +224,9 @@ const BrandHome = ({navigation}) => {
   const CampaignCard = ({item, index}) => (
     <TouchableOpacity
       style={styles.campaignCard}
-      onPress={() => navigation.navigate('BrandBokingList')}>
+      // onPress={() => navigation.navigate('BrandBokingList')}
+      onPress={() => navigation.navigate('BrandCapmaignDetail',{campaignId:item?._id})}
+      >
       
       {/* Card Image */}
       <View style={styles.cardImageContainer}>
@@ -238,7 +240,7 @@ const BrandHome = ({navigation}) => {
       {/* Card Content */}
       <View style={styles.cardContent}>
         <Text style={styles.hubName}>{item?.Title}</Text>
-        <Text style={styles.categoryName}>{item?.Category}</Text>
+        <Text style={styles.categoryName}>{item?.Description}</Text>
         
         {/* <Text style={styles.description}>
           Nulla integer rutrum quam feugiat aliquet hac. Ut purus elit et massa eget ornare
@@ -601,6 +603,13 @@ const styles = StyleSheet.create({
     elevation: 4,
     marginBottom: 16,
     padding:10,
+     shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom:5,
+    marginHorizontal:5
   },
 
   // Card Image
@@ -648,7 +657,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   categoryName: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#6B7280',
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     marginBottom: 12,
@@ -670,7 +679,7 @@ const styles = StyleSheet.create({
     paddingVertical:5
   },
   attendeesText: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'black',
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },

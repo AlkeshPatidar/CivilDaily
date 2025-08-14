@@ -15,6 +15,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {launchImageLibrary} from 'react-native-image-picker'
+import DatePicker from 'react-native-date-picker'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
 import {App_Primary_color} from '../../common/Colors/colors'
@@ -23,36 +24,30 @@ import Row from '../../components/wrapper/row'
 import useLoader from '../../utils/LoaderHook'
 import { ToastMsg } from '../../utils/helperFunctions'
 import { getItem, apiGet } from '../../utils/Apis'
-import { urls } from '../../utils/Apis' // Assuming urls is exported from Apis
+import { urls } from '../../utils/Apis'
 
-const CreateCampaign = ({navigation, route}) => {
-  const [campaignTitle, setCampaignTitle] = useState('')
+const AddOffer = ({navigation, route}) => {
+  const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [color, setColor] = useState('')
+  const [selectedCampaign, setSelectedCampaign] = useState('')
+  const [location, setLocation] = useState('')
+  const [averageDailyImpressions, setAverageDailyImpressions] = useState('')
+  const [timeSlot, setTimeSlot] = useState('')
+  const [adDurationMinutes, setAdDurationMinutes] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
-  const [campaignDetail, setCampaignDetail] = useState(null)
-  const [isEditMode, setIsEditMode] = useState(false)
-  const {showLoader, hideLoader}=useLoader()
-  const [categories, setCategories] = useState([])
-
-
-  console.log(route?.params?.campaignId);
   
-  // const categories = [
-  //   'Customer Goods',
-  //   'Electronics',
-  //   'Fashion',
-  //   'Food & Beverage',
-  //   'Health & Beauty',
-  //   'Sports & Recreation',
-  //   'Travel & Tourism',
-  //   'Education',
-  //   'Technology',
-  //   'Other'
-  // ]
+  // Date states
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false)
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false)
+  
+  const [campaigns, setCampaigns] = useState([])
+  const [offerDetail, setOfferDetail] = useState(null)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const {showLoader, hideLoader} = useLoader()
 
-  const colors = [
+  const locations = [
     {name: 'Red', value: 'red'},
     {name: 'Blue', value: 'blue'},
     {name: 'Green', value: 'green'},
@@ -61,68 +56,79 @@ const CreateCampaign = ({navigation, route}) => {
     {name: 'Orange', value: 'orange'},
   ]
 
-  // Check if we're in edit mode and fetch campaign details
-  useEffect(() => {
-  getCategories()
+  const timeSlots = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+    '21', '22', '23', '24'
+  ]
 
-    if (route?.params?.campaignId) {
+  // Check if we're in edit mode and fetch offer details
+  useEffect(() => {
+    getCampaigns()
+    
+    if (route?.params?.offerId) {
       setIsEditMode(true)
-      getBrandCampaignDetail()
-
+      getOfferDetail()
     }
-  }, [route?.params?.campaignId])
+  }, [route?.params?.offerId])
 
-  // Populate form when campaign details are loaded
+  // Populate form when offer details are loaded
   useEffect(() => {
-    if (campaignDetail && isEditMode) {
-      setCampaignTitle(campaignDetail.Title || '')
-      setDescription(campaignDetail.Description || '')
-      setCategory(campaignDetail.Category || '')
-      setColor(campaignDetail.Color || '')
+    if (offerDetail && isEditMode) {
+      setTitle(offerDetail.Title || '')
+      setDescription(offerDetail.Description || '')
+      setSelectedCampaign(offerDetail.Campaign || '')
+      setLocation(offerDetail.Location || '')
+      setAverageDailyImpressions(offerDetail.AverageDailyImpressions?.toString() || '')
+      setTimeSlot(offerDetail.TimeSlot?.toString() || '')
+      setAdDurationMinutes(offerDetail.AdDurationMinutes?.toString() || '')
       
-      // Set existing image as selected file (for display purposes)
-      if (campaignDetail.Assets) {
+      // Parse dates
+      if (offerDetail.StartDate) {
+        setStartDate(new Date(offerDetail.StartDate))
+      }
+      if (offerDetail.EndDate) {
+        setEndDate(new Date(offerDetail.EndDate))
+      }
+      
+      // Set existing image as selected file
+      if (offerDetail.Image) {
         setSelectedFile({
-          uri: campaignDetail.Assets,
+          uri: offerDetail.Image,
           fileName: 'existing_image.jpg',
           type: 'image/jpeg'
         })
       }
     }
-  }, [campaignDetail, isEditMode])
+  }, [offerDetail, isEditMode])
 
-  const getBrandCampaignDetail = async () => {
+  const getCampaigns = async () => {
     try {
       showLoader()
-      const res = await apiGet(
-        `/api/brand/GetCampaigndetail/${route?.params?.campaignId}`,
-      )
-      setCampaignDetail(res?.data)
-      console.log('Brand Campaign Detail', res?.data)
+      const res = await apiGet('/api/brand/GetCampaigns')
+      setCampaigns(res?.data || [])
+      console.log('Campaigns:', res?.data)
       hideLoader()
     } catch (error) {
-      console.log('Error fetching campaign details:', error)
-      ToastMsg('Failed to load campaign details')
+      console.log('Error fetching campaigns:', error)
+      ToastMsg('Failed to load campaigns')
       hideLoader()
     }
   }
 
-   const getCategories = async () => {
+  const getOfferDetail = async () => {
     try {
       showLoader()
-      const res = await apiGet(
-        `/api/admin/GetAllCategory`,
-      )
-      setCategories(res?.data)
-      console.log('Brand Campaign Detail', res?.data)
+      const res = await apiGet(`/api/brand/GetOfferDetail/${route?.params?.offerId}`)
+      setOfferDetail(res?.data)
+      console.log('Offer Detail:', res?.data)
       hideLoader()
     } catch (error) {
-      console.log('Error fetching campaign details:', error)
-      ToastMsg('Failed to load campaign details')
+      console.log('Error fetching offer details:', error)
+      ToastMsg('Failed to load offer details')
       hideLoader()
     }
   }
-
 
   const handleImageUpload = () => {
     const options = {
@@ -144,25 +150,48 @@ const CreateCampaign = ({navigation, route}) => {
     })
   }
 
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+
   const validateForm = () => {
-    if (!campaignTitle.trim()) {
-     ToastMsg('Please enter campaign title')
+    if (!title.trim()) {
+      ToastMsg('Please enter offer title')
       return false
     }
     if (!description.trim()) {
-     ToastMsg('Please enter description')
+      ToastMsg('Please enter description')
       return false
     }
-    if (!category) {
-      ToastMsg('Please select a category')
+    // if (!selectedCampaign) {
+    //   ToastMsg('Please select a campaign')
+    //   return false
+    // }
+    if (!location) {
+      ToastMsg('Please select a location')
       return false
     }
-    if (!color) {
-      ToastMsg('Please select a color')
+    if (!averageDailyImpressions.trim()) {
+      ToastMsg('Please enter average daily impressions')
+      return false
+    }
+    if (!timeSlot) {
+      ToastMsg('Please select a time slot')
+      return false
+    }
+    if (!adDurationMinutes.trim()) {
+      ToastMsg('Please enter ad duration in minutes')
       return false
     }
     if (!selectedFile) {
       ToastMsg('Please select an image')
+      return false
+    }
+    if (endDate <= startDate) {
+      ToastMsg('End date must be after start date')
       return false
     }
     return true
@@ -179,32 +208,32 @@ const CreateCampaign = ({navigation, route}) => {
       const token = await getItem('token')
 
       const myHeaders = new Headers()
-      myHeaders.append(
-        'Authorization',
-        `Bearer ${token}`
-      )
+      myHeaders.append('Authorization', `Bearer ${token}`)
 
       const formdata = new FormData()
       
       // Only append image if it's a new file (not the existing URL)
       if (selectedFile && !selectedFile.uri.startsWith('http')) {
-        formdata.append('Assets', {
+        formdata.append('Image', {
           uri: selectedFile.uri,
           type: selectedFile.type,
-          name: selectedFile.fileName || 'campaign_image.jpg',
+          name: selectedFile.fileName || 'offer_image.jpg',
         })
       }
 
-      formdata.append('Title', campaignTitle.trim())
-      formdata.append('Category', category)
-      formdata.append('Color', color)
-      formdata.append('HottestOffer', true)
-      formdata.append('FastFavorite', true)
-      formdata.append('Description', description)
+      formdata.append('Title', title.trim())
+      formdata.append('Campaign', route?.params?.campaignId || selectedCampaign)
+      formdata.append('Location', location)
+      formdata.append('AverageDailyImpressions', averageDailyImpressions)
+      formdata.append('StartDate', formatDate(startDate))
+      formdata.append('EndDate', formatDate(endDate))
+      formdata.append('TimeSlot', timeSlot)
+      formdata.append('AdDurationMinutes', adDurationMinutes)
+      formdata.append('Description', description.trim())
 
       const apiUrl = isEditMode 
-        ? `https://influencer-brands-backend.vercel.app/api/brand/UpdateCamapign/${route?.params?.campaignId}`
-        : 'https://influencer-brands-backend.vercel.app/api/brand/CreateCampaign'
+        ? `https://influencer-brands-backend.vercel.app/api/brand/UpdateOffer/${route?.params?.offerId}`
+        : 'https://influencer-brands-backend.vercel.app/api/brand/CreateOffer'
 
       const requestOptions = {
         method: isEditMode ? 'PUT' : 'POST',
@@ -214,17 +243,16 @@ const CreateCampaign = ({navigation, route}) => {
       }
 
       const response = await fetch(apiUrl, requestOptions)
-
       const result = await response.text()
       console.log('API Response:', result)
 
       hideLoader()
 
       if (response.ok) {
-        ToastMsg(isEditMode ? 'Campaign updated successfully!' : 'Campaign created successfully!')
+        ToastMsg(isEditMode ? 'Offer updated successfully!' : 'Offer created successfully!')
         navigation.goBack()
       } else {
-        ToastMsg(isEditMode ? 'Failed to update campaign. Please try again.' : 'Failed to create campaign. Please try again.')
+        ToastMsg(isEditMode ? 'Failed to update offer. Please try again.' : 'Failed to create offer. Please try again.')
       }
     } catch (error) {
       hideLoader()
@@ -245,7 +273,7 @@ const CreateCampaign = ({navigation, route}) => {
           <BackArrow />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {isEditMode ? 'Edit Campaign' : 'Create Campaign'}
+          {isEditMode ? 'Edit Offer' : 'Add Offer'}
         </Text>
         <View style={styles.placeholder} />
       </View>
@@ -259,25 +287,26 @@ const CreateCampaign = ({navigation, route}) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Campaign Title */}
+          {/* Title */}
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
                 <Label />
-                <Text style={styles.radioText}>Campaign Title</Text>
+                <Text style={styles.radioText}>Offer Title</Text>
               </Row>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.textInput}
-                  value={campaignTitle}
-                  onChangeText={setCampaignTitle}
-                  placeholder="Enter campaign title"
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder="Enter offer title"
                   placeholderTextColor={'gray'}
                 />
               </View>
             </View>
           </View>
 
+          {/* Description */}
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
@@ -289,6 +318,7 @@ const CreateCampaign = ({navigation, route}) => {
                   style={styles.textInput}
                   value={description}
                   multiline
+                  numberOfLines={3}
                   onChangeText={setDescription}
                   placeholder="Enter description"
                   placeholderTextColor={'gray'}
@@ -297,32 +327,32 @@ const CreateCampaign = ({navigation, route}) => {
             </View>
           </View>
 
-          {/* Category Selection */}
+          {/* Campaign Selection */}
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
                 <Label />
-                <Text style={styles.radioText}>Select Category</Text>
+                <Text style={styles.radioText}>Select Campaign</Text>
               </Row>
               <ScrollView 
                 horizontal 
                 showsHorizontalScrollIndicator={false}
                 style={styles.categoryScroll}
               >
-                {categories.map((cat, index) => (
+                {campaigns.map((campaign, index) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.categoryButton,
-                      category === cat?.Title && styles.selectedCategoryButton,
+                      selectedCampaign === campaign._id && styles.selectedCategoryButton,
                     ]}
-                    onPress={() => setCategory(cat?.Title)}>
+                    onPress={() => setSelectedCampaign(campaign._id)}>
                     <Text
                       style={[
                         styles.categoryButtonText,
-                        category === cat?.Title && styles.selectedCategoryButtonText,
+                        selectedCampaign === campaign._id && styles.selectedCategoryButtonText,
                       ]}>
-                      {cat?.Title}
+                      {campaign.Title}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -330,28 +360,139 @@ const CreateCampaign = ({navigation, route}) => {
             </View>
           </View>
 
-          {/* Color Selection */}
+          {/* Location Selection */}
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
                 <Label />
-                <Text style={styles.radioText}>Select Color</Text>
+                <Text style={styles.radioText}>Select Location</Text>
               </Row>
               <View style={styles.colorContainer}>
-                {colors.map((colorItem, index) => (
+                {locations.map((locationItem, index) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.colorButton,
-                      {backgroundColor: colorItem.value},
-                      color === colorItem.value && styles.selectedColorButton,
+                      {backgroundColor: locationItem.value},
+                      location === locationItem.value && styles.selectedColorButton,
                     ]}
-                    onPress={() => setColor(colorItem.value)}>
-                    {color === colorItem.value && (
+                    onPress={() => setLocation(locationItem.value)}>
+                    {location === locationItem.value && (
                       <Icon name="check" size={16} color="white" />
                     )}
                   </TouchableOpacity>
                 ))}
+              </View>
+            </View>
+          </View>
+
+          {/* Average Daily Impressions */}
+          <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>Average Daily Impressions</Text>
+              </Row>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={averageDailyImpressions}
+                  onChangeText={setAverageDailyImpressions}
+                  placeholder="Enter average daily impressions"
+                  placeholderTextColor={'gray'}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Start Date */}
+          <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>Start Date</Text>
+              </Row>
+              <TouchableOpacity 
+                style={styles.dateButton}
+                onPress={() => setShowStartDatePicker(true)}
+              >
+                <Text style={styles.dateText}>
+                  {formatDate(startDate)}
+                </Text>
+                <Icon name="date-range" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* End Date */}
+          <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>End Date</Text>
+              </Row>
+              <TouchableOpacity 
+                style={styles.dateButton}
+                onPress={() => setShowEndDatePicker(true)}
+              >
+                <Text style={styles.dateText}>
+                  {formatDate(endDate)}
+                </Text>
+                <Icon name="date-range" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Time Slot */}
+          <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>Time Slot (Hours)</Text>
+              </Row>
+              <ScrollView 
+                horizontal 
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryScroll}
+              >
+                {timeSlots.map((slot, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.timeSlotButton,
+                      timeSlot === slot && styles.selectedTimeSlotButton,
+                    ]}
+                    onPress={() => setTimeSlot(slot)}>
+                    <Text
+                      style={[
+                        styles.timeSlotButtonText,
+                        timeSlot === slot && styles.selectedTimeSlotButtonText,
+                      ]}>
+                      {slot}:00
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+
+          {/* Ad Duration */}
+          <View style={styles.formSection}>
+            <View style={styles.section}>
+              <Row style={{gap: 15, marginBottom: 10}}>
+                <Label />
+                <Text style={styles.radioText}>Ad Duration (Minutes)</Text>
+              </Row>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={adDurationMinutes}
+                  onChangeText={setAdDurationMinutes}
+                  placeholder="Enter ad duration in minutes"
+                  placeholderTextColor={'gray'}
+                  keyboardType="numeric"
+                />
               </View>
             </View>
           </View>
@@ -361,7 +502,7 @@ const CreateCampaign = ({navigation, route}) => {
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
                 <Label />
-                <Text style={styles.radioText}>Upload Campaign Image</Text>
+                <Text style={styles.radioText}>Upload Offer Image</Text>
               </Row>
               <TouchableOpacity
                 style={styles.uploadContainer}
@@ -382,7 +523,7 @@ const CreateCampaign = ({navigation, route}) => {
                     <View style={styles.uploadIcon}>
                       <Icon name="cloud-upload" size={24} color="#666" />
                     </View>
-                    <Text style={styles.uploadTitle}>Upload Campaign Image</Text>
+                    <Text style={styles.uploadTitle}>Upload Offer Image</Text>
                     <Text style={styles.uploadSubtitle}>
                       Tap to select an image from your gallery
                     </Text>
@@ -395,11 +536,40 @@ const CreateCampaign = ({navigation, route}) => {
           {/* Submit Button */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>
-              {isEditMode ? 'Update Campaign' : 'Create Campaign'}
+              {isEditMode ? 'Update Offer' : 'Create Offer'}
             </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Date Pickers */}
+      <DatePicker
+        modal
+        open={showStartDatePicker}
+        date={startDate}
+        mode="date"
+        onConfirm={(date) => {
+          setShowStartDatePicker(false)
+          setStartDate(date)
+        }}
+        onCancel={() => {
+          setShowStartDatePicker(false)
+        }}
+      />
+
+      <DatePicker
+        modal
+        open={showEndDatePicker}
+        date={endDate}
+        mode="date"
+        onConfirm={(date) => {
+          setShowEndDatePicker(false)
+          setEndDate(date)
+        }}
+        onCancel={() => {
+          setShowEndDatePicker(false)
+        }}
+      />
     </SafeAreaView>
   )
 }
@@ -452,9 +622,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  section: {
-    // marginBottom: 10,
-  },
+  section: {},
   inputContainer: {
     borderColor: '#e0e0e0',
     borderRadius: 8,
@@ -518,6 +686,45 @@ const styles = StyleSheet.create({
     borderColor: '#333',
     borderWidth: 3,
   },
+  dateButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: '#f9f9f9',
+    minHeight: 48,
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  timeSlotButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    minWidth: 60,
+    alignItems: 'center',
+  },
+  selectedTimeSlotButton: {
+    backgroundColor: App_Primary_color,
+    borderColor: App_Primary_color,
+  },
+  timeSlotButtonText: {
+    fontSize: 12,
+    color: '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  selectedTimeSlotButtonText: {
+    color: 'white',
+  },
   uploadContainer: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
@@ -572,13 +779,6 @@ const styles = StyleSheet.create({
     color: '#333',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
-  assetImage: {
-    alignSelf: 'center',
-    height: 200,
-    width: '100%',
-    marginTop: 16,
-    marginBottom: 20,
-  },
   submitButton: {
     backgroundColor: App_Primary_color,
     borderRadius: 8,
@@ -602,4 +802,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CreateCampaign
+export default AddOffer

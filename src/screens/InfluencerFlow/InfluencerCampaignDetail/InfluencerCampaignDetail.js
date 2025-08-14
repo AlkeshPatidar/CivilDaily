@@ -23,21 +23,36 @@ import CampaignTypeModal from '../InfluencerOfferDetail/ChooseOptionmodel'
 import ConfirmationCampaignModel from '../InfluencerOfferDetail/ConfirmationCampaignModel'
 
 const InfluencerCampaignDetail = ({navigation, route}) => {
- 
   const [getABrand, setGetABrand] = useState(null)
   const [allOffers, setAllOffers] = useState([])
   const {showLoader, hideLoader} = useLoader()
+  const [cost, setCost] = useState(null)
+  const [selectedType, setSelectedType] = useState(null)
+  const [selectedDate, setSelectedDate] = useState(null)
+
+  const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
+  const [isCampModalVisible, setIsCampModalVisible] = useState(false)
+
+  const [isPaidModelVisible, setIsInputModelVisible] = useState(false)
+  const [confirmationModelVisible, setIsConfirmationModelVisible] =
+    useState(false)
+
+  console.log('Campaign Detail Route Params:', route?.params)
 
   useEffect(() => {
-    getABrands()
+    getACampagn()
     getAllOffersOfACampaign()
   }, [])
 
-  const getABrands = async () => {
+  const getACampagn = async () => {
     try {
       showLoader()
-      const res = await apiGet(`${urls?.getAbrand}/${route?.params?.brandId}`)
+      const res = await apiGet(
+        `/api/influencer/GetACampaignDetail/${route?.params?.campaignId}`,
+      )
       setGetABrand(res?.data)
+      console.log('GetACampaign Detail::::::::', res?.data);
+      
       hideLoader()
     } catch (error) {
       console.log('Error')
@@ -52,7 +67,7 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
         `${urls?.getAllOffersOfACampaignInfluncer}/${route?.params?.campaignId}`,
       )
       setAllOffers(res?.data)
-      console.log('AllCampaings Offer::::::::', res?.data)
+      // console.log('AllCampaings Offer::::::::', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -61,11 +76,78 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
     }
   }
 
+  const handleNext = selectedType => {
+    setIsCampModalVisible(false)
+    setIsCalendarModalVisible(true)
+    setSelectedType(selectedType)
+  }
+
+  const handleDate = date => {
+    setIsCalendarModalVisible(false)
+    console.log(selectedType, '+++++++++++=')
+
+    if (selectedType == 'Paid Collaboration') {
+      setIsInputModelVisible(true)
+    } else {
+      setIsConfirmationModelVisible(true)
+    }
+    setSelectedDate(date)
+    console.log(date, 'Date')
+  }
+
+  const handlePaid = val => {
+    setIsInputModelVisible(false)
+    setCost(val)
+    console.log('+++++++++++++', val)
+    setIsConfirmationModelVisible(true)
+  }
+
+  const createCollabration = async () => {
+    try {
+      showLoader()
+
+      const isBarter = selectedType === 'Barter'
+
+      const data = {
+        Brand: route?.params?.brandId,
+        Campaign: route?.params?.campaignId,
+        Type: isBarter ? 'Barter' : 'Paid',
+        Date: selectedDate?.date,
+        Time: selectedDate?.time,
+        ContentSubmittedLinks: [],
+        Notes: isBarter
+          ? 'Please tag our official account in the post.'
+          : 'Please post the content before the deadline.',
+        ...(isBarter
+          ? {
+              ProductDetails:
+                'Free skincare product package including cleanser, toner, and moisturizer',
+            }
+          : {
+              PaymentAmount: cost,
+            }),
+      }
+
+      const res = await apiPost(urls?.createCollabrationOfInfluencer, data)
+      // Handle success (toast, navigation, etc.) if needed
+      ToastMsg(res?.message)
+      setIsCampModalVisible(false)
+      console.log(res, 'CreateCollabration::::::::::')
+
+      hideLoader()
+      navigation.goBack()
+    } catch (error) {
+      // Handle error (optional)
+      hideLoader()
+    }
+  }
+
   const OfferCard = ({offer}) => (
     <TouchableOpacity
       style={styles.offerCard}
-      onPress={() => navigation.navigate('InfluencerOfferDetail',{id:offer?._id})}
-      >
+      onPress={() =>
+        navigation.navigate('InfluencerOfferDetail', {id: offer?._id})
+      }>
       <View style={styles.offerImageContainer}>
         <Image source={{uri: offer.Image}} style={styles.offerImage} />
       </View>
@@ -93,20 +175,18 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
       </View>
       <Text style={styles.emptyTitle}>No Offers Available</Text>
       <Text style={styles.emptyDescription}>
-        This campaign currently has no offers available. Check back later for new opportunities.
+        This campaign currently has no offers available. Check back later for
+        new opportunities.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.refreshButton}
-        onPress={getAllOffersOfACampaign}
-      >
+        onPress={getAllOffersOfACampaign}>
         <Text style={styles.refreshButtonText}>Refresh</Text>
       </TouchableOpacity>
     </View>
   )
 
-  const renderOfferCard = ({item, index}) => (
-    <OfferCard offer={item} />
-  )
+  const renderOfferCard = ({item, index}) => <OfferCard offer={item} />
 
   const keyExtractor = (item, index) => {
     return item?._id?.toString() || item?.id?.toString() || index.toString()
@@ -154,20 +234,18 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
           }}>
           <ImageBackground
             source={{
-              uri: getABrand?.Image
-                ? getABrand?.Image
+              uri: getABrand?.Assets
+                ? getABrand?.Assets
                 : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-            }} 
+            }}
             style={styles.heroSection}
             imageStyle={styles.heroImageStyle}>
             <View style={styles.heroOverlay}>
-              <Text style={styles.heroText}>
-                {getABrand?.BrandName}
-              </Text>
+              <Text style={styles.heroText}>{getABrand?.Title}</Text>
             </View>
           </ImageBackground>
           <View style={styles.restaurantInfo}>
-            <Text style={styles.restaurantName}>{getABrand?.BrandName}</Text>
+            <Text style={styles.restaurantName}>{getABrand?.Title}</Text>
             <Text style={styles.restaurantCategory}>Food & Beverage</Text>
           </View>
         </View>
@@ -186,7 +264,36 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
             contentContainerStyle={styles.flatListContainer}
           />
         </View>
+
+        <CampaignTypeModal
+          isVisible={isCampModalVisible}
+          onClose={() => setIsCampModalVisible(false)}
+          onNext={selectedType => handleNext(selectedType)}
+        />
+        <CalendarModal
+          isVisible={isCalendarModalVisible}
+          onClose={() => setIsCalendarModalVisible(false)}
+          onSubmit={e => handleDate(e)}
+        />
+
+        <PaidInputModel
+          isVisible={isPaidModelVisible}
+          onClose={() => setIsInputModelVisible(false)}
+          onNext={val => handlePaid(val)}
+        />
+        <ConfirmationCampaignModel
+          isVisible={confirmationModelVisible}
+          onClose={() => setIsConfirmationModelVisible(false)}
+          // onNext={val => handlePaid(val)}
+          onNext={() => createCollabration()}
+        />
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles.requestSpotButton}
+        onPress={() => setIsCampModalVisible(true)}>
+        <Text style={styles.requestSpotButtonText}>Request Spot</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -388,6 +495,16 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    margin: 5,
   },
   offerImageContainer: {
     position: 'relative',
