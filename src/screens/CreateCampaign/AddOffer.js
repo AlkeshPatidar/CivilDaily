@@ -360,7 +360,7 @@ const AddOffer = ({navigation, route}) => {
             </View>
           </View>
 
-          {/* Location Selection */}
+          {/* Location Selection
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
@@ -384,7 +384,7 @@ const AddOffer = ({navigation, route}) => {
                 ))}
               </View>
             </View>
-          </View>
+           </View> */}
 
           {/* Average Daily Impressions */}
           <View style={styles.formSection}>

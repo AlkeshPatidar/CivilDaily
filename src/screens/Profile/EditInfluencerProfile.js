@@ -134,7 +134,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
     try {
       const token = await getItem('token')
       const url =
-        loggedInby === 'Influencer'
+        loggedInby === 'Influencers'
           ? `${BASE_URL}/api/influencer/UpdateInfluencer`
           : `${BASE_URL}/api/brand/UpdateBrand`
       const response = await fetch(url, {
@@ -145,7 +145,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
         },
         body: JSON.stringify({
           FirstName: profileData.FirstName,
-          ...(loggedInby === 'Influencer' && {Gender: profileData.Gender}),
+          ...(loggedInby === 'Influencers' && {Gender: profileData.Gender}),
         }),
       })
 
@@ -183,7 +183,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
       })
 
         const url =
-        loggedInby === 'Influencer'
+        loggedInby === 'Influencers'
           ? `${BASE_URL}/api/influencer/InfluencerUploadProfileImage`
           : `${BASE_URL}/api/brand/BrandUploadProfileImage`
 
@@ -215,6 +215,9 @@ const EditInfluencerProfileScreen = ({navigation}) => {
     }
   }
 
+  // console.log(loggedInby,'LoggedINby');
+  
+
   const handleSaveProfile = async () => {
     if (!profileData.FirstName?.trim()) {
       ToastMsg('Please enter your first name')
@@ -244,7 +247,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
   const getUserProfile = async () => {
     try {
        const url =
-        loggedInby === 'Influencer'
+        loggedInby === 'Influencers'
           ? urls.getInfluencerProfile
           : urls.getBrandProfile
 
@@ -312,7 +315,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
             />
           </View>
 
-     { loggedInby =='Influencer' &&    <View style={styles.inputGroup}>
+     { loggedInby =='Influencers' &&    <View style={styles.inputGroup}>
             <Text style={styles.label}>Gender</Text>
             <View style={styles.genderContainer}>
               <TouchableOpacity

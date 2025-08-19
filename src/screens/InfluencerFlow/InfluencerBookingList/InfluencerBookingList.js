@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react'
 import {
   View,
   Text,
@@ -9,194 +9,224 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { FONTS_FAMILY } from '../../../assets/Fonts';
-import color, { App_Primary_color } from '../../../common/Colors/colors';
-import { apiGet } from '../../../utils/Apis';
-import urls from '../../../config/urls';
-import useLoader from '../../../utils/LoaderHook';
-import CustomText from '../../../components/TextComponent';
+} from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {FONTS_FAMILY} from '../../../assets/Fonts'
+import color, {App_Primary_color} from '../../../common/Colors/colors'
+import {apiGet, apiPut} from '../../../utils/Apis'
+import urls from '../../../config/urls'
+import useLoader from '../../../utils/LoaderHook'
+import CustomText from '../../../components/TextComponent'
+import RescheduleModal from './RescheduleModel'
+import { ToastMsg } from '../../../utils/helperFunctions'
 
 const InfluencerBookingList = ({navigation}) => {
-  const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [allCampaigns, setAllCampaigns] = useState([]);
-  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const [searchText, setSearchText] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [allCampaigns, setAllCampaigns] = useState([])
+  const [filteredCampaigns, setFilteredCampaigns] = useState([])
 
-  const categories = ['All', 'Completed', 'Pending'];
-  const { showLoader, hideLoader } = useLoader();
+  const categories = ['All', 'Completed', 'Pending']
+  const [showModal, setShowModal] = useState(false)
+  const {showLoader, hideLoader} = useLoader()
+  const [collaborationId, setCollaborationId] = useState(null)
 
   useEffect(() => {
-    getAllCampaigns();
-  }, []);
+    getAllCampaigns()
+  }, [])
 
-  // Filter campaigns whenever category or search text changes
   useEffect(() => {
-    filterCampaigns();
-  }, [selectedCategory, searchText, allCampaigns]);
+    filterCampaigns()
+  }, [selectedCategory, searchText, allCampaigns])
 
   const getAllCampaigns = async () => {
     try {
-      showLoader();
-      let allData = [];
-      
-      // Get all campaigns (these are likely pending/active campaigns)
-      const allRes = await apiGet(urls?.AllCollabrationReqInfluencer);
+      showLoader()
+      let allData = []
+
+      const allRes = await apiGet(urls?.AllCollabrationReqInfluencer)
       if (allRes?.data && Array.isArray(allRes.data)) {
-        // Mark these as active/pending since they come from "all" endpoint
         const activeCampaigns = allRes.data.map(campaign => ({
           ...campaign,
-          Status: campaign.Status || 'Active' // Use existing status or default to Active
-        }));
-        allData = [...activeCampaigns];
+          Status: campaign.Status || 'Active',
+        }))
+        allData = [...activeCampaigns]
       }
-      
+
       // Get completed campaigns
-      const completedRes = await apiGet(urls?.completedCollabrationReqInfluencer);
+      const completedRes = await apiGet(
+        urls?.completedCollabrationReqInfluencer,
+      )
       if (completedRes?.data && Array.isArray(completedRes.data)) {
         const completedCampaigns = completedRes.data.map(campaign => ({
           ...campaign,
-          Status: 'Completed' // Override status to Completed
-        }));
-        allData = [...allData, ...completedCampaigns];
+          Status: 'Completed',
+        }))
+        allData = [...allData, ...completedCampaigns]
       }
-      
+
       // Get cancelled campaigns
-      const cancelledRes = await apiGet(urls?.cancelledCollabrationReqInfluencer);
+      const cancelledRes = await apiGet(
+        urls?.cancelledCollabrationReqInfluencer,
+      )
       if (cancelledRes?.data && Array.isArray(cancelledRes.data)) {
         const cancelledCampaigns = cancelledRes.data.map(campaign => ({
           ...campaign,
-          Status: 'Cancelled' // Override status to Cancelled
-        }));
-        allData = [...allData, ...cancelledCampaigns];
+          Status: 'Cancelled',
+        }))
+        allData = [...allData, ...cancelledCampaigns]
       }
-      
+
       // Remove duplicates based on _id if any exist
-      const uniqueCampaigns = allData.filter((campaign, index, self) => 
-        index === self.findIndex(c => c._id === campaign._id)
-      );
-      
-      setAllCampaigns(uniqueCampaigns);
-      hideLoader();
+      const uniqueCampaigns = allData.filter(
+        (campaign, index, self) =>
+          index === self.findIndex(c => c._id === campaign._id),
+      )
+
+      setAllCampaigns(uniqueCampaigns)
+      hideLoader()
     } catch (error) {
-      console.log('Error fetching campaigns:', error);
-      hideLoader();
+      console.log('Error fetching campaigns:', error)
+      hideLoader()
     }
-  };
+  }
+
+  const handleSubmit =async (collaborationId, data) => {
+    console.log('Collaboration ID:', collaborationId, 'Data:', data)
+    try {
+      showLoader()
+      const res = await apiPut(
+        `/api/influencer/InfluencerrescheduleCollbractionRequest/${collaborationId}`,
+        data,
+      )
+      console.log(res,'RES:::::::::');
+      
+        getAllCampaigns()
+        ToastMsg(res?.message || 'Collaboration rescheduled successfully')
+      hideLoader()
+      setShowModal(false)
+    } catch (error) {
+      hideLoader()
+    }
+  }
 
   const filterCampaigns = () => {
-    let filtered = [];
-    
+    let filtered = []
+
     // First filter by category
     switch (selectedCategory) {
       case 'All':
-        filtered = [...allCampaigns];
-        break;
+        filtered = [...allCampaigns]
+        break
       case 'Completed':
-        filtered = allCampaigns.filter(campaign => 
-          campaign.Status?.toLowerCase() === 'completed'
-        );
-        break;
+        filtered = allCampaigns.filter(
+          campaign => campaign.Status?.toLowerCase() === 'completed',
+        )
+        break
       case 'Pending':
-        filtered = allCampaigns.filter(campaign => 
-          campaign.Status?.toLowerCase() === 'pending'
-        );
-        break;
+        filtered = allCampaigns.filter(
+          campaign => campaign.Status?.toLowerCase() === 'pending',
+        )
+        break
       default:
-        filtered = [...allCampaigns];
+        filtered = [...allCampaigns]
     }
-    
+
     // Then apply search filter if searchText exists
     if (searchText.trim()) {
       filtered = filtered.filter(campaign => {
-        const title = campaign?.Campaign?.Title || campaign?.Title || '';
-        const category = campaign?.Campaign?.Category || campaign?.Category || '';
-        const description = campaign?.Campaign?.Description || campaign?.Description || '';
-        
-        const searchLower = searchText.toLowerCase();
+        const title = campaign?.Campaign?.Title || campaign?.Title || ''
+        const category =
+          campaign?.Campaign?.Category || campaign?.Category || ''
+        const description =
+          campaign?.Campaign?.Description || campaign?.Description || ''
+
+        const searchLower = searchText.toLowerCase()
         return (
           title.toLowerCase().includes(searchLower) ||
           category.toLowerCase().includes(searchLower) ||
           description.toLowerCase().includes(searchLower)
-        );
-      });
+        )
+      })
     }
-    
-    setFilteredCampaigns(filtered);
-  };
 
-  const getStatusColor = (status) => {
+    setFilteredCampaigns(filtered)
+  }
+
+  const getStatusColor = status => {
     switch (status?.toLowerCase()) {
       case 'completed':
-        return '#4CAF50'; // Green for completed
+        return '#4CAF50' // Green for completed
       case 'pending':
-        return '#F44336'; // Red for cancelled
+        return '#F44336' // Red for cancelled
       case 'active':
-        return '#3170FA'; // Blue for active
+        return '#3170FA' // Blue for active
       case 'pending':
-        return '#FF9800'; // Orange for pending
+        return '#FF9800' // Orange for pending
       default:
-        return '#666';
+        return '#666'
     }
-  };
+  }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+  const formatDate = dateString => {
+    if (!dateString) return 'N/A'
     try {
-      const date = new Date(dateString);
+      const date = new Date(dateString)
       return date.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
-      });
+        minute: '2-digit',
+      })
     } catch (error) {
-      return 'Invalid Date';
+      return 'Invalid Date'
     }
-  };
+  }
 
-  const CategoryButton = ({ title, isSelected, onPress }) => (
+  const CategoryButton = ({title, isSelected, onPress}) => (
     <TouchableOpacity
       style={[
         styles.categoryButton,
-        isSelected && styles.selectedCategoryButton
+        isSelected && styles.selectedCategoryButton,
       ]}
-      onPress={onPress}
-    >
-      <Text style={[
-        styles.categoryText,
-        isSelected && styles.selectedCategoryText
-      ]}>
+      onPress={onPress}>
+      <Text
+        style={[
+          styles.categoryText,
+          isSelected && styles.selectedCategoryText,
+        ]}>
         {title}
       </Text>
     </TouchableOpacity>
-  );
+  )
 
-  const CampaignCard = ({ item, index }) => (
-    <TouchableOpacity 
+  const CampaignCard = ({item, index}) => (
+    <TouchableOpacity
       style={styles.foodCard}
-      onPress={() => navigation.navigate('BrandOfferDetail', {campaignId: item?._id})}
-    >
+      onPress={() =>
+        navigation.navigate('BrandOfferDetail', {campaignId: item?._id})
+      }>
       <View style={styles.cardHeader}>
-        <Text style={styles.dateText}>
-          {formatDate(item.createdAt)}
-        </Text>
-        <View style={[
-          styles.statusBadge, 
-          { backgroundColor: getStatusColor(item.Status) }
-        ]}>
+        <Text style={styles.dateText}>{formatDate(item.createdAt)}</Text>
+        <View
+          style={[
+            styles.statusBadge,
+            {backgroundColor: getStatusColor(item.Status)},
+          ]}>
           <Text style={styles.statusText}>
             {(item.Status || 'ACTIVE').toUpperCase()}
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.cardContent}>
         <Image
-          source={{ 
-            uri: item?.Campaign?.Assets || item?.Assets || 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop'
+          source={{
+            uri:
+              item?.Campaign?.Assets ||
+              item?.Assets ||
+              'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
           }}
           style={styles.foodImage}
         />
@@ -209,38 +239,48 @@ const InfluencerBookingList = ({navigation}) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity style={{
-        alignSelf:'flex-end',
-backgroundColor: App_Primary_color,
-padding:4,
-borderRadius: 4,
-      }}>
-        <CustomText style={{
-          color: 'white',
-          fontSize: 12,
-          fontFamily: FONTS_FAMILY.Poppins_Medium,
-        }}>Reschedule</CustomText>
-      </TouchableOpacity>
+      {item.Status == 'Pending' && (
+        <TouchableOpacity
+          style={{
+            alignSelf: 'flex-end',
+            backgroundColor: App_Primary_color,
+            padding: 4,
+            borderRadius: 4,
+          }}
+          onPress={() => {
+            setCollaborationId(item._id)
+            setShowModal(true)
+          }}>
+          <CustomText
+            style={{
+              color: 'white',
+              fontSize: 12,
+              fontFamily: FONTS_FAMILY.Poppins_Medium,
+            }}>
+            Reschedule
+          </CustomText>
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
-  );
+  )
 
-  const handleSearch = (text) => {
-    setSearchText(text);
+  const handleSearch = text => {
+    setSearchText(text)
     // filterCampaigns will be called automatically through useEffect
-  };
+  }
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  const handleCategorySelect = category => {
+    setSelectedCategory(category)
     // filterCampaigns will be called automatically through useEffect
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle="light-content" />
-      
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Icon name="search" size={20} color="#fff" style={{bottom: 3}}/>
+          <Icon name='search' size={20} color='#fff' style={{bottom: 3}} />
           <TextInput
             style={styles.searchInput}
             placeholder='Search campaigns...'
@@ -264,7 +304,9 @@ borderRadius: 4,
       </View>
 
       {/* Campaigns List */}
-      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.contentContainer}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.listContainer}>
           {filteredCampaigns.length > 0 ? (
             filteredCampaigns.map((item, index) => (
@@ -275,20 +317,28 @@ borderRadius: 4,
           ) : (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
-                {searchText.trim() 
-                  ? `No campaigns found matching "${searchText}"` 
-                  : `No ${selectedCategory.toLowerCase()} campaigns found`
-                }
+                {searchText.trim()
+                  ? `No campaigns found matching "${searchText}"`
+                  : `No ${selectedCategory.toLowerCase()} campaigns found`}
               </Text>
             </View>
           )}
         </View>
+        <RescheduleModal
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+          collaborationId={collaborationId}
+          // onSubmit={(collaborationId, )=>handleSubmit()}
+          onSubmit={(collaborationId, data) =>
+            handleSubmit(collaborationId, data)
+          }
+        />
       </ScrollView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default InfluencerBookingList;
+export default InfluencerBookingList
 
 const styles = StyleSheet.create({
   container: {
@@ -313,9 +363,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchInput: {
-    flex: 1, 
-    color: '#fff', 
-    marginLeft: 8, 
+    flex: 1,
+    color: '#fff',
+    marginLeft: 8,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     paddingVertical: 8,
   },
@@ -328,7 +378,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   categoryRow: {
     flexDirection: 'row',
@@ -368,7 +418,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
@@ -433,4 +483,4 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     textAlign: 'center',
   },
-});
+})

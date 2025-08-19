@@ -538,7 +538,7 @@ import SpaceBetweenRow from '../../components/wrapper/spacebetween'
 import {apiDelete, apiGet} from '../../utils/Apis'
 import urls from '../../config/urls'
 import useLoader from '../../utils/LoaderHook'
-import { useIsFocused } from '@react-navigation/native'
+import {useIsFocused} from '@react-navigation/native'
 
 const {width, height} = Dimensions.get('window')
 
@@ -553,21 +553,21 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const [campaignDetail, setCampaignDetial] = useState(null)
   const {showLoader, hideLoader} = useLoader()
-  const [atendess, setAttendees] = useState()
-  const [req, setReq] = useState()
+  const [atendess, setAttendees] = useState([])
+  const [req, setReq] = useState([])
 
   const [offers, setOffers] = useState([])
-  
+  const [rescheduleReq, setRescheduleReq] = useState([])
 
-  const isFocused= useIsFocused()
 
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     getBrandCampaignDetial()
     getAtendess()
     getCollabrationReq()
     getOffers()
-
+    getAllReschduleReq()
   }, [isFocused])
 
   const getBrandCampaignDetial = async () => {
@@ -604,11 +604,11 @@ const BrandCampaignDetail = ({navigation, route}) => {
   const getAtendess = async () => {
     try {
       showLoader()
-      const res = await apiGet(`/api/brand/GetCollaborationAttendanceListaCampaign/${route?.params?.campaignId}`,
+      const res = await apiGet(
+        `/api/brand/GetCollaborationAttendanceListaCampaign/${route?.params?.campaignId}`,
       )
       setAttendees(res.data)
-      console.log('Atesndess', res?.data);
-      
+      console.log('Atesndess', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -617,14 +617,14 @@ const BrandCampaignDetail = ({navigation, route}) => {
     }
   }
 
-   const getOffers = async () => {
+  const getOffers = async () => {
     try {
       showLoader()
-      const res = await apiGet(`/api/brand/GetAllOffersofMyCampaign/${route?.params?.campaignId}`,
+      const res = await apiGet(
+        `/api/brand/GetAllOffersofMyCampaign/${route?.params?.campaignId}`,
       )
       setOffers(res.data)
-      console.log('Offers::::::::::::::::::::::::::::', res?.data);
-      
+      console.log('Offers::::::::::::::::::::::::::::', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -633,15 +633,31 @@ const BrandCampaignDetail = ({navigation, route}) => {
     }
   }
 
-
-    const getCollabrationReq = async () => {
+  const getCollabrationReq = async () => {
     try {
       showLoader()
-      const res = await apiGet(`/api/brand/GetAllCollaborationRequestOfaCampaign/${route?.params?.campaignId}`,
+      const res = await apiGet(
+        `/api/brand/GetAllCollaborationRequestOfaCampaign/${route?.params?.campaignId}`,
       )
       setReq(res.data)
-      console.log('Atesndess', res?.data);
-      
+      console.log('COLLLALA', res?.data)
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error')
+      hideLoader()
+    }
+  }
+
+    const getAllReschduleReq = async () => {
+    try {
+      showLoader()
+      const res = await apiGet(
+        // `/api/brand/GetAllCollaborationRequestOfaCampaign/${route?.params?.campaignId}`,
+        `/api/brand/GetAllRescheduleCollaborationRequest`
+      )
+      setRescheduleReq(res.data)
+      console.log('Bhaiji', res?.data)
 
       hideLoader()
     } catch (error) {
@@ -711,7 +727,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
     },
   ]
 
-  const tabs = ['Offers','Attendees', 'Request', 'Reschedule Request']
+  const tabs = ['Offers', 'Attendees', 'Request', 'Reschedule Request']
 
   const handleNext = () => {
     setIsCampModalVisible(false)
@@ -742,22 +758,27 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const AttendeeCard = ({attendee}) => (
     <TouchableOpacity style={styles.attendeeCard}>
-      {console.log('Attendee::::::::::::::', attendee)
-      }
+      {/* {console.log('Attendee::::::::::::::', attendee)
+      } */}
       <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
       <View style={styles.attendeeInfo}>
-        <Text style={styles.attendeeName}>{attendee.FirstName}{atendess?.LastName}</Text>
+        <Text style={styles.attendeeName}>
+          {attendee.FirstName}
+          {atendess?.LastName}
+        </Text>
         <Text style={styles.attendeeRole}>{attendee.NicheInput}</Text>
       </View>
     </TouchableOpacity>
   )
 
-    const OfferCard = ({attendee}) => (
-    <TouchableOpacity style={styles.attendeeCard}
-    onPress={()=>navigation.navigate('BrandOfferDetail', {id: attendee._id})}
-    >
-      {console.log('Attetddoffff', attendee?._id)
-      }
+  const OfferCard = ({attendee}) => (
+    <TouchableOpacity
+      style={styles.attendeeCard}
+      onPress={() =>
+        navigation.navigate('BrandOfferDetail', {id: attendee._id})
+      }>
+      {/* {console.log('Attetddoffff', attendee?._id)
+      } */}
       <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
       <View style={styles.attendeeInfo}>
         <Text style={styles.attendeeName}>{attendee.Title}</Text>
@@ -783,6 +804,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
         shadowOpacity: 0.1,
         shadowRadius: 2,
       }}>
+      {console.log('Request::::::::::::::', request)}
       <CustomText
         style={{
           fontSize: 12,
@@ -827,7 +849,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
     </TouchableOpacity>
   )
 
-  const RescheduleCard = ({attendee}) => (
+  const RescheduleCard = ({reschedule}) => (
     <TouchableOpacity
       style={{
         backgroundColor: 'white',
@@ -844,6 +866,8 @@ const BrandCampaignDetail = ({navigation, route}) => {
         shadowOpacity: 0.1,
         shadowRadius: 2,
       }}>
+        {/* {console.log(attendee,'--------')
+        } */}
       <CustomText
         style={{
           fontSize: 12,
@@ -858,7 +882,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
         }}>
         <Image
           source={{
-            uri: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+            uri:reschedule?.Influencer?.Image? reschedule?.Influencer?.Image:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
           }}
           style={{
             height: 40,
@@ -873,7 +897,8 @@ const BrandCampaignDetail = ({navigation, route}) => {
               fontSize: 14,
               fontFamily: FONTS_FAMILY.Poppins_Regular,
             }}>
-            Christmas Special Discount
+            {/* Christmas Special Discount */}
+            {reschedule?.Influencer?.FirstName} {reschedule?.Influencer?.LastName}
           </CustomText>
           <CustomText
             style={{
@@ -881,7 +906,8 @@ const BrandCampaignDetail = ({navigation, route}) => {
               fontSize: 12,
               fontFamily: FONTS_FAMILY.Poppins_Regular,
             }}>
-            Taman Sari Billboard, Bandung
+            {/* Taman Sari Billboard, Bandung */}
+            {reschedule?.Influencer?.NicheInput}
           </CustomText>
         </View>
       </Row>
@@ -890,7 +916,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-         case 'Offers':
+      case 'Offers':
         return (
           <View style={styles.tabContent}>
             {offers?.map(attendee => (
@@ -909,16 +935,21 @@ const BrandCampaignDetail = ({navigation, route}) => {
       case 'Request':
         return (
           <View style={styles.tabContent}>
-            {requestsData?.map(request => (
-              <RequestCard key={request.id} request={request} />
-            ))}
+            {activeSubTab === 'Paid Collaboration'
+              ? req?.paidCollaborations?.map(request => (
+                  <RequestCard key={request._id} request={request} />
+                ))
+              : req?.barterCollaborations?.map(request => (
+                  <RequestCard key={request._id} request={request} />
+                ))}
           </View>
         )
+
       case 'Reschedule Request':
         return (
           <View style={styles.tabContent}>
-            {attendeesData.map(attendee => (
-              <RescheduleCard key={attendee.id} reschedule={attendee} />
+            {rescheduleReq?.map(attendee => (
+              <RescheduleCard  reschedule={attendee} />
             ))}
           </View>
         )
@@ -972,7 +1003,11 @@ const BrandCampaignDetail = ({navigation, route}) => {
         <View style={styles.headerActions}>
           <TouchableOpacity
             style={styles.editButton}
-            onPress={() => navigation.navigate('CreateCampaign', {campaignId:route?.params?.campaignId})}>
+            onPress={() =>
+              navigation.navigate('CreateCampaign', {
+                campaignId: route?.params?.campaignId,
+              })
+            }>
             <EditIcon />
           </TouchableOpacity>
           <TouchableOpacity
@@ -993,7 +1028,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
             style={styles.heroSection}
             imageStyle={styles.heroImageStyle}>
             <View style={styles.heroOverlay}>
-            
               {/* <Text style={styles.heroText}>
                 JINGLE{'\n'}MUNCH{'\n'}SAVE
               </Text> */}
@@ -1025,19 +1059,26 @@ const BrandCampaignDetail = ({navigation, route}) => {
                 DRAFT
               </CustomText>
             </View>
-         <TouchableOpacity style={{
-          padding:5,
-          backgroundColor: App_Primary_color,
-          borderRadius: 4,
-         }}
-         onPress={() => navigation.navigate('AddOffer', {campaignId:route?.params?.campaignId})}
-         >
-          <CustomText style={{
-            color: 'white',
-            fontSize: 12,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-          }}>Add Offer</CustomText>
-         </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                padding: 5,
+                backgroundColor: App_Primary_color,
+                borderRadius: 4,
+              }}
+              onPress={() =>
+                navigation.navigate('AddOffer', {
+                  campaignId: route?.params?.campaignId,
+                })
+              }>
+              <CustomText
+                style={{
+                  color: 'white',
+                  fontSize: 12,
+                  fontFamily: FONTS_FAMILY.Poppins_Medium,
+                }}>
+                Add Offer
+              </CustomText>
+            </TouchableOpacity>
           </SpaceBetweenRow>
         </View>
 

@@ -78,7 +78,7 @@
 //   // Validation function
 //   const validateForm = () => {
 //     const { firstName, lastName, email, number, password, dateOfBirth } = formData
-    
+
 //     if (!firstName.trim()) {
 //       ToastMsg('Please enter first name')
 //       return false
@@ -103,7 +103,7 @@
 //       ToastMsg('Please enter date of birth')
 //       return false
 //     }
-    
+
 //     // Influencer specific validation
 //     if (activeTab === 'Influencers') {
 //       const { address, postalCode, audienceSize, nicheInput } = formData
@@ -124,7 +124,7 @@
 //         return false
 //       }
 //     }
-    
+
 //     // Brand specific validation
 //     if (activeTab === 'Brands') {
 //       const { brandName, upcomingCampaigns } = formData
@@ -137,14 +137,14 @@
 //         return false
 //       }
 //     }
-    
+
 //     // Add email validation
 //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 //     if (!emailRegex.test(email)) {
 //       ToastMsg('Please enter valid email')
 //       return false
 //     }
-    
+
 //     return true
 //   }
 
@@ -155,10 +155,10 @@
 
 //     try {
 //       showLoader()
-      
+
 //       // Role-based endpoint selection
-//       const url = activeTab == 'Influencers' 
-//         ? urls.InfluencerSignUp 
+//       const url = activeTab == 'Influencers'
+//         ? urls.InfluencerSignUp
 //         : urls.brandSignUp
 
 //       let data = {}
@@ -202,7 +202,7 @@
 
 //       if (response?.statusCode === 200) {
 //         ToastMsg(response?.message || 'Registration successful')
-        
+
 //         // Navigate based on user type
 //         if (activeTab == 'Influencers') {
 //           navigation.navigate('Otpscreen')
@@ -325,7 +325,7 @@
 //             value={formData.dateOfBirth}
 //             label={'Date Of Birth'}
 //           />
-          
+
 //           {/* Influencer specific fields */}
 //           {activeTab === 'Influencers' && (
 //             <>
@@ -364,7 +364,7 @@
 //               />
 //             </>
 //           )}
-          
+
 //           {/* Brand specific fields */}
 //           {activeTab === 'Brands' && (
 //             <>
@@ -604,6 +604,7 @@ const SignUp = ({navigation}) => {
     // Brand specific fields
     brandName: '',
     upcomingCampaigns: '',
+    Address: '',
   })
 
   const [activeTab, setActiveTab] = useState('Influencers')
@@ -635,7 +636,7 @@ const SignUp = ({navigation}) => {
   }
 
   // Function to format date
-  const formatDate = (date) => {
+  const formatDate = date => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
@@ -647,7 +648,7 @@ const SignUp = ({navigation}) => {
     if (Platform.OS === 'android') {
       setShowDatePicker(false)
     }
-    
+
     if (date) {
       setSelectedDate(date)
       const formattedDate = formatDate(date)
@@ -662,8 +663,8 @@ const SignUp = ({navigation}) => {
 
   // Validation function
   const validateForm = () => {
-    const { firstName, lastName, email, number, password, dateOfBirth } = formData
-    
+    const {firstName, lastName, email, number, password, dateOfBirth} = formData
+
     if (!firstName.trim()) {
       ToastMsg('Please enter first name')
       return false
@@ -688,10 +689,10 @@ const SignUp = ({navigation}) => {
       ToastMsg('Please enter date of birth')
       return false
     }
-    
+
     // Influencer specific validation
     if (activeTab === 'Influencers') {
-      const { address, postalCode, audienceSize, nicheInput } = formData
+      const {address, postalCode, audienceSize, nicheInput} = formData
       if (!address.trim()) {
         ToastMsg('Please enter address')
         return false
@@ -709,10 +710,10 @@ const SignUp = ({navigation}) => {
         return false
       }
     }
-    
+
     // Brand specific validation
     if (activeTab === 'Brands') {
-      const { brandName, upcomingCampaigns } = formData
+      const {brandName, upcomingCampaigns} = formData
       if (!brandName.trim()) {
         ToastMsg('Please enter brand name')
         return false
@@ -722,14 +723,14 @@ const SignUp = ({navigation}) => {
         return false
       }
     }
-    
+
     // Add email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       ToastMsg('Please enter valid email')
       return false
     }
-    
+
     return true
   }
 
@@ -740,11 +741,10 @@ const SignUp = ({navigation}) => {
 
     try {
       showLoader()
-      
+
       // Role-based endpoint selection
-      const url = activeTab == 'Influencers' 
-        ? urls.InfluencerSignUp 
-        : urls.BrandsSignUp
+      const url =
+        activeTab == 'Influencers' ? urls.InfluencerSignUp : urls.BrandsSignUp
 
       let data = {}
 
@@ -779,6 +779,11 @@ const SignUp = ({navigation}) => {
           BrandName: formData.brandName,
           UpcomingCampaigns: campaignsArray,
           Password: formData.password,
+          Location: {
+            late: 22.719568,
+            long: 75.857727,
+            Address: formData.Address || '',
+          },
         }
       }
 
@@ -787,12 +792,14 @@ const SignUp = ({navigation}) => {
 
       if (response?.statusCode === 200) {
         ToastMsg(response?.message || 'Registration successful')
-        
+
         // Navigate based on user type
         if (activeTab == 'Influencers') {
-          navigation.navigate('Otpscreen')
+          // navigation.navigate('Otpscreen')
+          navigation.navigate('Login')
+
         } else {
-          navigation.navigate('CampaignReqScreen')
+          navigation.navigate('Login')
         }
       }
       hideLoader()
@@ -871,26 +878,26 @@ const SignUp = ({navigation}) => {
         <View style={styles.inputFieldsContainer}>
           <CustomInputField
             placeholder={'First Name'}
-            onChangeText={(value) => updateFormData('firstName', value)}
+            onChangeText={value => updateFormData('firstName', value)}
             value={formData.firstName}
             label={'First Name'}
           />
           <CustomInputField
             placeholder={'Last Name'}
-            onChangeText={(value) => updateFormData('lastName', value)}
+            onChangeText={value => updateFormData('lastName', value)}
             value={formData.lastName}
             label={'Last Name'}
           />
           <CustomInputField
             placeholder={'Email'}
-            onChangeText={(value) => updateFormData('email', value)}
+            onChangeText={value => updateFormData('email', value)}
             value={formData.email}
             label={'Email'}
             keyboardType={'email-address'}
           />
           <CustomInputField
             placeholder={'Number'}
-            onChangeText={(value) => updateFormData('number', value)}
+            onChangeText={value => updateFormData('number', value)}
             value={formData.number}
             label={'Number'}
             keyboardType={'phone-pad'}
@@ -898,7 +905,7 @@ const SignUp = ({navigation}) => {
           <CustomInputField
             placeholder={'Password'}
             icon={<EyeIcon />}
-            onChangeText={(value) => updateFormData('password', value)}
+            onChangeText={value => updateFormData('password', value)}
             value={formData.password}
             secureTextEntry={true}
             label={'Password'}
@@ -910,93 +917,105 @@ const SignUp = ({navigation}) => {
               value={formData.dateOfBirth}
               label={'Date Of Birth'}
               editable={false}
-              pointerEvents="none"
+              pointerEvents='none'
             />
           </TouchableOpacity>
-          
+
           {/* Influencer specific fields */}
           {activeTab === 'Influencers' && (
             <>
               <CustomInputField
                 placeholder={'Address'}
-                onChangeText={(value) => updateFormData('address', value)}
+                onChangeText={value => updateFormData('address', value)}
                 value={formData.address}
                 label={'Address'}
               />
               <CustomInputField
                 placeholder={'Postal Code'}
-                onChangeText={(value) => updateFormData('postalCode', value)}
+                onChangeText={value => updateFormData('postalCode', value)}
                 value={formData.postalCode}
                 label={'Postal Code'}
                 keyboardType={'numeric'}
               />
               <CustomInputField
                 placeholder={'Audience Size'}
-                onChangeText={(value) => updateFormData('audienceSize', value)}
+                onChangeText={value => updateFormData('audienceSize', value)}
                 value={formData.audienceSize}
                 label={'Audience Size'}
                 keyboardType={'numeric'}
               />
               <CustomInputField
                 placeholder={'Niche (e.g., Fitness, Fashion, Tech)'}
-                onChangeText={(value) => updateFormData('nicheInput', value)}
+                onChangeText={value => updateFormData('nicheInput', value)}
                 value={formData.nicheInput}
                 label={'Niche'}
               />
               {/* Gender Picker - You can implement a picker component */}
               <CustomInputField
                 placeholder={'Gender (Male/Female/Other)'}
-                onChangeText={(value) => updateFormData('gender', value)}
+                onChangeText={value => updateFormData('gender', value)}
                 value={formData.gender}
                 label={'Gender'}
               />
             </>
           )}
-          
+
           {/* Brand specific fields */}
           {activeTab === 'Brands' && (
             <>
               <CustomInputField
                 placeholder={'Brand Name'}
-                onChangeText={(value) => updateFormData('brandName', value)}
+                onChangeText={value => updateFormData('brandName', value)}
                 value={formData.brandName}
                 label={'Brand Name'}
               />
               <CustomInputField
                 placeholder={'Upcoming Campaigns (comma)'}
-                onChangeText={(value) => updateFormData('upcomingCampaigns', value)}
+                onChangeText={value =>
+                  updateFormData('upcomingCampaigns', value)
+                }
                 value={formData.upcomingCampaigns}
                 label={'Upcoming Campaigns'}
                 multiline={true}
               />
+               <CustomInputField
+                placeholder={'Address'}
+                onChangeText={value => updateFormData('Address', value)}
+                value={formData.Address}
+                label={'Address'}
+              />
             </>
           )}
         </View>
-        
+
         {/* Date Picker Modal */}
         {showDatePicker && (
           <DateTimePicker
             value={selectedDate}
-            mode="date"
+            mode='date'
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={onDateChange}
             maximumDate={new Date()}
             minimumDate={new Date(1900, 0, 1)}
           />
         )}
-        
+
         {Platform.OS === 'ios' && showDatePicker && (
           <View style={styles.datePickerContainer}>
             <View style={styles.datePickerHeader}>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(false)}
                 style={styles.datePickerButton}>
-                <CustomText style={styles.datePickerButtonText}>Cancel</CustomText>
+                <CustomText style={styles.datePickerButtonText}>
+                  Cancel
+                </CustomText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(false)}
                 style={styles.datePickerButton}>
-                <CustomText style={styles.datePickerButtonText}>Done</CustomText>
+                <CustomText style={styles.datePickerButtonText}>
+                  Done
+                </CustomText>
               </TouchableOpacity>
             </View>
           </View>
