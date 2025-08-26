@@ -456,7 +456,6 @@
 
 // export default InfluencerCapaignListOfaBrand
 
-
 import React, {useEffect, useState} from 'react'
 import {
   View,
@@ -484,6 +483,8 @@ import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import moment from 'moment'
 import Row from '../../../components/wrapper/row'
+import {App_Primary_color} from '../../../common/Colors/colors'
+import IMG from '../../../assets/Images'
 
 const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
@@ -532,14 +533,15 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
     // Filter by search text (title)
     if (searchText) {
       filtered = filtered.filter(campaign =>
-        campaign.Title?.toLowerCase().includes(searchText.toLowerCase())
+        campaign.Title?.toLowerCase().includes(searchText.toLowerCase()),
       )
     }
 
     // Filter by selected date
     if (selectedDate) {
-      filtered = filtered.filter(campaign =>
-        moment(campaign.createdAt).format('YYYY-MM-DD') === selectedDate
+      filtered = filtered.filter(
+        campaign =>
+          moment(campaign.createdAt).format('YYYY-MM-DD') === selectedDate,
       )
     }
 
@@ -591,11 +593,11 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
     return days
   }
 
-  const isDateDisabled = (date) => {
+  const isDateDisabled = date => {
     return date.isBefore(moment(), 'day')
   }
 
-  const selectDate = (date) => {
+  const selectDate = date => {
     if (!isDateDisabled(date)) {
       const dateString = date.format('YYYY-MM-DD')
       setSelectedDate(selectedDate === dateString ? null : dateString)
@@ -624,8 +626,9 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
           brandId: offer?.Brand,
           campaignId: offer?._id,
         })
-      }>
-  {/* {console.log(offer, '++++++++++++++++==')} */}
+      }
+      >
+      {/* {console.log(offer, '++++++++++++++++==')} */}
 
       <View style={styles.offerImageContainer}>
         <Image source={{uri: offer.Assets}} style={styles.offerImage} />
@@ -641,6 +644,27 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
         <Text style={styles.offerTitle}>{offer.Title}</Text>
         <Text style={styles.offerCategory}>{offer.Category}</Text>
         <Text style={styles.offerLocation}>{offer.location}</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ChatScreen', {Id: offer?.Brand})}
+          style=
+          {{
+            position: 'absolute',
+            right: 10,
+            bottom: 10,
+          }}
+          >
+          <Image
+            source={IMG.msg}
+            style={{
+              height: 35,
+              width: 35,
+              tintColor: App_Primary_color,
+              // position: 'absolute',
+              // right: 10,
+              // bottom: 10,
+            }}
+          />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   )
@@ -652,10 +676,9 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
       </View>
       <Text style={styles.emptyTitle}>No Campaigns Found</Text>
       <Text style={styles.emptyDescription}>
-        {searchText || selectedDate 
-          ? "No campaigns match your current filters." 
-          : "There are currently no campaigns available for this brand."
-        }
+        {searchText || selectedDate
+          ? 'No campaigns match your current filters.'
+          : 'There are currently no campaigns available for this brand.'}
       </Text>
       <TouchableOpacity
         style={styles.refreshButton}
@@ -668,7 +691,7 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
           }
         }}>
         <Text style={styles.refreshButtonText}>
-          {searchText || selectedDate ? "Clear Filters" : "Refresh"}
+          {searchText || selectedDate ? 'Clear Filters' : 'Refresh'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -681,31 +704,46 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
     return (
       <View style={styles.calendarContainer}>
         <View style={styles.calendarHeader}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={goToPrevMonth}
-            disabled={!moment(currentMonth).subtract(1, 'month').isSameOrAfter(moment(), 'month')}
+            disabled={
+              !moment(currentMonth)
+                .subtract(1, 'month')
+                .isSameOrAfter(moment(), 'month')
+            }
             style={[
               styles.monthNavButton,
-              !moment(currentMonth).subtract(1, 'month').isSameOrAfter(moment(), 'month') && styles.disabledButton
+              !moment(currentMonth)
+                .subtract(1, 'month')
+                .isSameOrAfter(moment(), 'month') && styles.disabledButton,
             ]}>
-            <Text style={[
-              styles.monthNavText,
-              !moment(currentMonth).subtract(1, 'month').isSameOrAfter(moment(), 'month') && styles.disabledText
-            ]}>‹</Text>
+            <Text
+              style={[
+                styles.monthNavText,
+                !moment(currentMonth)
+                  .subtract(1, 'month')
+                  .isSameOrAfter(moment(), 'month') && styles.disabledText,
+              ]}>
+              ‹
+            </Text>
           </TouchableOpacity>
-          
+
           <Text style={styles.monthYearText}>
             {currentMonth.format('MMMM YYYY')}
           </Text>
-          
-          <TouchableOpacity onPress={goToNextMonth} style={styles.monthNavButton}>
+
+          <TouchableOpacity
+            onPress={goToNextMonth}
+            style={styles.monthNavButton}>
             <Text style={styles.monthNavText}>›</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.weekDaysRow}>
-          {weekDays.map((day) => (
-            <Text key={day} style={styles.weekDayText}>{day}</Text>
+          {weekDays.map(day => (
+            <Text key={day} style={styles.weekDayText}>
+              {day}
+            </Text>
           ))}
         </View>
 
@@ -727,13 +765,14 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
                   isToday && !isSelected && styles.todayDay,
                   isDisabled && styles.disabledDay,
                 ]}>
-                <Text style={[
-                  styles.dayText,
-                  !isCurrentMonth && styles.otherMonthDay,
-                  isSelected && styles.selectedDayText,
-                  isDisabled && styles.disabledDayText,
-                  isToday && !isSelected && styles.todayDayText,
-                ]}>
+                <Text
+                  style={[
+                    styles.dayText,
+                    !isCurrentMonth && styles.otherMonthDay,
+                    isSelected && styles.selectedDayText,
+                    isDisabled && styles.disabledDayText,
+                    isToday && !isSelected && styles.todayDayText,
+                  ]}>
                   {day.format('D')}
                 </Text>
               </TouchableOpacity>
@@ -749,8 +788,6 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const keyExtractor = (item, index) => {
     return item?._id?.toString() || item?.id?.toString() || index.toString()
   }
-
-  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -770,7 +807,7 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
             </TouchableOpacity>
           </Row>
           <Row style={{gap: 20}}>
-            {(isSearchExpanded || isCalendarExpanded) ? (
+            {isSearchExpanded || isCalendarExpanded ? (
               <TouchableOpacity onPress={closeAll} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
@@ -792,8 +829,8 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
           <View style={styles.searchExpandedContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search campaigns by title..."
-              placeholderTextColor="#999"
+              placeholder='Search campaigns by title...'
+              placeholderTextColor='#999'
               value={searchText}
               onChangeText={setSearchText}
               autoFocus

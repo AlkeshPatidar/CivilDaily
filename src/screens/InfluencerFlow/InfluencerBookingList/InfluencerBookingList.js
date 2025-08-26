@@ -204,9 +204,10 @@ const InfluencerBookingList = ({navigation}) => {
   const CampaignCard = ({item, index}) => (
     <TouchableOpacity
       style={styles.foodCard}
-      onPress={() =>
-        navigation.navigate('BrandOfferDetail', {campaignId: item?._id})
-      }>
+      // onPress={() =>
+      //   navigation.navigate('BrandOfferDetail', {campaignId: item?._id})
+      // }
+      >
       <View style={styles.cardHeader}>
         <Text style={styles.dateText}>{formatDate(item.createdAt)}</Text>
         <View

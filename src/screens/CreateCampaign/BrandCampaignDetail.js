@@ -535,10 +535,12 @@ import color, {App_Primary_color, font_gray} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import IMG from '../../assets/Images'
 import SpaceBetweenRow from '../../components/wrapper/spacebetween'
-import {apiDelete, apiGet} from '../../utils/Apis'
+import {apiDelete, apiGet, apiPut} from '../../utils/Apis'
 import urls from '../../config/urls'
 import useLoader from '../../utils/LoaderHook'
 import {useIsFocused} from '@react-navigation/native'
+import { ToastMsg } from '../../utils/helperFunctions'
+import ForgotPassword from '../Auth/ForgetPassword'
 
 const {width, height} = Dimensions.get('window')
 
@@ -558,7 +560,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
 
   const [offers, setOffers] = useState([])
   const [rescheduleReq, setRescheduleReq] = useState([])
-
 
   const isFocused = useIsFocused()
 
@@ -649,12 +650,53 @@ const BrandCampaignDetail = ({navigation, route}) => {
     }
   }
 
-    const getAllReschduleReq = async () => {
+  const handleCollaborationAction = async (collaborationId, action, type) => {
+    console.log('Collaboration ID:', collaborationId, 'Action:', action, 'Type:', type);
+    
+    try {
+      showLoader()
+
+      // Replace with your actual API endpoint for updating collaboration status
+      const url = `/api/brand/AccepteRejectCollaborationRequest/${collaborationId}`
+      const data = {
+        Status: action === 'accept' ? 'Accepted' : 'Rejected',
+      }
+
+      const res = await apiPut(url, data)
+
+      console.log(res, 'Response from collaboration action')
+
+      if (res?.statusCode == 200) {
+        if (type=='reschedule') {
+          getAllReschduleReq()
+          
+        } else {
+          getCollabrationReq()
+          
+        }
+        ToastMsg(
+          `Collaboration ${
+            action === 'accept' ? 'accepted' : 'rejected'
+          } successfully`,
+        )
+      } else {
+        ToastMsg('Failed to update collaboration status')
+      }
+
+      hideLoader()
+    } catch (error) {
+      console.log('Error updating collaboration:', error)
+    ToastMsg( 'Something went wrong')
+      hideLoader()
+    }
+  }
+
+  const getAllReschduleReq = async () => {
     try {
       showLoader()
       const res = await apiGet(
         // `/api/brand/GetAllCollaborationRequestOfaCampaign/${route?.params?.campaignId}`,
-        `/api/brand/GetAllRescheduleCollaborationRequest`
+        `/api/brand/GetAllRescheduleCollaborationRequest`,
       )
       setRescheduleReq(res.data)
       console.log('Bhaiji', res?.data)
@@ -665,67 +707,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
       hideLoader()
     }
   }
-
-  // Sample data for different tabs
-  const attendeesData = [
-    {
-      id: 1,
-      name: 'John Abraham',
-      role: 'Senior Graphic Designer',
-      time: '2 hours ago',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-    },
-    {
-      id: 2,
-      name: 'John Abraham',
-      role: 'Senior Graphic Designer',
-      time: '2 hours ago',
-      avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
-    },
-    {
-      id: 3,
-      name: 'John Abraham',
-      role: 'Senior Graphic Designer',
-      time: '2 hours ago',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-    },
-    {
-      id: 4,
-      name: 'John Abraham',
-      role: 'Senior Graphic Designer',
-      time: '2 hours ago',
-      avatar:
-        'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&crop=face',
-    },
-  ]
-
-  const requestsData = [
-    {
-      id: 1,
-      title: 'Christmas Special Discount',
-      category: 'Food & Beverage',
-      location: 'Graha Mandiri, Jakarta Pusat',
-      date: '20 Dec - 25 Dec',
-      time: '17:00 - 18:00',
-      status: 'Pending',
-      image:
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Christmas Special Discount',
-      category: 'Food & Beverage',
-      location: 'Graha Mandiri, Jakarta Pusat',
-      date: '20 Dec - 25 Dec',
-      time: '17:00 - 18:00',
-      status: 'Approved',
-      image:
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-    },
-  ]
 
   const tabs = ['Offers', 'Attendees', 'Request', 'Reschedule Request']
 
@@ -777,142 +758,257 @@ const BrandCampaignDetail = ({navigation, route}) => {
       onPress={() =>
         navigation.navigate('BrandOfferDetail', {id: attendee._id})
       }>
-      {/* {console.log('Attetddoffff', attendee?._id)
-      } */}
+      {console.log('Attetddoffff', attendee)}
       <Image source={{uri: attendee.Image}} style={styles.attendeeAvatar} />
       <View style={styles.attendeeInfo}>
         <Text style={styles.attendeeName}>{attendee.Title}</Text>
-        {/* <Text style={styles.attendeeRole}>{attendee.NicheInput}</Text> */}
+        <Text style={styles.attendeeRole}>{attendee.Expectations}</Text>
       </View>
     </TouchableOpacity>
   )
 
-  const RequestCard = ({request}) => (
-    <TouchableOpacity
-      style={{
-        backgroundColor: 'white',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        // alignItems: 'center',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 1,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      }}>
-      {console.log('Request::::::::::::::', request)}
-      <CustomText
+  const RequestCard = ({request}) => {
+    const showActionButtons =
+      request.Status === 'Pending' || request.Status === 'ReschedulePending'
+    return (
+      <TouchableOpacity
         style={{
-          fontSize: 12,
-          fontFamily: FONTS_FAMILY.Poppins_Regular,
-          color: '#4B5563',
+          backgroundColor: 'white',
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 12,
+          // alignItems: 'center',
+          elevation: 2,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
         }}>
-        27 Dec 2023, 14:00
-      </CustomText>
-      <Row
-        style={{
-          gap: 15,
-        }}>
-        <Image
-          source={{
-            uri: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-          }}
+        {console.log('Request::::::::::::::', request)}
+        {/* <CustomText
           style={{
-            height: 40,
-            width: 40,
-            borderRadius: 4,
-          }}
-        />
-        <View>
-          <CustomText
+            fontSize: 12,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: '#4B5563',
+          }}>
+          27 Dec 2023, 14:00
+        </CustomText> */}
+        <Row
+          style={{
+            gap: 15,
+          }}>
+          <Image
+            source={{
+              uri: request?.Influencer?.Image
+                ? request?.Influencer?.Image
+                : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+            }}
             style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-            }}>
-            Christmas Special Discount
-          </CustomText>
-          <CustomText
-            style={{
-              color: '#4B5563',
-              fontSize: 12,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-            }}>
-            Taman Sari Billboard, Bandung
-          </CustomText>
-        </View>
-      </Row>
-    </TouchableOpacity>
-  )
+              height: 40,
+              width: 40,
+              borderRadius: 4,
+            }}
+          />
+          <View>
+            <CustomText
+              style={{
+                color: 'black',
+                fontSize: 14,
+                fontFamily: FONTS_FAMILY.Poppins_Regular,
+              }}>
+              {request?.Influencer?.FirstName}
+            </CustomText>
+            <CustomText
+              style={{
+                color: '#4B5563',
+                fontSize: 12,
+                fontFamily: FONTS_FAMILY.Poppins_Regular,
+              }}>
+              {request?.Influencer?.Address}
+            </CustomText>
+          </View>
+        </Row>
 
-  const RescheduleCard = ({reschedule}) => (
-    <TouchableOpacity
-      style={{
-        backgroundColor: 'white',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        // alignItems: 'center',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 1,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      }}>
-        {/* {console.log(attendee,'--------')
-        } */}
-      <CustomText
-        style={{
-          fontSize: 12,
-          fontFamily: FONTS_FAMILY.Poppins_Regular,
-          color: '#4B5563',
+        {showActionButtons ?(
+          <Row style={{justifyContent: 'flex-end', gap: 20, marginTop: 10}}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: App_Primary_color,
+                padding: 8,
+                borderRadius: 8,
+              }}
+              onPress={() => handleCollaborationAction(request._id, 'reject', type='request')}>
+              <CustomText
+                style={{
+                  color: 'white',
+                  fontSize: 14,
+                  fontFamily: FONTS_FAMILY.Poppins_Regular,
+                }}>
+                Reject
+              </CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor: '#10B981', padding: 8, borderRadius: 8}}
+              onPress={() => handleCollaborationAction(request._id, 'accept', type='request')}>
+              <CustomText
+                style={{
+                  color: 'white',
+                  fontSize: 14,
+                  fontFamily: FONTS_FAMILY.Poppins_Regular,
+                }}>
+                Accept
+              </CustomText>
+            </TouchableOpacity>
+          </Row>
+        ):
+        <View style={{
+          backgroundColor:request.Status=='Accepted'?'green': App_Primary_color,
+          alignItems:'center',
+          justifyContent:'center',
+          borderRadius:5,
+          width:80,
+          position:'absolute',
+          right:10,
+          top:10
         }}>
-        27 Dec 2023, 14:00
-      </CustomText>
-      <Row
-        style={{
-          gap: 15,
-        }}>
-        <Image
-          source={{
-            uri:reschedule?.Influencer?.Image? reschedule?.Influencer?.Image:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
-          }}
-          style={{
-            height: 40,
-            width: 40,
-            borderRadius: 4,
-          }}
-        />
-        <View>
-          <CustomText
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-            }}>
-            {/* Christmas Special Discount */}
-            {reschedule?.Influencer?.FirstName} {reschedule?.Influencer?.LastName}
-          </CustomText>
-          <CustomText
-            style={{
-              color: '#4B5563',
-              fontSize: 12,
-              fontFamily: FONTS_FAMILY.Poppins_Regular,
-            }}>
-            {/* Taman Sari Billboard, Bandung */}
-            {reschedule?.Influencer?.NicheInput}
-          </CustomText>
+          <CustomText style={{color:'white', fontFamily:FONTS_FAMILY.Poppins_Regular, fontSize:12}}> {request.Status}</CustomText>
         </View>
-      </Row>
-    </TouchableOpacity>
-  )
+        }
+      </TouchableOpacity>
+    )
+  }
+
+  const RescheduleCard = ({reschedule}) => {
+    const showActionButtons =
+      reschedule.Status === 'Pending' ||
+      reschedule.Status === 'ReschedulePending'
+
+      console.log('Reschdle::::::::::', reschedule);
+      
+
+    return (
+      <TouchableOpacity
+        style={{
+          backgroundColor: 'white',
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 12,
+          // alignItems: 'center',
+          elevation: 2,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+        }}>
+        {console.log(reschedule, '----RESE----')}
+        <CustomText
+          style={{
+            fontSize: 12,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: '#4B5563',
+          }}>
+          27 Dec 2023, 14:00
+        </CustomText>
+        <Row
+          style={{
+            gap: 15,
+          }}>
+          <Image
+            source={{
+              uri: reschedule?.Influencer?.Image
+                ? reschedule?.Influencer?.Image
+                : 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=300&h=200&fit=crop',
+            }}
+            style={{
+              height: 40,
+              width: 40,
+              borderRadius: 4,
+            }}
+          />
+          <View>
+            <CustomText
+              style={{
+                color: 'black',
+                fontSize: 14,
+                fontFamily: FONTS_FAMILY.Poppins_Regular,
+              }}>
+              {/* Christmas Special Discount */}
+              {reschedule?.Influencer?.FirstName}{' '}
+              {reschedule?.Influencer?.LastName}
+            </CustomText>
+            <CustomText
+              style={{
+                color: '#4B5563',
+                fontSize: 12,
+                fontFamily: FONTS_FAMILY.Poppins_Regular,
+              }}>
+              {/* Taman Sari Billboard, Bandung */}
+              {reschedule?.Influencer?.NicheInput}
+            </CustomText>
+          </View>
+        </Row>
+        {showActionButtons && (
+          <Row style={{justifyContent: 'flex-end', gap: 20, marginTop: 10}}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: App_Primary_color,
+                padding: 8,
+                borderRadius: 8,
+              }}
+              onPress={() => handleCollaborationAction(reschedule._id, 'reject', type='reschedule')}>
+              <CustomText
+                style={{
+                  color: 'white',
+                  fontSize: 14,
+                  fontFamily: FONTS_FAMILY.Poppins_Regular,
+                }}>
+                Reject
+              </CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor: '#10B981', padding: 8, borderRadius: 8}}
+              onPress={() => handleCollaborationAction(reschedule._id, 'accept', type='reschedule')}>
+              <CustomText
+                style={{
+                  color: 'white',
+                  fontSize: 14,
+                  fontFamily: FONTS_FAMILY.Poppins_Regular,
+                }}>
+                Accept
+              </CustomText>
+            </TouchableOpacity>
+          </Row>
+        )}
+      <TouchableOpacity
+          onPress={() => navigation.navigate('ChatScreen', {Id: reschedule?.Influencer?._id})}
+          style=
+          {{
+            position: 'absolute',
+            right: 10,
+            top: 10,
+          }}
+          >
+          <Image
+            source={IMG.msg}
+            style={{
+              height: 35,
+              width: 35,
+              tintColor: App_Primary_color,
+              // position: 'absolute',
+              // right: 10,
+              // bottom: 10,
+            }}
+          />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    )
+  }
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -949,7 +1045,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
         return (
           <View style={styles.tabContent}>
             {rescheduleReq?.map(attendee => (
-              <RescheduleCard  reschedule={attendee} />
+              <RescheduleCard reschedule={attendee} />
             ))}
           </View>
         )

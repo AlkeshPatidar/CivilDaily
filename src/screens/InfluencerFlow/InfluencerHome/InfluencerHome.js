@@ -33,7 +33,7 @@ import {useLoginCheck} from '../../../utils/Context'
 import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 
 const InfluencerHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
@@ -47,10 +47,10 @@ const InfluencerHome = ({navigation}) => {
   const [Hottestoffers, setHottestOffers] = useState([])
   const [fatsFav, setFastFav] = useState([])
 
-     let selector = useSelector(state => state?.user?.userData);
-    if (Object.keys(selector).length != 0) {
-        selector = JSON.parse(selector);
-    }
+  let selector = useSelector(state => state?.user?.userData)
+  if (Object.keys(selector).length != 0) {
+    selector = JSON.parse(selector)
+  }
 
   const {showLoader, hideLoader} = useLoader()
 
@@ -89,7 +89,7 @@ const InfluencerHome = ({navigation}) => {
     }
   }
 
-    const getFastFavourite = async () => {
+  const getFastFavourite = async () => {
     try {
       showLoader()
       const res = await apiGet(urls?.fastFavourite)
@@ -109,8 +109,6 @@ const InfluencerHome = ({navigation}) => {
     {title: 'Invites', icon: <Invites />},
     {title: 'Gifts', icon: <Gifts />},
   ]
-
-
 
   const FilterButton = ({title, isSelected, onPress, hasDropdown = true}) => (
     <TouchableOpacity
@@ -138,7 +136,7 @@ const InfluencerHome = ({navigation}) => {
         isSelected && styles.selectedCategoryButton,
       ]}
       onPress={onPress}>
-        {title.icon}
+      {title.icon}
       <Text
         style={[
           styles.categoryText,
@@ -165,7 +163,9 @@ const InfluencerHome = ({navigation}) => {
             <TouchableOpacity
               style={styles.brandCard}
               onPress={() =>
-                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+                navigation.navigate('InfluencerCapaignListOfaBrand', {
+                  id: item?._id,
+                })
               }>
               <Image
                 source={{
@@ -176,8 +176,12 @@ const InfluencerHome = ({navigation}) => {
                 style={styles.brandImage}
               />
               <View style={styles.brandOverlay}>
-                <Text style={styles.brandTitle}>{item?.BrandName || 'Brand Name'}</Text>
-                <Text style={styles.brandCategory}>{item?.category || 'Category'}</Text>
+                <Text style={styles.brandTitle}>
+                  {item?.BrandName || 'Brand Name'}
+                </Text>
+                <Text style={styles.brandCategory}>
+                  {item?.category || 'Category'}
+                </Text>
                 <View style={styles.brandBadge}>
                   <Text style={styles.brandBadgeText}>NEW</Text>
                 </View>
@@ -206,10 +210,10 @@ const InfluencerHome = ({navigation}) => {
             <TouchableOpacity
               style={styles.offerCard}
               onPress={() =>
-                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+                navigation.navigate('InfluencerCapaignListOfaBrand', {
+                  id: item?._id,
+                })
               }>
-              
-            
               <Image
                 source={{
                   uri: item?.Assets
@@ -245,11 +249,17 @@ const InfluencerHome = ({navigation}) => {
           <View style={styles.horizontalCardItem}>
             <TouchableOpacity
               style={styles.offerCard}
+              // onPress={() =>
+              //   navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+              // }
               onPress={() =>
-                navigation.navigate('InfluencerCapaignListOfaBrand', {id: item?._id})
+                navigation.navigate('InfluencerCampaignDetail', {
+                  brandId: item?.Brand,
+                  campaignId: item?._id,
+                })
               }>
-                  {console.log('Offer Item:', item)
-                }
+              {/* {console.log('Offer Item:', item)
+                } */}
               <Image
                 source={{
                   uri: item?.Assets
@@ -258,10 +268,12 @@ const InfluencerHome = ({navigation}) => {
                 }}
                 style={styles.offerImage}
               />
-            
+
               <View style={styles.offerOverlay}>
                 <Text style={styles.offerTitle}>{item?.Title || 'Null'}</Text>
-                <Text style={styles.offerSubtitle}>{item?.Category || 'Null'}</Text>
+                <Text style={styles.offerSubtitle}>
+                  {item?.Category || 'Null'}
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -286,13 +298,17 @@ const InfluencerHome = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => navigation.navigate('ProfileScreen')}>
                 <Image
-                  source={IMG.userProfileImage}
+                  // source={IMG.userProfileImage}
+              source={selector?.Image?{uri:selector?.Image}:IMG.userProfileImage}
+
                   style={styles.profileImage}
                 />
               </TouchableOpacity>
               <Row style={styles.coinsContainer}>
                 <Doller />
-                <CustomText style={styles.coinsText}>{selector?.Credits} coins</CustomText>
+                <CustomText style={styles.coinsText}>
+                  {selector?.Credits} coins
+                </CustomText>
               </Row>
             </Row>
             <TouchableOpacity
@@ -388,7 +404,7 @@ const InfluencerHome = ({navigation}) => {
           {renderLatestBrand()}
           {renderHottestOffer()}
           {renderFastFavourite()}
-          <View style={{height:100}}/>
+          <View style={{height: 100}} />
         </ScrollView>
       </ScrollView>
     </SafeAreaView>
@@ -417,6 +433,7 @@ const styles = StyleSheet.create({
   profileImage: {
     height: 30,
     width: 30,
+    borderRadius:100
   },
   coinsContainer: {
     gap: 8,
@@ -438,7 +455,7 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: -100,
     zIndex: 100,
-        shadowOffset: {
+    shadowOffset: {
       width: 0,
       height: 4,
     },
@@ -447,7 +464,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     borderWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.05)',
-    marginBottom:5
+    marginBottom: 5,
   },
   searchInputContainer: {
     borderWidth: 1,
@@ -459,7 +476,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     flex: 1,
-    color:'black'
+    color: 'black',
   },
   searchButton: {
     marginTop: 16,
@@ -501,8 +518,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     gap: 4,
-    borderWidth:1,
-    borderColor:'#D43C312E'
+    borderWidth: 1,
+    borderColor: '#D43C312E',
   },
   selectedFilterButton: {
     backgroundColor: App_Primary_color,
@@ -535,8 +552,8 @@ const styles = StyleSheet.create({
     // paddingVertical: 8,
     borderRadius: 11,
     marginRight: 15,
-    alignItems:'center',
-        shadowOffset: {
+    alignItems: 'center',
+    shadowOffset: {
       width: 0,
       height: 4,
     },
@@ -545,18 +562,18 @@ const styles = StyleSheet.create({
     elevation: 6,
     borderWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.05)',
-    marginBottom:5
+    marginBottom: 5,
   },
   selectedCategoryButton: {
     // backgroundColor: '#E53E3E',
-    borderWidth:1,
-    borderColor:App_Primary_color
+    borderWidth: 1,
+    borderColor: App_Primary_color,
   },
   categoryText: {
     fontSize: 14,
     color: 'black',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
-    marginTop:10
+    marginTop: 10,
   },
   selectedCategoryText: {
     color: 'black',
@@ -625,7 +642,7 @@ const styles = StyleSheet.create({
   },
   // Brand Card Styles
   brandCard: {
-  height: 191,
+    height: 191,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: 'white',
@@ -634,7 +651,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    padding:10,
+    padding: 10,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -644,15 +661,15 @@ const styles = StyleSheet.create({
     elevation: 6,
     borderWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.05)',
-    marginBottom:5
+    marginBottom: 5,
   },
   brandImage: {
-     height: 120,
+    height: 120,
     width: '99%',
     // padding:20,
-    alignSelf:'center',
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
+    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   brandOverlay: {
     bottom: 0,
@@ -667,10 +684,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 3,
     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    marginTop:4
+    marginTop: 4,
   },
   brandCategory: {
-     color: '#3D0066',
+    color: '#3D0066',
     fontSize: 12,
     // marginBottom: 8,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
@@ -690,7 +707,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
   },
-  
+
   // Offer Card Styles
   offerCard: {
     height: 191,
@@ -704,8 +721,8 @@ const styles = StyleSheet.create({
     // shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    padding:10,
-        shadowOffset: {
+    padding: 10,
+    shadowOffset: {
       width: 0,
       height: 4,
     },
@@ -714,16 +731,15 @@ const styles = StyleSheet.create({
     elevation: 6,
     borderWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.05)',
-    marginBottom:5
+    marginBottom: 5,
   },
   offerImage: {
     height: 120,
     width: '99%',
     // padding:20,
-    alignSelf:'center',
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
-
+    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   offerOverlay: {
     bottom: 0,
@@ -738,7 +754,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 3,
     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    marginTop:4
+    marginTop: 4,
   },
   offerSubtitle: {
     color: '#3D0066',
