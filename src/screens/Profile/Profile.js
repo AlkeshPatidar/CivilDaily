@@ -21,7 +21,7 @@ import {setEnabled} from 'react-native/Libraries/Performance/Systrace'
 const ProfileScreen = ({navigation}) => {
   const menuItems = [
     {icon: '💳', title: 'Bank Account', onPress: () => {}},
-    {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
+    // {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
     {icon: '📋', title: 'Delivery Details', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
     {icon: '📊', title: 'Linkes Social Midea', onPress: () => {}},
     {icon: '🔔', title: 'Notification Settings', onPress: () => {}},
@@ -59,7 +59,12 @@ const ProfileScreen = ({navigation}) => {
       />
       {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity
+        onPress={()=>navigation.goBack()}
+        >
         <BackArrow />
+
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>My Profile</Text>
         <TouchableOpacity style={styles.settingsButton}>
           <Text style={styles.settingsIcon}>☀️</Text>

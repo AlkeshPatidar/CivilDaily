@@ -195,11 +195,11 @@ const MessageScreen = ({navigation}) => {
         backgroundColor: App_Primary_color,
         flex: 1,
       }}>
-      <StatusBar
-        translucent={true}
-        backgroundColor='transparent'
-        barStyle='light-content'
-      />
+     <StatusBar
+              backgroundColor={App_Primary_color}
+              barStyle='light-content'
+              translucent={false}
+            />
       {renderHeader()}
       {renderWhiteBgItmes()}
 

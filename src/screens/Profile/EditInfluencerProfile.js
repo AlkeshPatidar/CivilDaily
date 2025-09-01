@@ -232,7 +232,7 @@ const EditInfluencerProfileScreen = ({navigation}) => {
       // Then upload image if a new one was selected
       await uploadProfileImage()
 
-      ToastMsg('Profile updated successfully')
+      // ToastMsg('Profile updated successfully')
 
       // Refresh user profile data from server
       await getUserProfile()

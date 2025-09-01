@@ -47,16 +47,13 @@
 // //   }
 
 // //   console.log('Selector at brand home', selector);
-  
 
 // //   useEffect(() => {
 // //     getAllMyCampaigns()
 // //     getCampaignStatus()
 // //   }, [])
 
-
-
-// //   const getCampaignStatus= async () => {   
+// //   const getCampaignStatus= async () => {
 // //     try {
 // //       showLoader()
 // //       const res = await apiGet('/api/brand/GetCampaignStatusCount')
@@ -77,19 +74,19 @@
 // //     try {
 // //       showLoader()
 // //       // Construct URL with search parameter if provided
-// //       const url = searchQuery 
+// //       const url = searchQuery
 // //         ? `${urls?.brandsGetAllMyCampaigns}?search=${encodeURIComponent(searchQuery)}`
 // //         : urls?.brandsGetAllMyCampaigns
-      
+
 // //       const res = await apiGet(url)
 // //       setMyCampaigns(res?.data || [])
-      
+
 // //       // Calculate statistics from campaigns data
 // //       if (res?.data) {
 // //         const stats = calculateStatistics(res.data)
 // //         setStatistics(stats)
 // //       }
-      
+
 // //       hideLoader()
 // //     } catch (error) {
 // //       console.log('Error fetching campaigns:', error)
@@ -103,7 +100,7 @@
 // //     // Filter by search text (searches in Title, Category, and Status)
 // //     if (searchText.trim()) {
 // //       const searchLower = searchText.toLowerCase().trim()
-// //       filtered = filtered.filter(campaign => 
+// //       filtered = filtered.filter(campaign =>
 // //         campaign?.Title?.toLowerCase().includes(searchLower) ||
 // //         campaign?.Category?.toLowerCase().includes(searchLower) ||
 // //         campaign?.Status?.toLowerCase().includes(searchLower)
@@ -113,7 +110,7 @@
 // //     // Filter by category (you can implement category-based filtering logic here)
 // //     // For now, showing all campaigns regardless of selected category
 // //     // You might want to add a category field mapping in your API data
-    
+
 // //     setFilteredCampaigns(filtered)
 // //   }
 
@@ -129,7 +126,7 @@
 
 // //   const handleSearchTextChange = (text) => {
 // //     setSearchText(text)
-    
+
 // //     // Optional: Implement real-time search (uncomment if needed)
 // //     // if (text.length === 0) {
 // //     //   getAllMyCampaigns() // Reset to all campaigns when search is cleared
@@ -138,15 +135,15 @@
 
 // //   const calculateStatistics = (campaigns) => {
 // //     const totalCampaigns = campaigns.length
-// //     const activeCampaigns = campaigns.filter(campaign => 
-// //       campaign.Status?.toLowerCase() === 'active' || 
+// //     const activeCampaigns = campaigns.filter(campaign =>
+// //       campaign.Status?.toLowerCase() === 'active' ||
 // //       campaign.Status?.toLowerCase() === 'running'
 // //     ).length
-    
+
 // //     // Mock calculations - replace with actual data fields from your API
-// //     const totalBudget = campaigns.reduce((sum, campaign) => 
+// //     const totalBudget = campaigns.reduce((sum, campaign) =>
 // //       sum + (campaign.Budget || Math.floor(Math.random() * 50000) + 10000), 0)
-// //     const totalReach = campaigns.reduce((sum, campaign) => 
+// //     const totalReach = campaigns.reduce((sum, campaign) =>
 // //       sum + (campaign.Reach || Math.floor(Math.random() * 100000) + 50000), 0)
 
 // //     return {
@@ -210,7 +207,7 @@
 // //           <Text style={styles.bottomStatNumber}>2</Text>
 // //         </View>
 // //         <View style={styles.bottomStatItem}>
-          
+
 // //            <View style={{
 // //             height:6,
 // //             width:6,
@@ -246,7 +243,7 @@
 // //       // onPress={() => navigation.navigate('BrandBokingList')}
 // //       onPress={() => navigation.navigate('BrandCapmaignDetail',{campaignId:item?._id})}
 // //       >
-      
+
 // //       {/* Card Image */}
 // //       <View style={styles.cardImageContainer}>
 // //         <Image
@@ -260,7 +257,7 @@
 // //       <View style={styles.cardContent}>
 // //         <Text style={styles.hubName}>{item?.Title}</Text>
 // //         <Text style={styles.categoryName}>{item?.Description}</Text>
-        
+
 // //         {/* <Text style={styles.description}>
 // //           Nulla integer rutrum quam feugiat aliquet hac. Ut purus elit et massa eget ornare
 // //         </Text> */}
@@ -310,7 +307,7 @@
 // //               source={IMG.userProfileImage}
 // //               style={{height: 30, width: 30}}
 // //             />
-          
+
 // //           </Row>
 // //           <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
 // //             <Notification />
@@ -358,7 +355,7 @@
 // //               onSubmitEditing={handleSearch}
 // //             />
 // //             {searchText.length > 0 && (
-// //               <TouchableOpacity 
+// //               <TouchableOpacity
 // //                 onPress={() => {
 // //                   setSearchText('')
 // //                   getAllMyCampaigns() // Reset to all campaigns
@@ -383,10 +380,10 @@
 // //       <ScrollView
 // //         style={styles.contentContainer}
 // //         showsVerticalScrollIndicator={false}>
-        
+
 // //         {/* Filter Buttons */}
-// //         <ScrollView 
-// //           horizontal 
+// //         <ScrollView
+// //           horizontal
 // //           showsHorizontalScrollIndicator={false}
 // //           style={styles.filterContainer}>
 // //           {categories.map((category) => (
@@ -426,12 +423,12 @@
 // //             <View style={styles.noResultsContainer}>
 // //               <Icon name="search" size={50} color="#9CA3AF" />
 // //               <Text style={styles.noResultsText}>
-// //                 {searchText.trim() 
-// //                   ? `No campaigns found for "${searchText}"` 
+// //                 {searchText.trim()
+// //                   ? `No campaigns found for "${searchText}"`
 // //                   : 'No campaigns available'}
 // //               </Text>
 // //               {searchText.trim() && (
-// //                 <TouchableOpacity 
+// //                 <TouchableOpacity
 // //                   onPress={() => {
 // //                     setSearchText('')
 // //                     getAllMyCampaigns()
@@ -444,16 +441,16 @@
 // //             </View>
 // //           )}
 // //         </View>
-        
+
 // //         {/* Extra padding at bottom */}
 // //         <View style={{height: 100}} />
-        
+
 // //       </ScrollView>
-        
+
 // //     </ScrollView>
-    
+
 // //     {/* Floating Action Button */}
-// //     <TouchableOpacity 
+// //     <TouchableOpacity
 // //       style={styles.floatingButton}
 // //       onPress={()=>navigation.navigate('CreateCampaign')}>
 // //       <Icon name="add" size={24} color="#fff" />
@@ -530,7 +527,7 @@
 // //     fontFamily: FONTS_FAMILY.Comfortaa_Medium,
 // //     color: '#fff',
 // //   },
-  
+
 // //   // Filter Buttons
 // //   filterContainer: {
 // //     marginBottom: 20,
@@ -641,7 +638,7 @@
 // //     height: '95%',
 // //     borderTopLeftRadius:10,
 // //     borderTopRightRadius:10
-    
+
 // //   },
 // //   cardOverlay: {
 // //     justifyContent: 'center',
@@ -816,7 +813,7 @@
 //     getAllMyCampaigns(searchText, getCategoryFilter(selectedCategory))
 //   }, [selectedCategory, selectedFilter])
 
-//   const getCampaignStatus = async () => {   
+//   const getCampaignStatus = async () => {
 //     try {
 //       showLoader()
 //       const res = await apiGet('/api/brand/GetCampaignStatusCount')
@@ -844,20 +841,20 @@
 //   const getAllMyCampaigns = async (searchQuery = '', filter = 'current') => {
 //     try {
 //       showLoader()
-      
+
 //       // Construct URL with search and filter parameters
 //       let url = `${urls?.brandsGetAllMyCampaigns}?filter=${selectedFilter}`
-      
+
 //       if (searchQuery && searchQuery.trim()) {
 //         url += `&search=${encodeURIComponent(searchQuery.trim())}`
 //       }
-      
+
 //       // console.log('API URL:', url);
 //       const res = await apiGet(url)
 //       // console.log(res,'++++++++++++++++++++++++++++++');
-      
+
 //       setMyCampaigns(res?.data || [])
-      
+
 //       hideLoader()
 //     } catch (error) {
 //       console.log('Error fetching campaigns:', error)
@@ -876,18 +873,18 @@
 
 //   const handleCategoryPress = (category) => {
 //     console.log(category,'Catetete');
-    
+
 //     setSelectedCategory(category)
 //     if (category=='Current Campaign') {
 //       setSelectedFilter('current')
 //     }
 //     if (category=='Past Campaign') {
 //       setSelectedFilter('past')
-      
+
 //     }
 //      if (category=='Future Campaign') {
 //       setSelectedFilter('future')
-      
+
 //     }
 
 //   }
@@ -958,7 +955,7 @@
 //     <TouchableOpacity
 //       style={styles.campaignCard}
 //       onPress={() => navigation.navigate('BrandCapmaignDetail', {campaignId: item?._id})}>
-      
+
 //       {/* Card Image */}
 //       <View style={styles.cardImageContainer}>
 //         <Image
@@ -1000,8 +997,8 @@
 //   return (
 //     <>
 //     <ScrollView style={styles.container}>
-//       <StatusBar 
-//         backgroundColor={App_Primary_color} 
+//       <StatusBar
+//         backgroundColor={App_Primary_color}
 //         barStyle='light-content'
 //         translucent={false}
 //       />
@@ -1018,15 +1015,15 @@
 //             <Notification />
 //           </TouchableOpacity>
 //         </SpaceBetweenRow>
-        
+
 //         <CustomText style={styles.welcomeText}>
 //           Welcome {selector?.FirstName}
 //         </CustomText>
-        
+
 //         <SpaceBetweenRow>
 //           <StatisticsCard />
 //         </SpaceBetweenRow>
-        
+
 //         <View style={styles.searchContainer}>
 //           <Row style={styles.searchInputContainer}>
 //             <SearchIcons />
@@ -1039,7 +1036,7 @@
 //               onSubmitEditing={handleSearch}
 //             />
 //             {searchText.length > 0 && (
-//               <TouchableOpacity 
+//               <TouchableOpacity
 //                 onPress={() => {
 //                   setSearchText('')
 //                   const filter = getCategoryFilter(selectedCategory)
@@ -1062,10 +1059,10 @@
 //       <ScrollView
 //         style={styles.contentContainer}
 //         showsVerticalScrollIndicator={false}>
-        
+
 //         {/* Filter Buttons */}
-//         <ScrollView 
-//           horizontal 
+//         <ScrollView
+//           horizontal
 //           showsHorizontalScrollIndicator={false}
 //           style={styles.filterContainer}>
 //           {categories.map((category) => (
@@ -1105,12 +1102,12 @@
 //             <View style={styles.noResultsContainer}>
 //               <Icon name="search" size={50} color="#9CA3AF" />
 //               <Text style={styles.noResultsText}>
-//                 {searchText.trim() 
-//                   ? `No campaigns found for "${searchText}"` 
+//                 {searchText.trim()
+//                   ? `No campaigns found for "${searchText}"`
 //                   : `No ${selectedCategory.toLowerCase()} campaigns available`}
 //               </Text>
 //               {searchText.trim() && (
-//                 <TouchableOpacity 
+//                 <TouchableOpacity
 //                   onPress={() => {
 //                     setSearchText('')
 //                     const filter = getCategoryFilter(selectedCategory)
@@ -1123,13 +1120,13 @@
 //             </View>
 //           )}
 //         </View>
-        
+
 //         <View style={styles.bottomPadding} />
 //       </ScrollView>
 //     </ScrollView>
-    
+
 //     {/* Floating Action Button */}
-//     <TouchableOpacity 
+//     <TouchableOpacity
 //       style={styles.floatingButton}
 //       onPress={() => navigation.navigate('CreateCampaign')}>
 //       <Icon name="add" size={24} color="#fff" />
@@ -1151,7 +1148,7 @@
 //     height: 280,
 //   },
 //   profileImage: {
-//     height: 30, 
+//     height: 30,
 //     width: 30
 //   },
 //   welcomeText: {
@@ -1248,7 +1245,7 @@
 //     fontFamily: FONTS_FAMILY.Comfortaa_Medium,
 //     color: '#fff',
 //   },
-  
+
 //   // Filter Buttons
 //   filterContainer: {
 //     marginBottom: 20,
@@ -1451,7 +1448,6 @@
 
 // export default BrandHome
 
-
 // import React, {useEffect, useState} from 'react'
 // import {
 //   View,
@@ -1497,7 +1493,7 @@
 //   useEffect(() => {
 //     getAllMyCampaigns()
 //     getCampaignStatus()
-    
+
 //     // Uncomment this line to test your API endpoint
 //     // testAPICall()
 //   }, [])
@@ -1520,7 +1516,7 @@
 //     return () => clearTimeout(timeoutId)
 //   }, [searchText])
 
-//   const getCampaignStatus = async () => {   
+//   const getCampaignStatus = async () => {
 //     try {
 //       showLoader()
 //       const res = await apiGet('/api/brand/GetCampaignStatusCount')
@@ -1550,14 +1546,14 @@
 //   const testAPICall = async () => {
 //     try {
 //       console.log('Testing API call...');
-      
+
 //       // Test with your exact curl parameters
 //       const testUrl = '/api/brand/GetAllMyCampaign?search=Christmas&filter=current'
 //       console.log('Test URL:', testUrl);
-      
+
 //       const response = await apiGet(testUrl)
 //       console.log('Test Response:', response);
-      
+
 //       return response;
 //     } catch (error) {
 //       console.log('Test API Error:', error);
@@ -1568,27 +1564,27 @@
 //   const getAllMyCampaigns = async (searchQuery = '', filter = 'current') => {
 //     try {
 //       showLoader()
-      
+
 //       // Use the correct API endpoint - NOTE: it's singular "GetAllMyCampaign"
 //       let baseUrl = '/api/brand/GetAllMyCampaign'
-      
+
 //       // Build query parameters
 //       const params = []
 //       params.push(`filter=${encodeURIComponent(filter)}`)
-      
+
 //       if (searchQuery && searchQuery.trim()) {
 //         params.push(`search=${encodeURIComponent(searchQuery.trim())}`)
 //       }
-      
+
 //       // Construct final URL
 //       const finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl
-      
+
 //       console.log('API URL:', finalUrl);
-      
+
 //       // Make API call with proper endpoint
 //       const res = await apiGet(finalUrl)
 //       console.log('API Response:', res);
-      
+
 //       // Handle different response structures
 //       if (res?.success && res?.data) {
 //         setMyCampaigns(res.data)
@@ -1599,7 +1595,7 @@
 //       } else {
 //         setMyCampaigns([])
 //       }
-      
+
 //       hideLoader()
 //     } catch (error) {
 //       console.log('Error fetching campaigns:', error)
@@ -1623,13 +1619,13 @@
 //   const handleCategoryPress = (category) => {
 //     console.log('Selected category:', category);
 //     setSelectedCategory(category)
-    
+
 //     // Clear search when changing category
 //     setSearchText('')
-    
+
 //     const newFilter = getCategoryFilter(category)
 //     setSelectedFilter(newFilter)
-    
+
 //     // Fetch campaigns for new category without search
 //     getAllMyCampaigns('', newFilter)
 //   }
@@ -1705,7 +1701,7 @@
 //     <TouchableOpacity
 //       style={styles.campaignCard}
 //       onPress={() => navigation.navigate('BrandCapmaignDetail', {campaignId: item?._id})}>
-      
+
 //       {/* Card Image */}
 //       <View style={styles.cardImageContainer}>
 //         <Image
@@ -1747,8 +1743,8 @@
 //   return (
 //     <>
 //     <ScrollView style={styles.container}>
-//       <StatusBar 
-//         backgroundColor={App_Primary_color} 
+//       <StatusBar
+//         backgroundColor={App_Primary_color}
 //         barStyle='light-content'
 //         translucent={false}
 //       />
@@ -1765,15 +1761,15 @@
 //             <Notification />
 //           </TouchableOpacity>
 //         </SpaceBetweenRow>
-        
+
 //         <CustomText style={styles.welcomeText}>
 //           Welcome {selector?.FirstName}
 //         </CustomText>
-        
+
 //         <SpaceBetweenRow>
 //           <StatisticsCard />
 //         </SpaceBetweenRow>
-        
+
 //         <View style={styles.searchContainer}>
 //           <Row style={styles.searchInputContainer}>
 //             <SearchIcons />
@@ -1786,7 +1782,7 @@
 //               onSubmitEditing={handleSearch}
 //             />
 //             {searchText.length > 0 && (
-//               <TouchableOpacity 
+//               <TouchableOpacity
 //                 onPress={handleClearSearch}
 //                 style={styles.clearButton}>
 //                 <Icon name="close-circle" size={20} color="gray" />
@@ -1805,10 +1801,10 @@
 //       <ScrollView
 //         style={styles.contentContainer}
 //         showsVerticalScrollIndicator={false}>
-        
+
 //         {/* Filter Buttons */}
-//         <ScrollView 
-//           horizontal 
+//         <ScrollView
+//           horizontal
 //           showsHorizontalScrollIndicator={false}
 //           style={styles.filterContainer}>
 //           {categories.map((category) => (
@@ -1848,12 +1844,12 @@
 //             <View style={styles.noResultsContainer}>
 //               <Icon name="search" size={50} color="#9CA3AF" />
 //               <Text style={styles.noResultsText}>
-//                 {searchText.trim() 
-//                   ? `No campaigns found for "${searchText}"` 
+//                 {searchText.trim()
+//                   ? `No campaigns found for "${searchText}"`
 //                   : `No ${selectedCategory.toLowerCase()} campaigns available`}
 //               </Text>
 //               {searchText.trim() && (
-//                 <TouchableOpacity 
+//                 <TouchableOpacity
 //                   onPress={handleClearSearch}
 //                   style={styles.clearSearchButton}>
 //                   <Text style={styles.clearSearchText}>Clear Search</Text>
@@ -1862,13 +1858,13 @@
 //             </View>
 //           )}
 //         </View>
-        
+
 //         <View style={styles.bottomPadding} />
 //       </ScrollView>
 //     </ScrollView>
-    
+
 //     {/* Floating Action Button */}
-//     <TouchableOpacity 
+//     <TouchableOpacity
 //       style={styles.floatingButton}
 //       onPress={() => navigation.navigate('CreateCampaign')}>
 //       <Icon name="add" size={24} color="#fff" />
@@ -1891,7 +1887,7 @@
 //     height: 280,
 //   },
 //   profileImage: {
-//     height: 30, 
+//     height: 30,
 //     width: 30
 //   },
 //   welcomeText: {
@@ -1988,7 +1984,7 @@
 //     fontFamily: FONTS_FAMILY.Comfortaa_Medium,
 //     color: '#fff',
 //   },
-  
+
 //   // Filter Buttons
 //   filterContainer: {
 //     marginBottom: 20,
@@ -2191,7 +2187,6 @@
 
 // export default BrandHome
 
-
 import React, {useEffect, useState, useCallback} from 'react'
 import {
   View,
@@ -2214,10 +2209,10 @@ import IMG from '../../../assets/Images'
 import {Badge, Doller, Notification, SearchIcons} from '../../../assets/SVGs'
 import CustomText from '../../../components/TextComponent'
 import CustomButton from '../../../components/Button'
-import { apiGet } from '../../../utils/Apis'
+import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 
 const BrandHome = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
@@ -2230,9 +2225,9 @@ const BrandHome = ({navigation}) => {
   const categories = ['Current Campaign', 'Future Campaign', 'Past Campaign']
   const {showLoader, hideLoader} = useLoader()
 
-  let selector = useSelector(state => state?.user?.userData);
+  let selector = useSelector(state => state?.user?.userData)
   if (Object.keys(selector).length != 0) {
-      selector = JSON.parse(selector);
+    selector = JSON.parse(selector)
   }
 
   // Initial data load
@@ -2263,14 +2258,11 @@ const BrandHome = ({navigation}) => {
   }, [searchText, selectedCategory])
 
   const initializeData = async () => {
-    await Promise.all([
-      getCampaignStatus(),
-      fetchCampaigns()
-    ])
+    await Promise.all([getCampaignStatus(), fetchCampaigns()])
   }
 
-  const getCategoryFilter = (category) => {
-    switch(category) {
+  const getCategoryFilter = category => {
+    switch (category) {
       case 'Current Campaign':
         return 'current'
       case 'Future Campaign':
@@ -2282,10 +2274,10 @@ const BrandHome = ({navigation}) => {
     }
   }
 
-  const getCampaignStatus = async () => {   
+  const getCampaignStatus = async () => {
     try {
       const res = await apiGet('/api/brand/GetCampaignStatusCount')
-      console.log('Campaign Status Count:', res);
+      console.log('Campaign Status Count:', res)
       setStatusCount(res?.data || res)
     } catch (error) {
       console.log('Error fetching status count:', error)
@@ -2298,27 +2290,28 @@ const BrandHome = ({navigation}) => {
       if (showLoading) {
         showLoader()
       }
-      
+
       const filter = getCategoryFilter(selectedCategory)
       let baseUrl = '/api/brand/GetAllMyCampaign'
-      
+
       // Build query parameters
       const params = []
-      params.push(`filter=${encodeURIComponent(filter)}`)
-      
+      params.push(`dateFilter=${encodeURIComponent(filter)}`)
+
       if (searchText && searchText.trim()) {
         params.push(`search=${encodeURIComponent(searchText.trim())}`)
       }
-      
+
       // Construct final URL
-      const finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl
-      
-      console.log('Fetching campaigns with URL:', finalUrl);
-      console.log('Filter:', filter, 'Search:', searchText);
-      
+      const finalUrl =
+        params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl
+
+      console.log('Fetching campaigns with URL:', finalUrl)
+      console.log('Filter:', filter, 'Search:', searchText)
+
       const res = await apiGet(finalUrl)
-      console.log('API Response:', res);
-      
+      console.log('API Response:', res)
+
       // Handle different response structures
       let campaignsData = []
       if (res?.success && Array.isArray(res?.data)) {
@@ -2330,9 +2323,9 @@ const BrandHome = ({navigation}) => {
       } else if (res?.data && Array.isArray(res.data.campaigns)) {
         campaignsData = res.data.campaigns
       }
-      
+
       setMyCampaigns(campaignsData)
-      
+
       if (showLoading) {
         hideLoader()
       }
@@ -2345,16 +2338,16 @@ const BrandHome = ({navigation}) => {
     }
   }
 
-  const handleCategoryPress = (category) => {
-    console.log('Selected category:', category);
+  const handleCategoryPress = category => {
+    console.log('Selected category:', category)
     setSelectedCategory(category)
-    
+
     // Don't clear search when changing category - let user search within category
     // If you want to clear search, uncomment the line below:
     // setSearchText('')
   }
 
-  const handleSearchTextChange = (text) => {
+  const handleSearchTextChange = text => {
     setSearchText(text)
   }
 
@@ -2373,7 +2366,7 @@ const BrandHome = ({navigation}) => {
     setRefreshing(false)
   }, [])
 
-  const formatNumber = (num) => {
+  const formatNumber = num => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M'
     } else if (num >= 1000) {
@@ -2387,12 +2380,14 @@ const BrandHome = ({navigation}) => {
       {/* Header Section */}
       <View style={styles.cardHeader}>
         <Text style={styles.cardHeaderText}>Campaign</Text>
-        <Icon name="calendar-outline" size={18} color="#fff" />
+        <Icon name='calendar-outline' size={18} color='#fff' />
       </View>
 
       {/* Main Stats */}
       <View style={styles.mainStats}>
-        <Text style={styles.mainNumber}>{statusCount?.Active || statusCount?.active || 0}</Text>
+        <Text style={styles.mainNumber}>
+          {statusCount?.Active || statusCount?.active || 0}
+        </Text>
         <Text style={styles.mainLabel}>Active</Text>
       </View>
 
@@ -2400,19 +2395,29 @@ const BrandHome = ({navigation}) => {
       <View style={styles.bottomStats}>
         <View style={styles.bottomStatItem}>
           <View style={styles.statDot} />
-          <Text style={styles.bottomStatNumber}>{statusCount?.Current || statusCount?.current || 0}</Text>
+          <Text style={styles.bottomStatNumber}>
+            {statusCount?.Current || statusCount?.current || 0}
+          </Text>
         </View>
         <View style={styles.bottomStatItem}>
           <View style={[styles.statDot, {backgroundColor: '#FFA100'}]} />
-          <Text style={styles.bottomStatNumber}>{statusCount?.Future || statusCount?.future || 0}</Text>
+          <Text style={styles.bottomStatNumber}>
+            {statusCount?.Future || statusCount?.future || 0}
+          </Text>
         </View>
         <View style={styles.bottomStatItem}>
-          <View style={[styles.statDot, {backgroundColor: App_Primary_color}]} />
-          <Text style={styles.bottomStatNumber}>{statusCount?.Past || statusCount?.past || 0}</Text>
+          <View
+            style={[styles.statDot, {backgroundColor: App_Primary_color}]}
+          />
+          <Text style={styles.bottomStatNumber}>
+            {statusCount?.Past || statusCount?.past || 0}
+          </Text>
         </View>
         <View style={styles.bottomStatItem}>
           <View style={[styles.statDot, {backgroundColor: '#9CA3AF'}]} />
-          <Text style={styles.bottomStatNumber}>{statusCount?.Total || statusCount?.total || 0}</Text>
+          <Text style={styles.bottomStatNumber}>
+            {statusCount?.Total || statusCount?.total || 0}
+          </Text>
         </View>
       </View>
     </View>
@@ -2438,8 +2443,9 @@ const BrandHome = ({navigation}) => {
   const CampaignCard = ({item, index}) => (
     <TouchableOpacity
       style={styles.campaignCard}
-      onPress={() => navigation.navigate('BrandCapmaignDetail', {campaignId: item?._id})}>
-      
+      onPress={() =>
+        navigation.navigate('BrandCapmaignDetail', {campaignId: item?._id})
+      }>
       {/* Card Image */}
       <View style={styles.cardImageContainer}>
         <Image
@@ -2451,7 +2457,9 @@ const BrandHome = ({navigation}) => {
       {/* Card Content */}
       <View style={styles.cardContent}>
         <Text style={styles.hubName}>{item?.Title || 'Campaign Title'}</Text>
-        <Text style={styles.categoryName}>{item?.Description || 'Campaign Description'}</Text>
+        <Text style={styles.categoryName}>
+          {item?.Description || 'Campaign Description'}
+        </Text>
 
         <SpaceBetweenRow style={styles.cardFooter}>
           <View>
@@ -2459,10 +2467,7 @@ const BrandHome = ({navigation}) => {
           </View>
           <View style={styles.attendeesContainer}>
             <View style={styles.avatarContainer}>
-              <Image
-                source={IMG.AvatorImage}
-                style={styles.avatarImage}
-              />
+              <Image source={IMG.AvatorImage} style={styles.avatarImage} />
             </View>
             <Text style={styles.attendeesCount}>{item?.attendees || 12}</Text>
           </View>
@@ -2480,143 +2485,159 @@ const BrandHome = ({navigation}) => {
 
   return (
     <>
-    <ScrollView 
-      style={styles.container}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={[App_Primary_color]}
-          tintColor={App_Primary_color}
-        />
-      }>
-      <StatusBar 
-        backgroundColor={App_Primary_color} 
-        barStyle='light-content'
-        translucent={false}
-      />
-
-      <View style={styles.header}>
-        <SpaceBetweenRow>
-          <Row>
-            <Image
-              source={selector?.Image?{uri:selector?.Image}:IMG.userProfileImage}
-              style={styles.profileImage}
-            />
-          </Row>
-          <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-            <Notification />
-          </TouchableOpacity>
-        </SpaceBetweenRow>
-        
-        <CustomText style={styles.welcomeText}>
-          Welcome {selector?.FirstName || 'User'}
-        </CustomText>
-        
-        <SpaceBetweenRow>
-          <StatisticsCard />
-        </SpaceBetweenRow>
-        
-        <View style={styles.searchContainer}>
-          <Row style={styles.searchInputContainer}>
-            <SearchIcons />
-            <TextInput
-              placeholderTextColor={'gray'}
-              placeholder='Search by campaign name, category or status'
-              style={styles.searchInput}
-              value={searchText}
-              onChangeText={handleSearchTextChange}
-              onSubmitEditing={handleManualSearch}
-            />
-            {searchText.length > 0 && (
-              <TouchableOpacity 
-                onPress={handleClearSearch}
-                style={styles.clearButton}>
-                <Icon name="close-circle" size={20} color="gray" />
-              </TouchableOpacity>
-            )}
-          </Row>
-          <CustomButton
-            title={'Search Campaign'}
-            style={styles.searchButton}
-            onPress={handleManualSearch}
-          />
-        </View>
-      </View>
-
-      {/* Content Container */}
       <ScrollView
-        style={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}>
-        
-        {/* Filter Buttons */}
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterContainer}>
-          {categories.map((category) => (
-            <CategoryButton
-              key={category}
-              title={category}
-              isSelected={selectedCategory === category}
-              onPress={() => handleCategoryPress(category)}
-            />
-          ))}
-        </ScrollView>
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[App_Primary_color]}
+            tintColor={App_Primary_color}
+          />
+        }>
+        <StatusBar
+          backgroundColor={App_Primary_color}
+          barStyle='light-content'
+          translucent={false}
+        />
 
-        {/* Section Header */}
-        <SpaceBetweenRow style={styles.sectionHeader}>
-          <CustomText style={styles.sectionTitle}>
-            {selectedCategory}
-            {searchText.trim() && (
-              <Text style={styles.searchResultsText}>
-                {` (${myCampaigns.length} results for "${searchText}")`}
-              </Text>
-            )}
+        <View style={styles.header}>
+          <SpaceBetweenRow>
+            <Row>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('TabBrand', {
+                    screen: 'Profile',
+                  })
+                }>
+                <Image
+                  source={
+                    selector?.Image
+                      ? {uri: selector?.Image}
+                      : IMG.userProfileImage
+                  }
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
+            </Row>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Notification')}>
+              <Notification />
+            </TouchableOpacity>
+          </SpaceBetweenRow>
+
+          <CustomText style={styles.welcomeText}>
+            Welcome {selector?.FirstName || 'User'}
           </CustomText>
-          <TouchableOpacity onPress={() => navigation.navigate('BrandBokingList')}>
-            <CustomText style={styles.seeAllText}>
-              See All <Text>{">"}</Text>
-            </CustomText>
-          </TouchableOpacity>
-        </SpaceBetweenRow>
 
-        {/* Campaign Cards */}
-        <View style={styles.cardsContainer}>
-          {myCampaigns.length > 0 ? (
-            myCampaigns.map((item, index) => (
-              <CampaignCard key={item._id || item.id || index} item={item} index={index} />
-            ))
-          ) : (
-            <View style={styles.noResultsContainer}>
-              <Icon name="search" size={50} color="#9CA3AF" />
-              <Text style={styles.noResultsText}>
-                {searchText.trim() 
-                  ? `No campaigns found for "${searchText}" in ${selectedCategory}` 
-                  : `No ${selectedCategory.toLowerCase()} available`}
-              </Text>
-              {searchText.trim() && (
-                <TouchableOpacity 
+          <SpaceBetweenRow>
+            <StatisticsCard />
+          </SpaceBetweenRow>
+
+          <View style={styles.searchContainer}>
+            <Row style={styles.searchInputContainer}>
+              <SearchIcons />
+              <TextInput
+                placeholderTextColor={'gray'}
+                placeholder='Search by campaign name, category or status'
+                style={styles.searchInput}
+                value={searchText}
+                onChangeText={handleSearchTextChange}
+                onSubmitEditing={handleManualSearch}
+              />
+              {searchText.length > 0 && (
+                <TouchableOpacity
                   onPress={handleClearSearch}
-                  style={styles.clearSearchButton}>
-                  <Text style={styles.clearSearchText}>Clear Search</Text>
+                  style={styles.clearButton}>
+                  <Icon name='close-circle' size={20} color='gray' />
                 </TouchableOpacity>
               )}
-            </View>
-          )}
+            </Row>
+            <CustomButton
+              title={'Search Campaign'}
+              style={styles.searchButton}
+              onPress={handleManualSearch}
+            />
+          </View>
         </View>
-        
-        <View style={styles.bottomPadding} />
+
+        {/* Content Container */}
+        <ScrollView
+          style={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}>
+          {/* Filter Buttons */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.filterContainer}>
+            {categories.map(category => (
+              <CategoryButton
+                key={category}
+                title={category}
+                isSelected={selectedCategory === category}
+                onPress={() => handleCategoryPress(category)}
+              />
+            ))}
+          </ScrollView>
+
+          {/* Section Header */}
+          <SpaceBetweenRow style={styles.sectionHeader}>
+            <CustomText style={styles.sectionTitle}>
+              {selectedCategory}
+              {searchText.trim() && (
+                <Text style={styles.searchResultsText}>
+                  {` (${myCampaigns.length} results for "${searchText}")`}
+                </Text>
+              )}
+            </CustomText>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BrandBokingList')}>
+              <CustomText style={styles.seeAllText}>
+                See All <Text>{'>'}</Text>
+              </CustomText>
+            </TouchableOpacity>
+          </SpaceBetweenRow>
+
+          {/* Campaign Cards */}
+          <View style={styles.cardsContainer}>
+            {myCampaigns.length > 0 ? (
+              myCampaigns.map((item, index) => (
+                <CampaignCard
+                  key={item._id || item.id || index}
+                  item={item}
+                  index={index}
+                />
+              ))
+            ) : (
+              <View style={styles.noResultsContainer}>
+                <Icon name='search' size={50} color='#9CA3AF' />
+                <Text style={styles.noResultsText}>
+                  {searchText.trim()
+                    ? `No campaigns found for "${searchText}" in ${selectedCategory}`
+                    : `No ${selectedCategory.toLowerCase()} available`}
+                </Text>
+                {searchText.trim() && (
+                  <TouchableOpacity
+                    onPress={handleClearSearch}
+                    style={styles.clearSearchButton}>
+                    <Text style={styles.clearSearchText}>Clear Search</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </View>
+
+          <View style={styles.bottomPadding} />
+        </ScrollView>
       </ScrollView>
-    </ScrollView>
-    
-    {/* Floating Action Button */}
-    <TouchableOpacity 
-      style={styles.floatingButton}
-      onPress={() => navigation.navigate('CreateCampaign')}>
-      <Icon name="add" size={24} color="#fff" />
-    </TouchableOpacity>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('CreateCampaign')}>
+        <Icon name='add' size={24} color='#fff' />
+      </TouchableOpacity>
     </>
   )
 }
@@ -2635,14 +2656,14 @@ const styles = StyleSheet.create({
     height: 280,
   },
   profileImage: {
-    height: 30, 
+    height: 30,
     width: 30,
-    borderRadius:100
+    borderRadius: 100,
   },
   welcomeText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: FONTS_FAMILY.Poppins_Medium
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   searchContainer: {
     backgroundColor: 'white',
@@ -2664,10 +2685,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
     flex: 1,
-    color: 'black'
+    color: 'black',
   },
   clearButton: {
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   searchButton: {
     marginTop: 16,
@@ -2699,7 +2720,7 @@ const styles = StyleSheet.create({
   },
   mainStats: {
     alignItems: 'flex-start',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   mainNumber: {
     fontSize: 24,
@@ -2720,20 +2741,20 @@ const styles = StyleSheet.create({
   bottomStatItem: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 3
+    gap: 3,
   },
   statDot: {
     height: 6,
     width: 6,
     borderRadius: 100,
-    backgroundColor: '#3170FA'
+    backgroundColor: '#3170FA',
   },
   bottomStatNumber: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Comfortaa_Medium,
     color: '#fff',
   },
-  
+
   // Filter Buttons
   filterContainer: {
     marginBottom: 20,
@@ -2838,7 +2859,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '95%',
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    borderTopRightRadius: 10,
   },
 
   // Card Content
@@ -2865,7 +2886,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D43C3114',
     paddingHorizontal: 8,
     borderRadius: 20,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   attendeesText: {
     fontSize: 13,
@@ -2883,7 +2904,7 @@ const styles = StyleSheet.create({
   },
   avatarImage: {
     height: 22,
-    width: 22
+    width: 22,
   },
   attendeesCount: {
     fontSize: 14,
@@ -2930,7 +2951,7 @@ const styles = StyleSheet.create({
 
   // Extra padding at bottom
   bottomPadding: {
-    height: 100
+    height: 100,
   },
 })
 

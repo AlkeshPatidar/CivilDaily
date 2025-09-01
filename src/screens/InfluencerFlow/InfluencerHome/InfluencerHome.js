@@ -296,7 +296,13 @@ const InfluencerHome = ({navigation}) => {
           <SpaceBetweenRow>
             <Row style={styles.headerLeftRow}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('ProfileScreen')}>
+                // onPress={() => navigation.navigate('ProfileScreen')}
+                  onPress={() =>
+                  navigation.navigate('InfluenceTab', {
+                    screen: 'Profile',
+                  })
+                }
+                >
                 <Image
                   // source={IMG.userProfileImage}
               source={selector?.Image?{uri:selector?.Image}:IMG.userProfileImage}
