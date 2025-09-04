@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import {Cross} from '../../../assets/SVGs'
+import { App_Primary_color } from '../../../common/Colors/colors'
 
 const {height: screenHeight} = Dimensions.get('window')
 
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#D64A3A',
+    borderColor: App_Primary_color,
     marginRight: 16,
     justifyContent: 'center',
     alignItems: 'center',
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
   },
   radioLabel: {
     fontSize: 16,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   nextButton: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     marginHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 12,

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   topSection: {
     flex: 1.2,
-    backgroundColor: '#E8443B',
+    backgroundColor: App_Primary_color,
     alignItems: 'center',
     paddingTop: 50,
     paddingHorizontal: 20,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   highlighted: {
-    color: '#E8443B',
+    color: App_Primary_color,
   },
   description: {
     // textAlign: 'center',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
-    backgroundColor: '#E8443B',
+    backgroundColor: App_Primary_color,
     paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 6,

@@ -12,6 +12,7 @@ import {
 import {Cross} from '../../../assets/SVGs'
 import CustomInputField from '../../../components/wrapper/CustomInput'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
+import { App_Primary_color } from '../../../common/Colors/colors'
 
 const {height: screenHeight} = Dimensions.get('window')
 
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   nextButton: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     marginHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 12,

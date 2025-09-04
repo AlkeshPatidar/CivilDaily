@@ -2202,7 +2202,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
-import {App_Primary_color} from '../../../common/Colors/colors'
+import {App_Primary_color, darkOfPrimary} from '../../../common/Colors/colors'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
 import Row from '../../../components/wrapper/row'
 import IMG from '../../../assets/Images'
@@ -2523,6 +2523,16 @@ const BrandHome = ({navigation}) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('Notification')}>
               <Notification />
+               <View style={{
+                height:8,
+                width:8,
+                backgroundColor:'white',
+                borderRadius:100,
+                position:'absolute',
+                right:3,
+                top:3
+
+              }}/>
             </TouchableOpacity>
           </SpaceBetweenRow>
 
@@ -2769,8 +2779,8 @@ const styles = StyleSheet.create({
     borderColor: App_Primary_color,
   },
   selectedCategoryButton: {
-    backgroundColor: '#E53E3E',
-    borderColor: '#E53E3E',
+    backgroundColor: darkOfPrimary,
+    borderColor: darkOfPrimary,
   },
   categoryText: {
     fontSize: 12,
@@ -2936,7 +2946,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 100,
     right: 20,
-    backgroundColor: '#E53E3E',
+    backgroundColor: darkOfPrimary,
     width: 56,
     height: 56,
     borderRadius: 28,

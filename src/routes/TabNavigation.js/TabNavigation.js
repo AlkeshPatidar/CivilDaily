@@ -1,21 +1,22 @@
 import * as React from 'react'
-import {useState, useEffect} from 'react'
-import {Keyboard, Dimensions, View, Image} from 'react-native'
-import {NavigationContainer} from '@react-navigation/native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
+import { useState, useEffect } from 'react'
+import { Keyboard, Dimensions, View, Image } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
-import {FONTS_FAMILY} from '../../assets/Fonts'
+import color, { App_Primary_color } from '../../common/Colors/colors'
+import { FONTS_FAMILY } from '../../assets/Fonts'
 import BrandHome from '../../screens/BrandFlow/BrandHome/BrandHome'
-import IMG, {Home} from '../../assets/Images'
+import IMG, { Home } from '../../assets/Images'
 import MessageScreen from '../../screens/Message/MessageList'
 import ProfileScreen from '../../screens/Profile/Profile'
 import InfluencersScreen from '../../screens/Influencer/Influencerlist'
+import Fontisto from 'react-native-vector-icons/Fontisto'
 
 const Tab = createBottomTabNavigator()
 
-function TabNavigation () {
+function TabNavigation() {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
 
   useEffect(() => {
@@ -62,7 +63,7 @@ function TabNavigation () {
         component={BrandHome}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
@@ -74,6 +75,8 @@ function TabNavigation () {
                   style={{
                     height: 25,
                     width: 25,
+                    tintColor: App_Primary_color,
+
                   }}
                 />
                 <CustomText
@@ -112,28 +115,29 @@ function TabNavigation () {
         component={InfluencersScreen}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
                   alignItems: 'center',
                   gap: 8,
                 }}>
-                <Image
+                {/* <Image
                   source={IMG.heart}
                   style={{
                     height: 25,
                     width: 25,
                     tintColor: App_Primary_color,
                   }}
-                />
+                /> */}
+                <Fontisto color={App_Primary_color} size={22} name='person'/>
                 <CustomText
                   style={{
                     color: App_Primary_color,
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Influencer
+                  Influencers
                 </CustomText>
               </View>
             ) : (
@@ -142,21 +146,23 @@ function TabNavigation () {
                   alignItems: 'center',
                   gap: 8,
                 }}>
-                <Image
+                {/* <Image
                   source={IMG.heart}
                   style={{
                     height: 25,
                     width: 25,
                     tintColor: '#6B7280',
                   }}
-                />
+                /> */}
+                <Fontisto color={'#6B7280'} size={22} name='person'/>
+
                 <CustomText
                   style={{
                     color: '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Influencer
+                  Influencers
                 </CustomText>
               </View>
             ),
@@ -167,7 +173,7 @@ function TabNavigation () {
         component={MessageScreen}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
@@ -222,7 +228,7 @@ function TabNavigation () {
         component={ProfileScreen}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{

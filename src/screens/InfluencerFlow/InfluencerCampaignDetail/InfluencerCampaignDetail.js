@@ -21,6 +21,7 @@ import PaidInputModel from '../../Restaurent/PaidInputCostModel'
 import CalendarModal from '../InfluencerOfferDetail/CalendarModel'
 import CampaignTypeModal from '../InfluencerOfferDetail/ChooseOptionmodel'
 import ConfirmationCampaignModel from '../InfluencerOfferDetail/ConfirmationCampaignModel'
+import { App_Primary_color } from '../../../common/Colors/colors'
 
 const InfluencerCampaignDetail = ({navigation, route}) => {
   const [getABrand, setGetABrand] = useState(null)
@@ -203,7 +204,7 @@ const InfluencerCampaignDetail = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor='#D64A3A' barStyle='light-content' />
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
 
       {/* Header */}
       <View style={styles.header}>
@@ -307,7 +308,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     paddingHorizontal: 16,
     paddingVertical: 12,
     height: 64,
@@ -575,7 +576,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   requestSpotButton: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     marginHorizontal: 16,
     marginVertical: 16,
     paddingVertical: 10,

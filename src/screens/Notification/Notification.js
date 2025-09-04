@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
-    color: 'red',
+ color: '#2B2B2B',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   statusBadge: {
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   foodSubtitle: {
-    color: '#666',
+    color: '#2B2B2B',
     fontSize: 12,
     marginBottom: 8,
     fontFamily: FONTS_FAMILY.Poppins_Regular,

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FONTS_FAMILY } from '../../../assets/Fonts';
-import { App_Primary_color } from '../../../common/Colors/colors';
+import { App_Primary_color, darkOfPrimary } from '../../../common/Colors/colors';
 import { apiGet } from '../../../utils/Apis';
 import urls from '../../../config/urls';
 import useLoader from '../../../utils/LoaderHook';
@@ -110,7 +110,7 @@ const BrandBokingList = ({navigation}) => {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'completed':
-        return '#3170FA';
+        return darkOfPrimary;
       case 'cancelled':
         return '#F44336';
       case 'active':
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   selectedCategoryButton: {
-    backgroundColor: '#E53E3E',
+    backgroundColor: darkOfPrimary,
   },
   categoryText: {
     fontSize: 13,

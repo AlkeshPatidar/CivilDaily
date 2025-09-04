@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Splash1 from '../../screens/Splash/Splash1';
 import Login from '../../screens/Auth/Login';
-import SignUp from '../../screens/Auth/SignUp';
+// import SignUp from '../../screens/Auth/SignUp';
 import Notification from '../../screens/Notification/Notification';
 import Profile from '../../screens/Profile/Profile';
 // import TabNavigation from '../TabNavigation.js/TabNavigation';
@@ -44,6 +44,7 @@ import TermsAndConditionsScreen from '../../screens/StaticScreens/TermsAndCondit
 import PrivacyPolicyScreen from '../../screens/StaticScreens/PrivacyPolicy';
 import About from '../../screens/StaticScreens/About';
 import Support from '../../screens/StaticScreens/Support';
+import SignUp from '../../screens/Auth/Signup';
 
 
 

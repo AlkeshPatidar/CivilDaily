@@ -130,7 +130,7 @@ const BrandOfferDetialScreen = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor='#D64A3A' barStyle='light-content'
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content'
       translucent={false}
       />
 

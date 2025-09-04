@@ -1,14 +1,14 @@
 import * as React from 'react'
-import {useState, useEffect} from 'react'
-import {Keyboard, Dimensions, View, Image} from 'react-native'
-import {NavigationContainer} from '@react-navigation/native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
+import { useState, useEffect } from 'react'
+import { Keyboard, Dimensions, View, Image } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
-import {FONTS_FAMILY} from '../../assets/Fonts'
+import color, { App_Primary_color } from '../../common/Colors/colors'
+import { FONTS_FAMILY } from '../../assets/Fonts'
 import BrandHome from '../../screens/BrandFlow/BrandHome/BrandHome'
-import IMG, {Home} from '../../assets/Images'
+import IMG, { Home } from '../../assets/Images'
 import MessageScreen from '../../screens/Message/MessageList'
 import ProfileScreen from '../../screens/Profile/Profile'
 import InfluencersScreen from '../../screens/Influencer/Influencerlist'
@@ -18,7 +18,7 @@ import InfluencerBookingList from '../../screens/InfluencerFlow/InfluencerBookin
 
 const Tab = createBottomTabNavigator()
 
-function InfluenceTab () {
+function InfluenceTab() {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
 
   useEffect(() => {
@@ -65,7 +65,7 @@ function InfluenceTab () {
         component={InfluencerHome}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
@@ -77,6 +77,7 @@ function InfluenceTab () {
                   style={{
                     height: 25,
                     width: 25,
+                    tintColor: App_Primary_color
                   }}
                 />
                 <CustomText
@@ -115,7 +116,7 @@ function InfluenceTab () {
         component={InfluencerBookingList}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
@@ -136,7 +137,7 @@ function InfluenceTab () {
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Bookings
+                  My Events
                 </CustomText>
               </View>
             ) : (
@@ -159,7 +160,7 @@ function InfluenceTab () {
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Bookings
+                  My Events
                 </CustomText>
               </View>
             ),
@@ -170,7 +171,7 @@ function InfluenceTab () {
         component={MessageScreen}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{
@@ -225,7 +226,7 @@ function InfluenceTab () {
         component={ProfileScreen}
         options={{
           tabBarLabel: () => <></>,
-          tabBarIcon: ({focused}) =>
+          tabBarIcon: ({ focused }) =>
             focused ? (
               <View
                 style={{

@@ -12,7 +12,7 @@ import {
 import {Back, BackArrow, EditIcon, ForwordChev} from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
-import {App_Primary_color} from '../../common/Colors/colors'
+import {App_Primary_color, darkOfPrimary} from '../../common/Colors/colors'
 import {clearAsyncStorage} from '../../utils/Apis'
 import {showError} from '../../utils/helperFunctions'
 import {useSelector} from 'react-redux'
@@ -331,13 +331,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   logoutIcon: {
-    fontSize: 18,
+    fontSize: 22,
     marginRight: 10,
-    color: '#E85A4F',
+    color: darkOfPrimary,
+    bottom:2
   },
   logoutText: {
     fontSize: 16,
-    color: '#E85A4F',
+    color: App_Primary_color,
     fontWeight: '500',
   },
   bottomIndicator: {

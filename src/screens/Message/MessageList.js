@@ -40,6 +40,8 @@ import urls from '../../config/urls'
 import {useFocusEffect} from '@react-navigation/native'
 import {useLoginCheck} from '../../utils/Context'
 
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
+
 const MessageScreen = ({navigation}) => {
   useStatusBar(App_Primary_color, 'light-content')
   let selector = useSelector(state => state?.user?.userData)
@@ -74,18 +76,23 @@ const MessageScreen = ({navigation}) => {
 
   const renderHeader = () => {
     return (
-      <Row style={{gap: 90, marginTop: 50, marginHorizontal: 20}}>
+      <Row style={{gap: 100, marginTop: 50, marginHorizontal: 20}}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <BackArrow />
         </TouchableOpacity>
+        <Row style={{gap:10}}>
         <CustomText
           style={{
             color: 'white',
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            fontSize: 15,
+            fontSize: 18,
           }}>
-          Message
+          Messages
         </CustomText>
+        <FontAwesome6 name='message' size={20} color={'white'}/>
+
+        </Row>
+        
       </Row>
     )
   }

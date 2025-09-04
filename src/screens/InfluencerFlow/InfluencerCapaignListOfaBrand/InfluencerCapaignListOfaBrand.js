@@ -112,7 +112,7 @@
 
 //   return (
 //     <SafeAreaView style={styles.container}>
-//       <StatusBar backgroundColor='#D64A3A' barStyle='light-content' />
+//       <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
 
 //       {/* Header */}
 //       <View style={styles.header}>
@@ -483,7 +483,7 @@ import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import moment from 'moment'
 import Row from '../../../components/wrapper/row'
-import {App_Primary_color} from '../../../common/Colors/colors'
+import {App_Primary_color, darkOfPrimary} from '../../../common/Colors/colors'
 import IMG from '../../../assets/Images'
 
 const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
@@ -791,7 +791,7 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor='#D64A3A' barStyle='light-content' />
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
 
       {/* Header */}
       <View style={styles.headerContainer}>
@@ -865,7 +865,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   headerContainer: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
   },
   header: {
     flexDirection: 'row',
@@ -979,7 +979,7 @@ const styles = StyleSheet.create({
     color: '#ccc',
   },
   selectedDay: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: darkOfPrimary,
     borderRadius: 20,
   },
   selectedDayText: {
@@ -992,7 +992,7 @@ const styles = StyleSheet.create({
   },
   todayDayText: {
     fontWeight: 'bold',
-    color: '#D64A3A',
+    color: darkOfPrimary,
   },
   disabledDay: {
     opacity: 0.3,
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   refreshButton: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

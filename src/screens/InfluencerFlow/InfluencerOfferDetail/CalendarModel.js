@@ -70,7 +70,7 @@
 //   const markedDates = {
 //     [selectedDate]: {
 //       selected: true,
-//       selectedColor: '#D64A3A',
+//       selectedColor: App_Primary_color,
 //       selectedTextColor: 'white'
 //     }
 //   };
@@ -288,6 +288,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { App_Primary_color } from '../../../common/Colors/colors';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -407,17 +408,17 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
                       backgroundColor: '#ffffff',
                       calendarBackground: '#ffffff',
                       textSectionTitleColor: '#b6c1cd',
-                      selectedDayBackgroundColor: '#D64A3A',
+                      selectedDayBackgroundColor: App_Primary_color,
                       selectedDayTextColor: '#ffffff',
-                      todayTextColor: '#D64A3A',
+                      todayTextColor: App_Primary_color,
                       dayTextColor: '#2d4150',
                       textDisabledColor: '#d9e1e8',
-                      dotColor: '#D64A3A',
+                      dotColor: App_Primary_color,
                       selectedDotColor: '#ffffff',
-                      arrowColor: '#D64A3A',
+                      arrowColor: App_Primary_color,
                       disabledArrowColor: '#d9e1e8',
                       monthTextColor: '#2d4150',
-                      indicatorColor: '#D64A3A',
+                      indicatorColor: App_Primary_color,
                       textDayFontFamily: 'System',
                       textMonthFontFamily: 'System',
                       textDayHeaderFontFamily: 'System',
@@ -546,7 +547,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   selectedTimeSlot: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
   },
   timeText: {
     fontSize: 16,
@@ -557,7 +558,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   submitButton: {
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     marginHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 12,

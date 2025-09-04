@@ -320,6 +320,16 @@ const InfluencerHome = ({navigation}) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('Notification')}>
               <Notification />
+              <View style={{
+                height:8,
+                width:8,
+                backgroundColor:'white',
+                borderRadius:100,
+                position:'absolute',
+                right:3,
+                top:3
+
+              }}/>
             </TouchableOpacity>
           </SpaceBetweenRow>
 

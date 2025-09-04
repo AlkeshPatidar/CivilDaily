@@ -1,5 +1,9 @@
 const color={
-    App_Primary_color:'#D43C31',
+    // App_Primary_color:'#D43C31',
+    App_Primary_color:'#b76e79',
+    darkOfPrimary:'#8f565f',
+
+    
     black:"#000",
     white:"#fff",
     light_black:'#999999',
