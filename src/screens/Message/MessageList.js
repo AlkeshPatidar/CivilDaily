@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import color, {App_Primary_color, darkMode25} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
@@ -49,6 +49,8 @@ const MessageScreen = ({navigation}) => {
     selector = JSON.parse(selector)
   }
   const {showLoader, hideLoader} = useLoader()
+
+    const {isDarkMode} = useSelector(state => state.theme)
 
   const [messageList, setMessageList] = useState([])
 
@@ -102,7 +104,7 @@ const MessageScreen = ({navigation}) => {
       <ScrollView
         style={{
           flex: 1,
-          backgroundColor: 'rgba(255, 255, 255, 1)',
+          backgroundColor:isDarkMode? darkMode25: 'rgba(255, 255, 255, 1)',
           marginTop: 30,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -124,7 +126,7 @@ const MessageScreen = ({navigation}) => {
             <TouchableOpacity
               style={{
                 padding: 12,
-                backgroundColor: 'white',
+                backgroundColor:isDarkMode?'#555': 'white',
                 marginTop: 8,
                 width: '97%',
                 // elevation: 1,
@@ -157,6 +159,7 @@ const MessageScreen = ({navigation}) => {
                       style={{
                         fontFamily: FONTS_FAMILY.Poppins_SemiBold,
                         fontSize: 14,
+                        
                       }}>
                       {item?.FirstName}
                       {item?.LastName}

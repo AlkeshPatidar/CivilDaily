@@ -16,6 +16,8 @@ import {useLoginCheck} from '../../utils/Context'
 import urls from '../../config/urls'
 import {useDispatch} from 'react-redux'
 import {setUser} from '../../redux/reducer/user'
+import { initializeTheme } from "../../redux/actions/themeActions";
+
 
 const {width} = Dimensions.get('window')
 
@@ -26,6 +28,8 @@ const SplashScreen = ({navigation}) => {
 
   useEffect(() => {
     roleCheck()
+        initializeTheme();
+
   }, [])
 
   const roleCheck = async () => {

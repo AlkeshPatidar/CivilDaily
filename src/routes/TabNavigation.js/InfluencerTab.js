@@ -15,11 +15,14 @@ import InfluencersScreen from '../../screens/Influencer/Influencerlist'
 import InfluencerHome from '../../screens/InfluencerFlow/InfluencerHome/InfluencerHome'
 import BrandBokingList from '../../screens/BrandFlow/BrandHome/BookingList'
 import InfluencerBookingList from '../../screens/InfluencerFlow/InfluencerBookingList/InfluencerBookingList'
+import { useSelector } from 'react-redux'
 
 const Tab = createBottomTabNavigator()
 
 function InfluenceTab() {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
+      const {isDarkMode} = useSelector(state => state.theme)
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -56,7 +59,8 @@ function InfluenceTab() {
           elevation: 20,
           shadowColor: '#000',
           paddingHorizontal: 20,
-          backgroundColor: 'white',
+          backgroundColor:isDarkMode?'#444': 'white',
+          // backgroundColor: 'white',
           display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
         },
       }}>
@@ -96,12 +100,12 @@ function InfluenceTab() {
                   style={{
                     height: 25,
                     width: 25,
-                    tintColor: '#6B7280',
+                    tintColor:isDarkMode?'white': '#6B7280',
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode?'white': '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -151,12 +155,12 @@ function InfluenceTab() {
                   style={{
                     height: 25,
                     width: 25,
-                    tintColor: '#6B7280',
+                    tintColor: isDarkMode?'white': '#6B7280',
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode?'white': '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -210,7 +214,7 @@ function InfluenceTab() {
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode?'white': '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -261,11 +265,12 @@ function InfluenceTab() {
                   style={{
                     height: 25,
                     width: 25,
+                    tintColor:isDarkMode?'white': '#6B7280'
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode?'white': '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>

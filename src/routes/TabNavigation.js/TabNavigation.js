@@ -13,11 +13,14 @@ import MessageScreen from '../../screens/Message/MessageList'
 import ProfileScreen from '../../screens/Profile/Profile'
 import InfluencersScreen from '../../screens/Influencer/Influencerlist'
 import Fontisto from 'react-native-vector-icons/Fontisto'
+import { useSelector } from 'react-redux'
 
 const Tab = createBottomTabNavigator()
 
 function TabNavigation() {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
+      const {isDarkMode} = useSelector(state => state.theme)
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -54,7 +57,7 @@ function TabNavigation() {
           elevation: 20,
           shadowColor: '#000',
           paddingHorizontal: 20,
-          backgroundColor: 'white',
+          backgroundColor:'white',
           display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
         },
       }}>

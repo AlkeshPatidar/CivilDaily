@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import color, {App_Primary_color, black, darkMode25, white} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
@@ -28,12 +28,16 @@ import {ToastMsg} from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
 import {apiPost, getItem, setItem} from '../../utils/Apis'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {setUser} from '../../redux/reducer/user'
 import {useLoginCheck} from '../../utils/Context'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const SignUp = ({navigation}) => {
   // Single state for all form values
+    const {isDarkMode} = useSelector(state => state.theme)
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -264,7 +268,8 @@ const SignUp = ({navigation}) => {
     return (
       <Row style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackMsg />
+          {/* <BackMsg /> */}
+          <Ionicons name='chevron-back' size={30} color={isDarkMode?white:black}/>
         </TouchableOpacity>
         <CustomText style={styles.headerTitle}>Register</CustomText>
       </Row>
@@ -350,7 +355,7 @@ const SignUp = ({navigation}) => {
           />
           <CustomInputField
             placeholder={'Password'}
-            icon={<EyeIcon />}
+            icon={<AntDesign name={'eye'} color={isDarkMode?white:black } size={20}/>}
             onChangeText={value => updateFormData('password', value)}
             value={formData.password}
             secureTextEntry={true}
@@ -512,24 +517,10 @@ const SignUp = ({navigation}) => {
     )
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        translucent={true}
-        backgroundColor='transparent'
-        barStyle='dark-content'
-      />
-      {renderHeader()}
-      {renderTabs()}
-      {renderWhiteBgItmes()}
-      <View style={styles.bottomIndicator} />
-    </View>
-  )
-}
-
+  
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode?darkMode25:white,
     flex: 1,
   },
   headerContainer: {
@@ -538,7 +529,7 @@ const styles = StyleSheet.create({
     gap: 95,
   },
   headerTitle: {
-    color: 'black',
+    color:isDarkMode?white: 'black',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
     fontSize: 20,
   },
@@ -566,7 +557,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode?darkMode25 :'white',
     marginTop: 30,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -594,13 +585,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
     textAlign: 'center',
-    color: 'black',
+    color:isDarkMode?white: 'black',
     marginTop: 15,
   },
   termsLinkText: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
-    color: '#3D0066',
+    color: App_Primary_color,
     textDecorationLine: 'underline',
     textAlign: 'center',
   },
@@ -614,12 +605,12 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
-    color: 'black',
+    color:isDarkMode?white: 'black',
   },
   loginLinkText: {
     fontSize: 12,
     fontFamily: FONTS_FAMILY.Poppins_Medium,
-    color: '#3D0066',
+    color: App_Primary_color,
     textDecorationLine: 'underline',
   },
   bottomIndicator: {
@@ -654,5 +645,19 @@ const styles = StyleSheet.create({
     color: App_Primary_color,
   },
 })
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        translucent={true}
+        backgroundColor='transparent'
+        barStyle={isDarkMode? white:'dark-content'}
+      />
+      {renderHeader()}
+      {renderTabs()}
+      {renderWhiteBgItmes()}
+    </View>
+  )
+}
+
 
 export default SignUp

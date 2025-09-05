@@ -12,13 +12,16 @@ import {
 import {Back, BackArrow, EditIcon, ForwordChev} from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
-import {App_Primary_color, darkOfPrimary} from '../../common/Colors/colors'
+import {App_Primary_color, darkMode25, darkOfPrimary, white} from '../../common/Colors/colors'
 import {clearAsyncStorage} from '../../utils/Apis'
 import {showError} from '../../utils/helperFunctions'
 import {useSelector} from 'react-redux'
 import {setEnabled} from 'react-native/Libraries/Performance/Systrace'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const ProfileScreen = ({navigation}) => {
+    const {isDarkMode} = useSelector(state => state.theme)
+  
   const menuItems = [
     {icon: '💳', title: 'Bank Account', onPress: () => {}},
     // {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
@@ -31,6 +34,8 @@ const ProfileScreen = ({navigation}) => {
     {icon: '🔒', title: 'Terms & Condition', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
     {icon: '🔒', title: 'Privacy Policy', onPress: () => {navigation.navigate('PrivacyPolicyScreen')}},
     {icon: '❓', title: 'Support', onPress: () => {navigation.navigate('Support')}},
+    {icon: '⚙️', title: 'Settings', onPress: () => {navigation.navigate('Settings')}},
+
     {icon: 'ℹ️', title: 'About', onPress: () => {navigation.navigate('About')}},
   ]
 
@@ -50,95 +55,10 @@ const ProfileScreen = ({navigation}) => {
     }
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle='light-content'
-        backgroundColor={App_Primary_color}
-        translucent={false}
-      />
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-        onPress={()=>navigation.goBack()}
-        >
-        <BackArrow />
-
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Profile</Text>
-        <TouchableOpacity style={styles.settingsButton}>
-          <Text style={styles.settingsIcon}>☀️</Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
-        {/* Profile Section */}
-        <View style={styles.profileSection}>
-          <Image source={selector?.Image?{uri:selector?.Image}:IMG.AvatorImage} style={styles.profileImage} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>
-              {selector?.FirstName}
-              {selector?.LastName}
-            </Text>
-            <Text style={styles.profileEmail}>{selector?.Email}</Text>
-            <TouchableOpacity style={styles.editButton}
-            onPress={() => navigation.navigate('EditInfluencerProfileScreen')}>
-              <EditIcon />
-              <Text style={styles.editText}>Edit Profile</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* <View style={styles.balanceCard}>
-          <View style={styles.balanceHeader}>
-            <View style={styles.dollarIcon}>
-              <Text style={styles.dollarText}>$</Text>
-            </View>
-            <TouchableOpacity style={styles.viewHistoryButton}>
-              <Text style={styles.viewHistoryText}>View History</Text>
-              <ForwordChev />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.balanceAmount}>500.000</Text>
-          <Text style={styles.balanceEquivalent}>Equivalent to Rp 500.000</Text>
-        </View> */}
-
-        {/* Menu Items */}
-        <View style={styles.menuContainer}>
-          {menuItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.menuItem}
-              onPress={item.onPress}>
-              <View style={styles.menuLeft}>
-                <Text style={styles.menuIcon}>{item.icon}</Text>
-                <Text style={styles.menuTitle}>{item.title}</Text>
-              </View>
-              {/* <Text style={styles.menuArrow}>›</Text> */}
-              <ForwordChev />
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Log Out Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-          <Text style={styles.logoutIcon}>⟲</Text>
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-
-        {/* Bottom Indicator */}
-        <View style={styles.bottomIndicator} />
-      </ScrollView>
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode?darkMode25: 'white',
   },
   header: {
     flexDirection: 'row',
@@ -283,7 +203,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   menuContainer: {
-    backgroundColor: 'white',
+      backgroundColor:isDarkMode?darkMode25: 'white',
     marginHorizontal: 0,
     // borderTopLeftRadius: 20,
     // borderTopRightRadius: 20,
@@ -296,8 +216,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomWidth: 0.5,
+    borderBottomColor:isDarkMode?'gray': '#f0f0f0',
   },
   menuLeft: {
     flexDirection: 'row',
@@ -311,7 +231,7 @@ const styles = StyleSheet.create({
   },
   menuTitle: {
     fontSize: 14,
-    color: '#333',
+    color:isDarkMode?white: '#333',
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   menuArrow: {
@@ -322,7 +242,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EDEFF2',
+    backgroundColor:isDarkMode?'#777': '#EDEFF2',
     paddingVertical: 12,
     borderRadius: 8,
     // paddingHorizontal:60,
@@ -351,5 +271,92 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 })
+
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        barStyle='light-content'
+        backgroundColor={App_Primary_color}
+        translucent={false}
+      />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+        onPress={()=>navigation.goBack()}
+        >
+        <BackArrow />
+
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Profile</Text>
+        <TouchableOpacity style={styles.settingsButton}>
+          <Text style={styles.settingsIcon}>☀️</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
+        {/* Profile Section */}
+        <View style={styles.profileSection}>
+          <Image source={selector?.Image?{uri:selector?.Image}:IMG.AvatorImage} style={styles.profileImage} />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>
+              {selector?.FirstName}
+              {selector?.LastName}
+            </Text>
+            <Text style={styles.profileEmail}>{selector?.Email}</Text>
+            <TouchableOpacity style={styles.editButton}
+            onPress={() => navigation.navigate('EditInfluencerProfileScreen')}>
+              <EditIcon />
+              <Text style={styles.editText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* <View style={styles.balanceCard}>
+          <View style={styles.balanceHeader}>
+            <View style={styles.dollarIcon}>
+              <Text style={styles.dollarText}>$</Text>
+            </View>
+            <TouchableOpacity style={styles.viewHistoryButton}>
+              <Text style={styles.viewHistoryText}>View History</Text>
+              <ForwordChev />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.balanceAmount}>500.000</Text>
+          <Text style={styles.balanceEquivalent}>Equivalent to Rp 500.000</Text>
+        </View> */}
+
+        {/* Menu Items */}
+        <View style={styles.menuContainer}>
+          {menuItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.menuItem}
+              onPress={item.onPress}>
+              <View style={styles.menuLeft}>
+                <Text style={styles.menuIcon}>{item.icon}</Text>
+                <Text style={styles.menuTitle}>{item.title}</Text>
+              </View>
+              {/* <Text style={styles.menuArrow}>›</Text> */}
+              <Ionicons name='chevron-forward' color={isDarkMode?'white':'black'} size={20} />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Log Out Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+          <Text style={styles.logoutIcon}>⟲</Text>
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
+
+        {/* Bottom Indicator */}
+        <View style={styles.bottomIndicator} />
+      </ScrollView>
+    </View>
+  )
+}
+
+
 
 export default ProfileScreen

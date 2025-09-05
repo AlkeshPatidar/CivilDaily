@@ -12,7 +12,7 @@ import Profile from '../../screens/Profile/Profile';
 // import AddNoteScreen from '../../screens/EventNote/EventNote';
 import OtpScreen from '../../screens/Auth/OtpScreen';
 import MessageScreen from '../../screens/Message/MessageList';
-import OnboardingScreen from '../../screens/Splash/Onboarding';
+// import OnboardingScreen from '../../screens/Splash/Onboarding';
 import ChatScreen from '../../screens/Message/ChatScreen';
 import RestaurantScreen from '../../screens/Restaurent/Restaurant';
 import RestDetailScreen from '../../screens/Restaurent/DetailsRest';
@@ -45,6 +45,7 @@ import PrivacyPolicyScreen from '../../screens/StaticScreens/PrivacyPolicy';
 import About from '../../screens/StaticScreens/About';
 import Support from '../../screens/StaticScreens/Support';
 import SignUp from '../../screens/Auth/Signup';
+import Settings from '../../screens/StaticScreens/Settings';
 
 
 
@@ -67,7 +68,7 @@ const StackNavigation = () => {
           
         <Stack.Screen name={'SplashScreen'} component={SplashScreen} />
         <Stack.Screen name={'Splash1'} component={Splash1} />
-        <Stack.Screen name={'OnboardingScreen'} component={OnboardingScreen} />
+        {/* <Stack.Screen name={'OnboardingScreen'} component={OnboardingScreen} /> */}
 
         
         <Stack.Screen name={'Login'} component={Login} />
@@ -117,83 +118,7 @@ const StackNavigation = () => {
         <Stack.Screen name={'PrivacyPolicyScreen'} component={PrivacyPolicyScreen} />
         <Stack.Screen name={'About'} component={About} />
         <Stack.Screen name={'Support'} component={Support} />
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-        
-
-
-        
-
-
-
-        
-
-        
-
-        
-
-
-        
-
-
-
-        {/* <Stack.Screen name={'Tab'} component={TabNavigation} /> */}
-
-
-
-
-
-
-
-
-
-
-
-       
-
-
-
-
-
-
-
-
-
-
-        {/* ContactUsScreen */}
-
-
-
-
-        
-        
-
-
-
-
-    
-
+        <Stack.Screen name={'Settings'} component={Settings} />
 
 
         {/* FrameWorkDetails */}

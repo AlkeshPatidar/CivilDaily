@@ -501,7 +501,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
-import color, {App_Primary_color, darkOfPrimary} from '../../../common/Colors/colors'
+import color, {App_Primary_color, darkMode25, darkOfPrimary} from '../../../common/Colors/colors'
 import {apiGet, apiPut} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import useLoader from '../../../utils/LoaderHook'
@@ -511,6 +511,7 @@ import { ToastMsg } from '../../../utils/helperFunctions'
 import moment from 'moment'
 import Row from '../../../components/wrapper/row'
 import {CalendarIcon} from '../../../assets/SVGs'
+import { useSelector } from 'react-redux'
 
 const InfluencerBookingList = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
@@ -882,6 +883,251 @@ const InfluencerBookingList = ({navigation}) => {
     setSelectedCategory(category)
   }
 
+    const {isDarkMode} = useSelector(state => state.theme)
+
+  const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+  },
+  header: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  headerLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF26',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    color: '#fff',
+    marginLeft: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    paddingVertical: 8,
+  },
+  calendarButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  categoryContainer: {
+    alignSelf: 'flex-start',
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  categoryButton: {
+    backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginRight: 8,
+    marginBottom: 4,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#8f565f',
+  },
+  categoryText: {
+    fontSize: 13,
+    color: isDarkMode ? '#ccc' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+  clearDateButton: {
+    backgroundColor: '#FF9800',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginRight: 8,
+    marginBottom: 4,
+  },
+  clearDateText: {
+    fontSize: 12,
+    color: '#fff',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  // Calendar Styles
+  calendarContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    marginTop: 16,
+    borderRadius: 12,
+    padding: 16,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  monthNavButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+  },
+  monthNavText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? 'white' : '#333',
+  },
+  monthYearText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? 'white' : '#333',
+  },
+  weekDaysRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  weekDayText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+    color: isDarkMode ? '#aaa' : '#666',
+    paddingVertical: 4,
+  },
+  daysGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  dayButton: {
+    width: '14.28%', // 100% / 7 days
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  dayText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  otherMonthDay: {
+    color: isDarkMode ? '#666' : '#ccc',
+  },
+  selectedDay: {
+    backgroundColor: darkOfPrimary,
+    borderRadius: 20,
+  },
+  selectedDayText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  todayDay: {
+    backgroundColor: isDarkMode ? '#555' : '#e0e0e0',
+    borderRadius: 20,
+  },
+  todayDayText: {
+    fontWeight: 'bold',
+    color: darkOfPrimary,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  listContainer: {
+    paddingBottom: 80,
+  },
+  listItem: {
+    marginBottom: 16,
+  },
+  foodCard: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 8,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: isDarkMode ? 0.3 : 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  dateText: {
+    fontSize: 12,
+    color: isDarkMode ? '#aaa' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '600',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  foodImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  cardDetails: {
+    flex: 1,
+  },
+  foodTitle: {
+    color: isDarkMode ? 'white' : 'black',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  foodSubtitle: {
+    color: isDarkMode ? '#ccc' : '#666',
+    fontSize: 12,
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: isDarkMode ? '#aaa' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    textAlign: 'center',
+  },
+})
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
@@ -967,245 +1213,245 @@ const InfluencerBookingList = ({navigation}) => {
 
 export default InfluencerBookingList
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    backgroundColor: App_Primary_color,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  headerLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF26',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    color: '#fff',
-    marginLeft: 8,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    paddingVertical: 8,
-  },
-  calendarButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  categoryContainer: {
-    alignSelf: 'flex-start',
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  categoryButton: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-    marginBottom: 4,
-  },
-  selectedCategoryButton: {
-    backgroundColor: '#8f565f',
-  },
-  categoryText: {
-    fontSize: 13,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  selectedCategoryText: {
-    color: '#fff',
-  },
-  clearDateButton: {
-    backgroundColor: '#FF9800',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-    marginBottom: 4,
-  },
-  clearDateText: {
-    fontSize: 12,
-    color: '#fff',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  // Calendar Styles
-  calendarContainer: {
-    backgroundColor: 'white',
-    marginTop: 16,
-    borderRadius: 12,
-    padding: 16,
-  },
-  calendarHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  monthNavButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 16,
-    backgroundColor: '#f0f0f0',
-  },
-  monthNavText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  monthYearText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  weekDaysRow: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  weekDayText: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-    paddingVertical: 4,
-  },
-  daysGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  dayButton: {
-    width: '14.28%', // 100% / 7 days
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 2,
-  },
-  dayText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  otherMonthDay: {
-    color: '#ccc',
-  },
-  selectedDay: {
-    backgroundColor: darkOfPrimary,
-    borderRadius: 20,
-  },
-  selectedDayText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  todayDay: {
-    backgroundColor: '#e0e0e0',
-    borderRadius: 20,
-  },
-  todayDayText: {
-    fontWeight: 'bold',
-    color: darkOfPrimary,
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  listContainer: {
-    paddingBottom: 80,
-  },
-  listItem: {
-    marginBottom: 16,
-  },
-  foodCard: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  dateText: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  statusText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: '600',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  foodImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  cardDetails: {
-    flex: 1,
-  },
-  foodTitle: {
-    color: 'black',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  foodSubtitle: {
-    color: '#666',
-    fontSize: 12,
-    marginBottom: 4,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 50,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    textAlign: 'center',
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//   },
+//   header: {
+//     backgroundColor: App_Primary_color,
+//     paddingHorizontal: 16,
+//     paddingVertical: 12,
+//   },
+//   headerTop: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//     marginBottom: 10,
+//   },
+//   headerLeft: {
+//     flex: 1,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     backgroundColor: '#FFFFFF26',
+//     borderRadius: 8,
+//     paddingHorizontal: 10,
+//     marginRight: 10,
+//   },
+//   searchInput: {
+//     flex: 1,
+//     color: '#fff',
+//     marginLeft: 8,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//     paddingVertical: 8,
+//   },
+//   calendarButton: {
+//     width: 32,
+//     height: 32,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   closeButtonText: {
+//     color: 'white',
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//   },
+//   categoryContainer: {
+//     alignSelf: 'flex-start',
+//   },
+//   categoryRow: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     flexWrap: 'wrap',
+//   },
+//   categoryButton: {
+//     backgroundColor: '#f0f0f0',
+//     paddingHorizontal: 10,
+//     paddingVertical: 4,
+//     borderRadius: 4,
+//     marginRight: 8,
+//     marginBottom: 4,
+//   },
+//   selectedCategoryButton: {
+//     backgroundColor: '#8f565f',
+//   },
+//   categoryText: {
+//     fontSize: 13,
+//     color: '#666',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   selectedCategoryText: {
+//     color: '#fff',
+//   },
+//   clearDateButton: {
+//     backgroundColor: '#FF9800',
+//     paddingHorizontal: 8,
+//     paddingVertical: 4,
+//     borderRadius: 4,
+//     marginRight: 8,
+//     marginBottom: 4,
+//   },
+//   clearDateText: {
+//     fontSize: 12,
+//     color: '#fff',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   // Calendar Styles
+//   calendarContainer: {
+//     backgroundColor: 'white',
+//     marginTop: 16,
+//     borderRadius: 12,
+//     padding: 16,
+//   },
+//   calendarHeader: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 16,
+//   },
+//   monthNavButton: {
+//     width: 32,
+//     height: 32,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderRadius: 16,
+//     backgroundColor: '#f0f0f0',
+//   },
+//   monthNavText: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   monthYearText: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   weekDaysRow: {
+//     flexDirection: 'row',
+//     marginBottom: 8,
+//   },
+//   weekDayText: {
+//     flex: 1,
+//     textAlign: 'center',
+//     fontSize: 12,
+//     fontWeight: '600',
+//     color: '#666',
+//     paddingVertical: 4,
+//   },
+//   daysGrid: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
+//   },
+//   dayButton: {
+//     width: '14.28%', // 100% / 7 days
+//     aspectRatio: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginVertical: 2,
+//   },
+//   dayText: {
+//     fontSize: 14,
+//     color: '#333',
+//   },
+//   otherMonthDay: {
+//     color: '#ccc',
+//   },
+//   selectedDay: {
+//     backgroundColor: darkOfPrimary,
+//     borderRadius: 20,
+//   },
+//   selectedDayText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//   },
+//   todayDay: {
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: 20,
+//   },
+//   todayDayText: {
+//     fontWeight: 'bold',
+//     color: darkOfPrimary,
+//   },
+//   contentContainer: {
+//     flex: 1,
+//     paddingHorizontal: 16,
+//     paddingTop: 16,
+//   },
+//   listContainer: {
+//     paddingBottom: 80,
+//   },
+//   listItem: {
+//     marginBottom: 16,
+//   },
+//   foodCard: {
+//     backgroundColor: 'white',
+//     borderRadius: 8,
+//     padding: 12,
+//     shadowColor: '#000',
+//     shadowOffset: {width: 0, height: 1},
+//     shadowOpacity: 0.1,
+//     shadowRadius: 2,
+//     elevation: 2,
+//   },
+//   cardHeader: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 12,
+//   },
+//   dateText: {
+//     fontSize: 12,
+//     color: '#666',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   statusBadge: {
+//     paddingHorizontal: 8,
+//     paddingVertical: 2,
+//     borderRadius: 10,
+//   },
+//   statusText: {
+//     color: 'white',
+//     fontSize: 10,
+//     fontWeight: '600',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   cardContent: {
+//     flexDirection: 'row',
+//     alignItems: 'flex-start',
+//   },
+//   foodImage: {
+//     width: 60,
+//     height: 60,
+//     borderRadius: 8,
+//     marginRight: 12,
+//   },
+//   cardDetails: {
+//     flex: 1,
+//   },
+//   foodTitle: {
+//     color: 'black',
+//     fontSize: 14,
+//     fontWeight: '600',
+//     marginBottom: 4,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   foodSubtitle: {
+//     color: '#666',
+//     fontSize: 12,
+//     marginBottom: 4,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   emptyContainer: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     paddingVertical: 50,
+//   },
+//   emptyText: {
+//     fontSize: 16,
+//     color: '#666',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//     textAlign: 'center',
+//   },
+// })

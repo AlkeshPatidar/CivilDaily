@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import color, {App_Primary_color, black, darkMode25, white} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
@@ -31,17 +31,22 @@ import {ToastMsg} from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
 import {apiPost, getItem, setItem} from '../../utils/Apis'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {setUser} from '../../redux/reducer/user'
 import { useLoginCheck } from '../../utils/Context'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const Login = ({navigation}) => {
+    const {isDarkMode} = useSelector(state => state.theme)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('Influencers')
   const {showLoader, hideLoader} = useLoader()
   const dispatch = useDispatch()
     const {loggedInby, setloggedInby} = useLoginCheck()
+
 
 
   const onSubmit = async () => {
@@ -108,7 +113,7 @@ const Login = ({navigation}) => {
     return (
       <Row style={styles.headerRow}>
         <TouchableOpacity>
-          <BackMsg />
+          <Ionicons name='chevron-back' size={30} color={isDarkMode?white:black}/>
         </TouchableOpacity>
         <CustomText style={styles.headerText}>Log in</CustomText>
       </Row>
@@ -175,7 +180,7 @@ const Login = ({navigation}) => {
 
           <CustomInputField
             placeholder={'Password'}
-            icon={<EyeIcon />}
+            icon={<AntDesign name={'eye'} color={isDarkMode?white:black } size={20}/>}
             onChangeText={setPassword}
             secureTextEntry={true}
             label={'Password'}
@@ -228,26 +233,10 @@ const Login = ({navigation}) => {
     )
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        translucent={true}
-        backgroundColor='transparent'
-        barStyle='dark-content'
-      />
-      {renderHeader()}
-      {renderTabs()}
 
-      {renderWhiteBgItmes()}
-
-      <View style={styles.bottomIndicator} />
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode?darkMode25: 'white',
     flex: 1,
   },
   headerRow: {
@@ -256,7 +245,7 @@ const styles = StyleSheet.create({
     gap: 95,
   },
   headerText: {
-    color: 'black',
+    color: isDarkMode?white:'black',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
     fontSize: 20,
   },
@@ -297,7 +286,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode? darkMode25: 'white',
     marginTop: 30,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -322,6 +311,7 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     fontSize: 12,
+    color:isDarkMode?white:'black',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   signUpLink: {
@@ -339,5 +329,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 })
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        translucent={true}
+        backgroundColor='transparent'
+        barStyle={isDarkMode? white:'dark-content'}
+      />
+      {renderHeader()}
+      {renderTabs()}
+
+      {renderWhiteBgItmes()}
+
+    </View>
+  )
+}
+
+
 
 export default Login

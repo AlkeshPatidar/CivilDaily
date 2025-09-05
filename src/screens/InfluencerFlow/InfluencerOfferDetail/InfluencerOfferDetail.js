@@ -19,6 +19,7 @@ import useLoader from '../../../utils/LoaderHook'
 import PaidInputModel from '../../Restaurent/PaidInputCostModel'
 import ConfirmationCampaignModel from './ConfirmationCampaignModel'
 import { ToastMsg } from '../../../utils/helperFunctions'
+import { App_Primary_color } from '../../../common/Colors/colors'
 
 const InfluencerOfferDetail = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
@@ -300,7 +301,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#D64A3A',
+    backgroundColor: App_Primary_color,
     paddingHorizontal: 16,
     paddingVertical: 12,
     // marginTop: 30,

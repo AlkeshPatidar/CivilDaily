@@ -9,59 +9,19 @@ import {
   StatusBar,
 } from 'react-native'
 import IMG from '../../assets/Images'
-import { App_Primary_color } from '../../common/Colors/colors'
+import { App_Primary_color, darkMode25, white } from '../../common/Colors/colors'
+import { useSelector } from 'react-redux'
 
 const {width} = Dimensions.get('window')
 
 const OnboardingScreen = ({navigation}) => {
-  return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+  const {isDarkMode} = useSelector(state => state.theme)
 
-      {/* Top Red Section */}
-      <View style={styles.topSection}>
-        <Text style={styles.skipText}>Skip</Text>
-        <View style={styles.dotsContainer}>
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={[styles.dot, styles.activeDot]} />
-        </View>
-        <Image
-          source={IMG.onBoardingImage} // replace with your image path
-          style={styles.illustration}
-          resizeMode='contain'
-        />
 
-        {/* Pagination Dots */}
-      </View>
-
-      {/* Bottom White Section */}
-      <View style={styles.bottomSection}>
-        <Text style={styles.title}>
-          Connect Friend{' '}
-          <Text style={styles.highlighted}>Easily &{'\n'}Quickly</Text>
-        </Text>
-        <Text style={styles.description}>
-          Explore the power of real-time advertising with Digiboard. Instantly
-          connect with your audience across Indonesia.
-        </Text>
-
-        <TouchableOpacity style={styles.button}
-        onPress={()=>navigation.navigate('Login')}
-        >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
-}
-
-export default OnboardingScreen
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDarkMode?darkMode25 :'#fff',
   },
   topSection: {
     flex: 1.2,
@@ -101,7 +61,7 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDarkMode?darkMode25 :'#fff',
     paddingHorizontal: 25,
     paddingTop: 30,
     // alignItems: 'center',
@@ -110,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     // textAlign: 'center',
-    color: '#000',
+    color:isDarkMode?white :'#000',
   },
   highlighted: {
     color: App_Primary_color,
@@ -118,7 +78,7 @@ const styles = StyleSheet.create({
   description: {
     // textAlign: 'center',
     fontSize: 14,
-    color: '#555',
+    color:isDarkMode?white :'#555',
     marginTop: 15,
     lineHeight: 20,
   },
@@ -136,3 +96,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 })
+  return (
+    <View style={styles.container}>
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+
+      {/* Top Red Section */}
+      <View style={styles.topSection}>
+        {/* <Text style={styles.skipText}>Skip</Text> */}
+        {/* <View style={styles.dotsContainer}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.activeDot]} />
+        </View> */}
+        <Image
+          source={IMG.onBoardingImage} // replace with your image path
+          style={styles.illustration}
+          resizeMode='contain'
+        />
+
+        {/* Pagination Dots */}
+      </View>
+
+      {/* Bottom White Section */}
+      <View style={styles.bottomSection}>
+        <Text style={styles.title}>
+          Connect Friend{' '}
+          <Text style={styles.highlighted}>Easily &{'\n'}Quickly</Text>
+        </Text>
+        <Text style={styles.description}>
+          Explore the power of real-time advertising with Digiboard. Instantly
+          connect with your audience across Indonesia.
+        </Text>
+
+        <TouchableOpacity style={styles.button}
+        onPress={()=>navigation.navigate('Login')}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
+export default OnboardingScreen
+
+

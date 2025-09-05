@@ -3,15 +3,41 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { verticalScale } from 'react-native-size-matters';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomText from '../TextComponent';
-import color from '../../common/Colors/colors';
+import color, { white } from '../../common/Colors/colors';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeholder,value ,onChangeText,label, ...props }) => {
   const { t, i18n } = useTranslation();
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const {isDarkMode} = useSelector(state => state.theme)
+
+  const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(218, 218, 218, 1)',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    // backgroundColor: '#F3F4F6',
+    width: '100%',
+    height: verticalScale(44),
+    gap: 10
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    color:isDarkMode? white: '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Regular
+  },
+});
   return (
     <View style={{ width: '100%' }}>
-      {label && <CustomText style={{ color: 'black', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
+      {label && <CustomText style={{ color:isDarkMode?white :'black', fontFamily: FONTS_FAMILY.Poppins_Regular, fontSize: 14, left: 10, marginBottom: 5 }}>{t(label)}</CustomText>}
       <View style={styles.container}>
         <TextInput
           style={styles.input}
@@ -34,28 +60,6 @@ const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeh
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(218, 218, 218, 1)',
-    borderRadius: 15,
-    paddingHorizontal: 10,
-    // backgroundColor: '#F3F4F6',
-    width: '100%',
-    height: verticalScale(44),
-    gap: 10
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Regular
-  },
-});
+
 
 export default CustomInputField;
