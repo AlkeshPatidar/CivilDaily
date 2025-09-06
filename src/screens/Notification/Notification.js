@@ -316,7 +316,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../assets/Fonts'
-import {App_Primary_color, font_gray} from '../../common/Colors/colors'
+import {App_Primary_color, darkMode25, font_gray} from '../../common/Colors/colors'
 import {Back, BackArrow, Settings, Transactions} from '../../assets/SVGs'
 import CustomText from '../../components/TextComponent'
 import Row from '../../components/wrapper/row'
@@ -326,6 +326,7 @@ import {apiGet, apiPost, apiPut} from '../../utils/Apis'
 import moment from 'moment'
 import useLoader from '../../utils/LoaderHook'
 import {ToastMsg} from '../../utils/helperFunctions'
+import { useSelector } from 'react-redux'
 
 const Notification = ({navigation}) => {
   const [searchText, setSearchText] = useState('')
@@ -513,45 +514,13 @@ const Notification = ({navigation}) => {
     </TouchableOpacity>
   )
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+        const {isDarkMode} = useSelector(state => state.theme)
 
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackArrow />
-        </TouchableOpacity>
-        <CustomText
-          style={{
-            color: 'white',
-            fontSize: 16,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-          }}>
-          Notifications
-        </CustomText>
-        <Settings />
-      </View>
 
-      {/* Food Items List */}
-      <ScrollView
-        style={styles.contentContainer}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.listContainer}>
-          {notification.map((item, index) => (
-            <View key={item._id || index} style={styles.listItem}>
-              <FoodCard item={item} index={index} />
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  )
-}
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
   },
   header: {
     backgroundColor: App_Primary_color,
@@ -591,7 +560,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 4,
@@ -602,7 +571,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 13,
-    color: '#666',
+    color: isDarkMode ? 'white' : '#666',
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   selectedCategoryText: {
@@ -612,6 +581,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
   },
   listContainer: {
     paddingBottom: 80,
@@ -620,7 +590,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   foodCard: {
-    backgroundColor: 'white',
+    backgroundColor: isDarkMode ? '#333' : 'white',
     borderRadius: 8,
     padding: 12,
     shadowColor: '#000',
@@ -637,7 +607,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
- color: '#2B2B2B',
+    color: isDarkMode ? 'white' : '#2B2B2B',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   statusBadge: {
@@ -654,7 +624,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
   statusText: {
-    color: '#4B5563',
+    color: isDarkMode ? '#bbb' : '#4B5563',
     fontSize: 10,
     fontWeight: '600',
     fontFamily: FONTS_FAMILY.Poppins_Regular,
@@ -673,14 +643,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   foodTitle: {
-    color: 'black',
+    color: isDarkMode ? 'white' : 'black',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 4,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
   },
   foodSubtitle: {
-    color: '#2B2B2B',
+    color: isDarkMode ? '#bbb' : '#2B2B2B',
     fontSize: 12,
     marginBottom: 8,
     fontFamily: FONTS_FAMILY.Poppins_Regular,
@@ -729,7 +699,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   orderTotalLabel: {
-    color: 'black',
+    color: isDarkMode ? 'white' : 'black',
     fontSize: 14,
     fontWeight: '500',
     fontFamily: FONTS_FAMILY.Poppins_Medium,
@@ -764,6 +734,259 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-})
+});
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <BackArrow />
+        </TouchableOpacity>
+        <CustomText
+          style={{
+            color: 'white',
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+          }}>
+          Notifications
+        </CustomText>
+        <Settings />
+      </View>
+
+      {/* Food Items List */}
+      <ScrollView
+        style={styles.contentContainer}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.listContainer}>
+          {notification.map((item, index) => (
+            <View key={item._id || index} style={styles.listItem}>
+              <FoodCard item={item} index={index} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//   },
+//   header: {
+//     backgroundColor: App_Primary_color,
+//     // alignItems: 'center',
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     paddingHorizontal: 16,
+//     // marginTop: 30,
+//     paddingVertical: 12,
+//     gap: 10,
+//   },
+//   headerLeft: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     backgroundColor: '#FFFFFF26',
+//     padding: 0,
+//     borderRadius: 8,
+//     paddingHorizontal: 10,
+//   },
+//   headerTitle: {
+//     color: '#fff',
+//     fontSize: 16,
+//     fontWeight: '500',
+//     marginLeft: 8,
+//   },
+//   headerRight: {
+//     alignItems: 'flex-end',
+//     gap: 4,
+//   },
+//   categoryContainer: {
+//     paddingHorizontal: 16,
+//     paddingVertical: 12,
+//     alignSelf: 'flex-start',
+//   },
+//   categoryRow: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   categoryButton: {
+//     backgroundColor: '#f0f0f0',
+//     paddingHorizontal: 10,
+//     paddingVertical: 4,
+//     borderRadius: 4,
+//     marginRight: 8,
+//   },
+//   selectedCategoryButton: {
+//     backgroundColor: '#E53E3E',
+//   },
+//   categoryText: {
+//     fontSize: 13,
+//     color: '#666',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   selectedCategoryText: {
+//     color: '#fff',
+//   },
+//   contentContainer: {
+//     flex: 1,
+//     paddingHorizontal: 16,
+//     paddingTop: 16,
+//   },
+//   listContainer: {
+//     paddingBottom: 80,
+//   },
+//   listItem: {
+//     marginBottom: 16,
+//   },
+//   foodCard: {
+//     backgroundColor: 'white',
+//     borderRadius: 8,
+//     padding: 12,
+//     shadowColor: '#000',
+//     shadowOffset: {width: 0, height: 1},
+//     shadowOpacity: 0.1,
+//     shadowRadius: 2,
+//     elevation: 2,
+//   },
+//   cardHeader: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 12,
+//   },
+//   dateText: {
+//     fontSize: 14,
+//  color: '#2B2B2B',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   statusBadge: {
+//     paddingHorizontal: 8,
+//     paddingVertical: 3,
+//     borderRadius: 12,
+//     minWidth: 60,
+//     alignItems: 'center',
+//   },
+//   statusBadgeText: {
+//     color: 'white',
+//     fontSize: 10,
+//     fontWeight: '600',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   statusText: {
+//     color: '#4B5563',
+//     fontSize: 10,
+//     fontWeight: '600',
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   cardContent: {
+//     flexDirection: 'row',
+//     alignItems: 'flex-start',
+//   },
+//   foodImage: {
+//     width: 60,
+//     height: 60,
+//     borderRadius: 8,
+//     marginRight: 12,
+//   },
+//   cardDetails: {
+//     flex: 1,
+//   },
+//   foodTitle: {
+//     color: 'black',
+//     fontSize: 14,
+//     fontWeight: '600',
+//     marginBottom: 4,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   foodSubtitle: {
+//     color: '#2B2B2B',
+//     fontSize: 12,
+//     marginBottom: 8,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   actionButtonsContainer: {
+//     flexDirection: 'row',
+//     gap: 10,
+//     marginTop: 12,
+//   },
+//   actionButton: {
+//     flex: 1,
+//     paddingVertical: 5,
+//     paddingHorizontal: 0,
+//     borderRadius: 6,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   acceptButton: {
+//     backgroundColor: '#10B981',
+//   },
+//   rejectButton: {
+//     backgroundColor: '#EF4444',
+//   },
+//   acceptButtonText: {
+//     color: 'white',
+//     fontSize: 12,
+//     fontWeight: '600',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   rejectButtonText: {
+//     color: 'white',
+//     fontSize: 12,
+//     fontWeight: '600',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   additionalItems: {
+//     color: '#FF6B35',
+//     fontSize: 11,
+//     marginBottom: 8,
+//     fontFamily: FONTS_FAMILY.Poppins_Regular,
+//   },
+//   cardFooter: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     // alignItems: 'center',
+//     marginTop: 10,
+//   },
+//   orderTotalLabel: {
+//     color: 'black',
+//     fontSize: 14,
+//     fontWeight: '500',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//     right: 50,
+//   },
+//   priceContainer: {
+//     backgroundColor: '#FF6B35',
+//     width: 24,
+//     height: 24,
+//     borderRadius: 12,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   priceText: {
+//     color: '#3D0066',
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//   },
+//   floatingButton: {
+//     position: 'absolute',
+//     bottom: 20,
+//     right: 20,
+//     backgroundColor: '#E53E3E',
+//     width: 56,
+//     height: 56,
+//     borderRadius: 10,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     elevation: 8,
+//     shadowColor: '#000',
+//     shadowOffset: {width: 0, height: 4},
+//     shadowOpacity: 0.3,
+//     shadowRadius: 8,
+//   },
+// })
 
 export default Notification

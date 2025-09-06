@@ -10,13 +10,16 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import {Cross} from '../../../assets/SVGs'
-import { App_Primary_color } from '../../../common/Colors/colors'
+import { App_Primary_color, darkMode25 } from '../../../common/Colors/colors'
+import { useSelector } from 'react-redux'
 
 const {height: screenHeight} = Dimensions.get('window')
 
 const CampaignTypeModal = ({isVisible, onClose, onNext}) => {
   const [selectedType, setSelectedType] = useState('Barter')
   const [slideAnim] = useState(new Animated.Value(screenHeight))
+    const {isDarkMode} = useSelector(state => state.theme)
+
 
   useEffect(() => {
     if (isVisible) {
@@ -61,68 +64,14 @@ const CampaignTypeModal = ({isVisible, onClose, onNext}) => {
     </TouchableOpacity>
   )
 
-  return (
-    <Modal
-      visible={isVisible}
-      transparent
-      animationType='none'
-      onRequestClose={handleClose}>
-      <TouchableWithoutFeedback onPress={handleClose}>
-        <View style={styles.overlay}>
-          <TouchableWithoutFeedback>
-            <Animated.View
-              style={[
-                styles.modalContainer,
-                {
-                  transform: [{translateY: slideAnim}],
-                },
-              ]}>
-              {/* Header */}
-              <View style={styles.header}>
-                <TouchableOpacity
-                  onPress={handleClose}
-                  style={styles.closeButton}>
-                  <Cross />
-                </TouchableOpacity>
-                <Text style={styles.title}>Choose Campaign Type</Text>
-                <View style={styles.placeholder} />
-              </View>
-
-              {/* Content */}
-              <View style={styles.content}>
-                <RadioButton
-                  selected={selectedType === 'Barter'}
-                  onPress={() => setSelectedType('Barter')}
-                  label='Barter'
-                />
-
-                <RadioButton
-                  selected={selectedType === 'Paid Collaboration'}
-                  onPress={() => setSelectedType('Paid Collaboration')}
-                  label='Paid Collaboration'
-                />
-              </View>
-
-              {/* Next Button */}
-              <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                <Text style={styles.nextButtonText}>Next</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
-  )
-}
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor:isDarkMode? darkMode25: 'white',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 20,
@@ -145,13 +94,13 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 24,
-    color: '#666',
+    color:isDarkMode?'white': '#666',
     fontWeight: '300',
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color:isDarkMode?'white': '#333',
     textAlign: 'center',
   },
   placeholder: {
@@ -185,7 +134,7 @@ const styles = StyleSheet.create({
   },
   radioLabel: {
     fontSize: 16,
-    color: '#333',
+       color:isDarkMode?'white': '#333',
     fontWeight: '500',
   },
   nextButton: {
@@ -203,5 +152,61 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 })
+
+  return (
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType='none'
+      onRequestClose={handleClose}>
+      <TouchableWithoutFeedback onPress={handleClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback>
+            <Animated.View
+              style={[
+                styles.modalContainer,
+                {
+                  transform: [{translateY: slideAnim}],
+                },
+              ]}>
+              {/* Header */}
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={handleClose}
+                  style={styles.closeButton}>
+                  <Cross fill={'white'}/>
+                </TouchableOpacity>
+                <Text style={styles.title}>Choose Campaign Type</Text>
+                <View style={styles.placeholder} />
+              </View>
+
+              {/* Content */}
+              <View style={styles.content}>
+                <RadioButton
+                  selected={selectedType === 'Barter'}
+                  onPress={() => setSelectedType('Barter')}
+                  label='Barter'
+                />
+
+                <RadioButton
+                  selected={selectedType === 'Paid Collaboration'}
+                  onPress={() => setSelectedType('Paid Collaboration')}
+                  label='Paid Collaboration'
+                />
+              </View>
+
+              {/* Next Button */}
+              <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                <Text style={styles.nextButtonText}>Next</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  )
+}
+
+
 
 export default CampaignTypeModal

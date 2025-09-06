@@ -37,13 +37,13 @@
 //   const [Expectations, setExpectations] = useState('')
 
 //   const [selectedFile, setSelectedFile] = useState(null)
-  
+
 //   // Date states
 //   const [startDate, setStartDate] = useState(new Date())
 //   const [endDate, setEndDate] = useState(new Date())
 //   const [showStartDatePicker, setShowStartDatePicker] = useState(false)
 //   const [showEndDatePicker, setShowEndDatePicker] = useState(false)
-  
+
 //   const [campaigns, setCampaigns] = useState([])
 //   const [offerDetail, setOfferDetail] = useState(null)
 //   const [isEditMode, setIsEditMode] = useState(false)
@@ -67,7 +67,7 @@
 //   // Check if we're in edit mode and fetch offer details
 //   useEffect(() => {
 //     // getCampaigns()
-    
+
 //     if (route?.params?.offerId) {
 //       setIsEditMode(true)
 //       getOfferDetail()
@@ -85,7 +85,7 @@
 //       setTimeSlot(offerDetail.TimeSlot?.toString() || '')
 //       setAdDurationMinutes(offerDetail.AdDurationMinutes?.toString() || '')
 //       setExpectations(offerDetail.Expectations || '')
-      
+
 //       // Parse dates
 //       if (offerDetail.StartDate) {
 //         setStartDate(new Date(offerDetail.StartDate))
@@ -93,7 +93,7 @@
 //       if (offerDetail.EndDate) {
 //         setEndDate(new Date(offerDetail.EndDate))
 //       }
-      
+
 //       // Set existing image as selected file
 //       if (offerDetail.Image) {
 //         setSelectedFile({
@@ -146,7 +146,7 @@
 //       if (response.didCancel || response.error) {
 //         return
 //       }
-      
+
 //       if (response.assets && response.assets[0]) {
 //         setSelectedFile(response.assets[0])
 //       }
@@ -169,7 +169,7 @@
 //       ToastMsg('Please enter description')
 //       return false
 //     }
-  
+
 //     if (!averageDailyImpressions.trim()) {
 //       ToastMsg('Please enter average daily impressions')
 //       return false
@@ -211,7 +211,7 @@
 //       myHeaders.append('Authorization', `Bearer ${token}`)
 
 //       const formdata = new FormData()
-      
+
 //       // Only append image if it's a new file (not the existing URL)
 //       if (selectedFile && !selectedFile.uri.startsWith('http')) {
 //         formdata.append('Image', {
@@ -826,7 +826,7 @@
 // export default AddOffer
 
 
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -842,19 +842,20 @@ import {
   Platform,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import {launchImageLibrary} from 'react-native-image-picker'
+import { launchImageLibrary } from 'react-native-image-picker'
 import DatePicker from 'react-native-date-picker'
-import {FONTS_FAMILY} from '../../assets/Fonts'
+import { FONTS_FAMILY } from '../../assets/Fonts'
 import IMG from '../../assets/Images'
-import {App_Primary_color} from '../../common/Colors/colors'
-import {BackArrow, Label} from '../../assets/SVGs'
+import { App_Primary_color, darkMode25 } from '../../common/Colors/colors'
+import { BackArrow, Label } from '../../assets/SVGs'
 import Row from '../../components/wrapper/row'
 import useLoader from '../../utils/LoaderHook'
 import { ToastMsg } from '../../utils/helperFunctions'
 import { getItem, apiGet } from '../../utils/Apis'
 import { urls } from '../../utils/Apis'
+import { useSelector } from 'react-redux'
 
-const AddOffer = ({navigation, route}) => {
+const AddOffer = ({ navigation, route }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [selectedCampaign, setSelectedCampaign] = useState('')
@@ -865,25 +866,25 @@ const AddOffer = ({navigation, route}) => {
   const [expectations, setExpectations] = useState('')
 
   const [selectedFile, setSelectedFile] = useState(null)
-  
+
   // Date states
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
   const [showStartDatePicker, setShowStartDatePicker] = useState(false)
   const [showEndDatePicker, setShowEndDatePicker] = useState(false)
-  
+
   const [campaigns, setCampaigns] = useState([])
   const [offerDetail, setOfferDetail] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  const {showLoader, hideLoader} = useLoader()
+  const { showLoader, hideLoader } = useLoader()
 
   const locations = [
-    {name: 'Red', value: 'red'},
-    {name: 'Blue', value: 'blue'},
-    {name: 'Green', value: 'green'},
-    {name: 'Yellow', value: 'yellow'},
-    {name: 'Purple', value: 'purple'},
-    {name: 'Orange', value: 'orange'},
+    { name: 'Red', value: 'red' },
+    { name: 'Blue', value: 'blue' },
+    { name: 'Green', value: 'green' },
+    { name: 'Yellow', value: 'yellow' },
+    { name: 'Purple', value: 'purple' },
+    { name: 'Orange', value: 'orange' },
   ]
 
   const timeSlots = [
@@ -895,7 +896,7 @@ const AddOffer = ({navigation, route}) => {
   // Check if we're in edit mode and fetch offer details
   useEffect(() => {
     // getCampaigns()
-    
+
     if (route?.params?.offerId) {
       setIsEditMode(true)
       getOfferDetail()
@@ -913,7 +914,7 @@ const AddOffer = ({navigation, route}) => {
       setTimeSlot(offerDetail.TimeSlot?.toString() || '')
       setAdDurationMinutes(offerDetail.AdDurationMinutes?.toString() || '')
       setExpectations(offerDetail.Expectations || '')
-      
+
       // Parse dates
       if (offerDetail.StartDate) {
         setStartDate(new Date(offerDetail.StartDate))
@@ -921,7 +922,7 @@ const AddOffer = ({navigation, route}) => {
       if (offerDetail.EndDate) {
         setEndDate(new Date(offerDetail.EndDate))
       }
-      
+
       // Set existing image as selected file
       if (offerDetail.Image) {
         setSelectedFile({
@@ -974,7 +975,7 @@ const AddOffer = ({navigation, route}) => {
       if (response.didCancel || response.error) {
         return
       }
-      
+
       if (response.assets && response.assets[0]) {
         setSelectedFile(response.assets[0])
       }
@@ -1049,7 +1050,7 @@ const AddOffer = ({navigation, route}) => {
       showLoader()
 
       const token = await getItem('token')
-      
+
       if (!token) {
         ToastMsg('Authentication token not found. Please login again.')
         hideLoader()
@@ -1060,7 +1061,7 @@ const AddOffer = ({navigation, route}) => {
       myHeaders.append('Authorization', `Bearer ${token}`)
 
       const formdata = new FormData()
-      
+
       // Always append image for new offers, only skip for existing images in edit mode
       if (selectedFile) {
         if (!selectedFile.uri.startsWith('http')) {
@@ -1087,19 +1088,19 @@ const AddOffer = ({navigation, route}) => {
       formdata.append('AdDurationMinutes', adDurationMinutes.trim())
       formdata.append('StartDate', formatDate(startDate))
       formdata.append('EndDate', formatDate(endDate))
-      
+
       // Add campaign ID if available
       if (route?.params?.campaignId) {
         formdata.append('Campaign', route.params.campaignId)
       } else if (selectedCampaign) {
         formdata.append('Campaign', selectedCampaign)
       }
-      
-      // Add location if selected
-  
-        formdata.append('Location', 'test')
 
-      const apiUrl = isEditMode 
+      // Add location if selected
+
+      formdata.append('Location', 'test')
+
+      const apiUrl = isEditMode
         ? `https://influencer-brands-backend.vercel.app/api/brand/UpdateOffer/${route?.params?.offerId}`
         : 'https://influencer-brands-backend.vercel.app/api/brand/CreateOffer'
 
@@ -1114,14 +1115,14 @@ const AddOffer = ({navigation, route}) => {
       }
 
       const response = await fetch(apiUrl, requestOptions)
-      
+
       let result
       try {
         result = await response.json()
       } catch (parseError) {
         result = await response.text()
       }
-      
+
       console.log('API Response Status:', response.status)
       console.log('API Response:', result)
 
@@ -1138,8 +1139,8 @@ const AddOffer = ({navigation, route}) => {
           statusText: response.statusText,
           result: result
         })
-        ToastMsg(isEditMode 
-          ? `Failed to update offer: ${errorMessage}` 
+        ToastMsg(isEditMode
+          ? `Failed to update offer: ${errorMessage}`
           : `Failed to create offer: ${errorMessage}`)
       }
     } catch (error) {
@@ -1148,6 +1149,239 @@ const AddOffer = ({navigation, route}) => {
       ToastMsg(`Network error: ${error.message}. Please check your connection and try again.`)
     }
   }
+
+
+  const { isDarkMode } = useSelector(state => state.theme)
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomColor: isDarkMode ? '#555' : '#f0f0f0',
+      backgroundColor: App_Primary_color,
+    },
+    backButton: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerTitle: {
+      flex: 1,
+      fontSize: 18,
+      fontWeight: '600',
+      color: 'white',
+      textAlign: 'center',
+    },
+    placeholder: {
+      width: 40,
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+    },
+    formSection: {
+      padding: 15,
+      borderRadius: 12,
+      backgroundColor: isDarkMode ? '#333' : 'white',
+      marginBottom: 15,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    section: {},
+    inputContainer: {
+      borderColor: isDarkMode ? '#555' : '#e0e0e0',
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      minHeight: 48,
+      backgroundColor: isDarkMode ? '#444' : '#f9f9f9',
+    },
+    textInput: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : '#333',
+      flex: 1,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    radioText: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : '#333',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      fontWeight: '600',
+    },
+    categoryScroll: {
+      marginTop: 5,
+    },
+    categoryButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+      marginRight: 10,
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#666' : '#e0e0e0',
+    },
+    selectedCategoryButton: {
+      backgroundColor: App_Primary_color,
+      borderColor: App_Primary_color,
+    },
+    categoryButtonText: {
+      fontSize: 14,
+      color: isDarkMode ? 'white' : '#666',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    selectedCategoryButtonText: {
+      color: 'white',
+    },
+    colorContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 10,
+      marginTop: 5,
+    },
+    colorButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: 'transparent',
+    },
+    selectedColorButton: {
+      borderColor: isDarkMode ? 'white' : '#333',
+      borderWidth: 3,
+    },
+    dateButton: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderColor: isDarkMode ? '#555' : '#e0e0e0',
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      backgroundColor: isDarkMode ? '#444' : '#f9f9f9',
+      minHeight: 48,
+    },
+    dateText: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : '#333',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    timeSlotButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 16,
+      backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+      marginRight: 8,
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#666' : '#e0e0e0',
+      minWidth: 60,
+      alignItems: 'center',
+    },
+    selectedTimeSlotButton: {
+      backgroundColor: App_Primary_color,
+      borderColor: App_Primary_color,
+    },
+    timeSlotButtonText: {
+      fontSize: 12,
+      color: isDarkMode ? 'white' : '#666',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    selectedTimeSlotButtonText: {
+      color: 'white',
+    },
+    uploadContainer: {
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#555' : '#e0e0e0',
+      borderRadius: 8,
+      paddingVertical: 30,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      backgroundColor: isDarkMode ? '#444' : '#fafafa',
+      borderStyle: 'dashed',
+    },
+    uploadIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: isDarkMode ? '#333' : '#fff',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 16,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    uploadTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: isDarkMode ? 'white' : '#333',
+      marginBottom: 8,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    uploadSubtitle: {
+      fontSize: 14,
+      color: isDarkMode ? '#bbb' : '#666',
+      textAlign: 'center',
+      lineHeight: 20,
+    },
+    selectedImageContainer: {
+      alignItems: 'center',
+    },
+    selectedImage: {
+      width: 80,
+      height: 80,
+      borderRadius: 8,
+      marginBottom: 10,
+    },
+    selectedImageText: {
+      fontSize: 14,
+      color: isDarkMode ? 'white' : '#333',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    submitButton: {
+      backgroundColor: App_Primary_color,
+      borderRadius: 8,
+      paddingVertical: 16,
+      alignItems: 'center',
+      marginBottom: 30,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 4,
+    },
+    submitButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#fff',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+  });
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -1166,11 +1400,11 @@ const AddOffer = ({navigation, route}) => {
         <View style={styles.placeholder} />
       </View>
 
-      <KeyboardAvoidingView 
-        style={{flex: 1}} 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView 
+        <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -1178,8 +1412,8 @@ const AddOffer = ({navigation, route}) => {
           {/* Title */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Offer Title</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1197,13 +1431,13 @@ const AddOffer = ({navigation, route}) => {
           {/* Description */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Description</Text>
               </Row>
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={[styles.textInput, {minHeight: 80}]}
+                  style={[styles.textInput, { minHeight: 80 }]}
                   value={description}
                   multiline
                   numberOfLines={3}
@@ -1219,8 +1453,8 @@ const AddOffer = ({navigation, route}) => {
           {/* Average Daily Impressions */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Average Daily Impressions</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1239,11 +1473,11 @@ const AddOffer = ({navigation, route}) => {
           {/* Start Date */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Start Date</Text>
               </Row>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowStartDatePicker(true)}
               >
@@ -1258,11 +1492,11 @@ const AddOffer = ({navigation, route}) => {
           {/* End Date */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>End Date</Text>
               </Row>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowEndDatePicker(true)}
               >
@@ -1277,12 +1511,12 @@ const AddOffer = ({navigation, route}) => {
           {/* Time Slot */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Time Slot (Hours)</Text>
               </Row>
-              <ScrollView 
-                horizontal 
+              <ScrollView
+                horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.categoryScroll}
               >
@@ -1310,8 +1544,8 @@ const AddOffer = ({navigation, route}) => {
           {/* Ad Duration */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Ad Duration (Minutes)</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1330,13 +1564,13 @@ const AddOffer = ({navigation, route}) => {
           {/* Expectations */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Expectations</Text>
               </Row>
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={[styles.textInput, {minHeight: 60}]}
+                  style={[styles.textInput, { minHeight: 60 }]}
                   value={expectations}
                   onChangeText={setExpectations}
                   placeholder="Enter expectations"
@@ -1351,8 +1585,8 @@ const AddOffer = ({navigation, route}) => {
           {/* Image Upload */}
           <View style={styles.formSection}>
             <View style={styles.section}>
-              <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+              <Row style={{ gap: 15, marginBottom: 10 }}>
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Upload Offer Image</Text>
               </Row>
               <TouchableOpacity
@@ -1361,7 +1595,7 @@ const AddOffer = ({navigation, route}) => {
                 {selectedFile ? (
                   <View style={styles.selectedImageContainer}>
                     <Image
-                      source={{uri: selectedFile.uri}}
+                      source={{ uri: selectedFile.uri }}
                       style={styles.selectedImage}
                       resizeMode="cover"
                     />
@@ -1433,232 +1667,6 @@ const AddOffer = ({navigation, route}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: App_Primary_color,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center',
-  },
-  placeholder: {
-    width: 40,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  formSection: {
-    padding: 15,
-    borderRadius: 12,
-    backgroundColor: 'white',
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  section: {},
-  inputContainer: {
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    minHeight: 48,
-    backgroundColor: '#f9f9f9',
-  },
-  textInput: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  radioText: {
-    fontSize: 16,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    fontWeight: '600',
-  },
-  categoryScroll: {
-    marginTop: 5,
-  },
-  categoryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  selectedCategoryButton: {
-    backgroundColor: App_Primary_color,
-    borderColor: App_Primary_color,
-  },
-  categoryButtonText: {
-    fontSize: 14,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  selectedCategoryButtonText: {
-    color: 'white',
-  },
-  colorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 5,
-  },
-  colorButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedColorButton: {
-    borderColor: '#333',
-    borderWidth: 3,
-  },
-  dateButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    backgroundColor: '#f9f9f9',
-    minHeight: 48,
-  },
-  dateText: {
-    fontSize: 16,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  timeSlotButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 16,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    minWidth: 60,
-    alignItems: 'center',
-  },
-  selectedTimeSlotButton: {
-    backgroundColor: App_Primary_color,
-    borderColor: App_Primary_color,
-  },
-  timeSlotButtonText: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  selectedTimeSlotButtonText: {
-    color: 'white',
-  },
-  uploadContainer: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-    borderStyle: 'dashed',
-  },
-  uploadIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  uploadTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  uploadSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  selectedImageContainer: {
-    alignItems: 'center',
-  },
-  selectedImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  selectedImageText: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  submitButton: {
-    backgroundColor: App_Primary_color,
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  submitButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-})
+
 
 export default AddOffer

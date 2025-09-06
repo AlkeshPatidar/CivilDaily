@@ -19,7 +19,7 @@ const Tab = createBottomTabNavigator()
 
 function TabNavigation() {
   const [keyboardVisible, setKeyboardVisible] = useState(false)
-      const {isDarkMode} = useSelector(state => state.theme)
+  const { isDarkMode } = useSelector(state => state.theme)
 
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function TabNavigation() {
           elevation: 20,
           shadowColor: '#000',
           paddingHorizontal: 20,
-          backgroundColor:'white',
+          backgroundColor: isDarkMode ? '#444' : 'white',
           display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
         },
       }}>
@@ -98,12 +98,12 @@ function TabNavigation() {
                   style={{
                     height: 25,
                     width: 25,
-                    tintColor: '#6B7280',
+                    tintColor: isDarkMode ? 'white' : '#6B7280',
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode ? 'white' : '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -133,7 +133,7 @@ function TabNavigation() {
                     tintColor: App_Primary_color,
                   }}
                 /> */}
-                <Fontisto color={App_Primary_color} size={22} name='person'/>
+                <Fontisto color={App_Primary_color} size={22} name='person' />
                 <CustomText
                   style={{
                     color: App_Primary_color,
@@ -157,11 +157,11 @@ function TabNavigation() {
                     tintColor: '#6B7280',
                   }}
                 /> */}
-                <Fontisto color={'#6B7280'} size={22} name='person'/>
+                <Fontisto color={isDarkMode ? 'white' : '#6B7280'} size={22} name='person' />
 
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode ? 'white' : '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -211,11 +211,12 @@ function TabNavigation() {
                   style={{
                     height: 25,
                     width: 25,
+                    tintColor: isDarkMode ? 'white' : '#6B7280'
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode ? 'white' : '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
@@ -266,11 +267,12 @@ function TabNavigation() {
                   style={{
                     height: 25,
                     width: 25,
+                    tintColor: isDarkMode ? 'white' : '#6B7280'
                   }}
                 />
                 <CustomText
                   style={{
-                    color: '#6B7280',
+                    color: isDarkMode ? 'white' : '#6B7280',
                     fontSize: 10,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ScrollView,
   StatusBar,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import color, { App_Primary_color, darkMode25, white } from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
@@ -16,26 +16,32 @@ import {
   EyeIcon,
   LoginLogo,
 } from '../../assets/SVGs'
-import {FONTS_FAMILY} from '../../assets/Fonts'
+import { FONTS_FAMILY } from '../../assets/Fonts'
 import CustomInputField from '../../components/wrapper/CustomInput'
 import CustomButton from '../../components/Button'
 import {
   inValidEmail,
   inValidPassword,
 } from '../../utils/CheckValidation'
-import {ToastMsg} from '../../utils/helperFunctions'
+import { ToastMsg } from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
-import {apiPost, apiPut, getItem} from '../../utils/Apis'
+import { apiPost, apiPut, getItem } from '../../utils/Apis'
 import { useLoginCheck } from '../../utils/Context'
+import { useSelector } from 'react-redux'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
-const ForgotPassword = ({navigation}) => {
+const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [activeTab, setActiveTab] = useState('Influencers')
-  const {showLoader, hideLoader} = useLoader()
-  const {loggedInby, setloggedInby} = useLoginCheck()
+  const { showLoader, hideLoader } = useLoader()
+  const { loggedInby, setloggedInby } = useLoginCheck()
+
+  const { isDarkMode } = useSelector(state => state.theme)
+
 
   const onSubmit = async () => {
     const emailError = inValidEmail(email)
@@ -43,13 +49,13 @@ const ForgotPassword = ({navigation}) => {
       ToastMsg(emailError)
       return
     }
-    
+
     const oldPasswordError = inValidPassword(oldPassword)
     if (oldPasswordError) {
       ToastMsg(`Old Password: ${oldPasswordError}`)
       return
     }
-    
+
     const newPasswordError = inValidPassword(newPassword)
     if (newPasswordError) {
       ToastMsg(`New Password: ${newPasswordError}`)
@@ -63,23 +69,23 @@ const ForgotPassword = ({navigation}) => {
 
     try {
       // Determine the URL based on active tab
-      const url = activeTab === 'Influencers' 
-        ? urls.InfluencerForgotPassword 
+      const url = activeTab === 'Influencers'
+        ? urls.InfluencerForgotPassword
         : urls.brandForgotPassword
-      
+
       showLoader()
-      
+
       const data = {
         Email: email,
         OldPassword: oldPassword,
         NewPassword: newPassword
       }
 
-      console.log(data,'daatatata');
-      
-      
+      console.log(data, 'daatatata');
+
+
       const response = await apiPut(url, data)
-      
+
       if (response?.statusCode === 200) {
         ToastMsg(response?.message || 'Password updated successfully')
         hideLoader()
@@ -115,7 +121,9 @@ const ForgotPassword = ({navigation}) => {
     return (
       <Row style={styles.headerRow}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackMsg />
+          {/* <BackMsg /> */}
+          <Ionicons name='chevron-back' size={30} color={isDarkMode ? white : black} />
+
         </TouchableOpacity>
         <CustomText style={styles.headerText}>Reset Password</CustomText>
       </Row>
@@ -184,7 +192,7 @@ const ForgotPassword = ({navigation}) => {
 
           <CustomInputField
             placeholder={'Current Password'}
-            icon={<EyeIcon />}
+            icon={<AntDesign name={'eye'} color={isDarkMode ? white : black} size={20} />}
             onChangeText={setOldPassword}
             secureTextEntry={true}
             label={'Current Password'}
@@ -194,14 +202,14 @@ const ForgotPassword = ({navigation}) => {
 
           <CustomInputField
             placeholder={'New Password'}
-            icon={<EyeIcon />}
+            icon={<AntDesign name={'eye'} color={isDarkMode ? white : black} size={20} />}
             onChangeText={setNewPassword}
             secureTextEntry={true}
             label={'New Password'}
             value={newPassword}
             isPassword
           />
-          
+
           <CustomText style={styles.infoText}>
             Please enter your email and current password to set a new password.
           </CustomText>
@@ -227,7 +235,7 @@ const ForgotPassword = ({navigation}) => {
           title={'Reset Password'}
           onPress={onSubmit}
         />
-        
+
         <Row style={styles.backToLoginRow}>
           <CustomText style={styles.backToLoginText}>
             Remember your password?{' '}
@@ -240,111 +248,112 @@ const ForgotPassword = ({navigation}) => {
     )
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: isDarkMode ? darkMode25 : 'white',
+      flex: 1,
+    },
+    headerRow: {
+      marginTop: 50,
+      marginHorizontal: 20,
+      gap: 75,
+    },
+    headerText: {
+      color: isDarkMode ? 'white' : 'black',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      fontSize: 20,
+    },
+    tabsContainer: {
+      marginHorizontal: 20,
+      marginTop: 20,
+      gap: 10,
+      alignItems: 'center',
+      backgroundColor: '#D43C3114',
+      justifyContent: 'center',
+      padding: 5,
+      borderRadius: 12,
+      alignSelf: 'center',
+    },
+    tabButton: {
+      paddingHorizontal: 40,
+      paddingVertical: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: App_Primary_color,
+    },
+    tabText: {
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      fontSize: 14,
+    },
+    logoInputContainer: {
+      alignItems: 'center',
+      marginTop: 0,
+      gap: 20,
+    },
+    inputContainer: {
+      gap: 25,
+    },
+    infoText: {
+      textAlign: 'center',
+      color: 'rgba(202, 202, 202, 1)',
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      fontSize: 12,
+      marginTop: 10,
+      lineHeight: 18,
+    },
+    scrollViewContainer: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : 'white',
+      marginTop: 30,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+    },
+    buttonContainer: {
+      alignItems: 'center',
+    },
+    resetButton: {
+      marginTop: 40,
+    },
+    backToLoginRow: {
+      gap: 10,
+      marginTop: 30,
+    },
+    backToLoginText: {
+      fontSize: 12,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    backToLoginLink: {
+      fontSize: 12,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      color: App_Primary_color,
+    },
+    bottomIndicator: {
+      height: 5,
+      width: 134,
+      backgroundColor: 'rgba(202, 202, 202, 1)',
+      alignSelf: 'center',
+      position: 'absolute',
+      bottom: 8,
+      borderRadius: 8,
+    },
+  })
+
   return (
     <View style={styles.container}>
       <StatusBar
         translucent={true}
         backgroundColor='transparent'
-        barStyle='dark-content'
+        barStyle={isDarkMode ? white : 'dark-content'}
       />
       {renderHeader()}
       {renderTabs()}
       {renderWhiteBgItems()}
-      <View style={styles.bottomIndicator} />
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
-  headerRow: {
-    marginTop: 50,
-    marginHorizontal: 20,
-    gap: 75,
-  },
-  headerText: {
-    color: 'black',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    fontSize: 20,
-  },
-  tabsContainer: {
-    marginHorizontal: 20,
-    marginTop: 20,
-    gap: 10,
-    alignItems: 'center',
-    backgroundColor: '#D43C3114',
-    justifyContent: 'center',
-    padding: 5,
-    borderRadius: 12,
-    alignSelf: 'center',
-  },
-  tabButton: {
-    paddingHorizontal: 40,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: App_Primary_color,
-  },
-  tabText: {
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    fontSize: 14,
-  },
-  logoInputContainer: {
-    alignItems: 'center',
-    marginTop: 0,
-    gap: 20,
-  },
-  inputContainer: {
-    gap: 25,
-  },
-  infoText: {
-    textAlign: 'center',
-    color: 'rgba(202, 202, 202, 1)',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    fontSize: 12,
-    marginTop: 10,
-    lineHeight: 18,
-  },
-  scrollViewContainer: {
-    flex: 1,
-    backgroundColor: 'white',
-    marginTop: 30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  buttonContainer: {
-    alignItems: 'center',
-  },
-  resetButton: {
-    marginTop: 40,
-  },
-  backToLoginRow: {
-    gap: 10,
-    marginTop: 30,
-  },
-  backToLoginText: {
-    fontSize: 12,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  backToLoginLink: {
-    fontSize: 12,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    color: App_Primary_color,
-  },
-  bottomIndicator: {
-    height: 5,
-    width: 134,
-    backgroundColor: 'rgba(202, 202, 202, 1)',
-    alignSelf: 'center',
-    position: 'absolute',
-    bottom: 8,
-    borderRadius: 8,
-  },
-})
+
 
 export default ForgotPassword

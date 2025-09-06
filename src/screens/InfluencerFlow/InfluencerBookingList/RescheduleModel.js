@@ -11,8 +11,9 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { apiPut } from '../../../utils/Apis';
 import App from '../../../../App';
-import { App_Primary_color } from '../../../common/Colors/colors';
+import { App_Primary_color, darkMode25 } from '../../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../../assets/Fonts';
+import { useSelector } from 'react-redux';
 
 const RescheduleModal = ({ visible, onClose, collaborationId, onSubmit }) => {
   const [newDate, setNewDate] = useState('');
@@ -22,6 +23,8 @@ const RescheduleModal = ({ visible, onClose, collaborationId, onSubmit }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
+    const {isDarkMode} = useSelector(state => state.theme)
+
 
   const handleDateChange = (event, date) => {
     setShowDatePicker(false);
@@ -59,6 +62,80 @@ const RescheduleModal = ({ visible, onClose, collaborationId, onSubmit }) => {
     setNewTime('');
     setReason('');
   };
+
+
+  const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  modal: {
+    backgroundColor:isDarkMode?darkMode25: 'white',
+    borderRadius: 10,
+    padding: 18,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color:isDarkMode?'white': '#252525',
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 5,
+    color:isDarkMode?'white': '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Regular
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 15,
+    marginBottom: 15,
+    color:isDarkMode?'white': 'black'
+  },
+  inputText: {
+    color:isDarkMode?'white': '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    fontSize: 14,
+  },
+  textInput: {
+    height: 80,
+    textAlignVertical: 'top',
+
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  cancelButton: {
+    flex: 1,
+    padding: 15,
+    marginRight: 10,
+    backgroundColor:isDarkMode?'#6666': '#f0f0f0',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  submitButton: {
+    flex: 1,
+    padding: 15,
+    marginLeft: 10,
+    backgroundColor: App_Primary_color,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  cancelText: {
+    color:isDarkMode?'white':'#333',
+  },
+  submitText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -134,77 +211,6 @@ const RescheduleModal = ({ visible, onClose, collaborationId, onSubmit }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modal: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 18,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#252525',
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 5,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Regular
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 15,
-    marginBottom: 15,
-    color:'black'
-  },
-  inputText: {
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    fontSize: 14,
-  },
-  textInput: {
-    height: 80,
-    textAlignVertical: 'top',
 
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  cancelButton: {
-    flex: 1,
-    padding: 15,
-    marginRight: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  submitButton: {
-    flex: 1,
-    padding: 15,
-    marginLeft: 10,
-    backgroundColor: App_Primary_color,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  cancelText: {
-    color: '#333',
-  },
-  submitText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
 
 export default RescheduleModal;

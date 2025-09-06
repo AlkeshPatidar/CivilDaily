@@ -483,8 +483,9 @@ import {apiGet} from '../../../utils/Apis'
 import urls from '../../../config/urls'
 import moment from 'moment'
 import Row from '../../../components/wrapper/row'
-import {App_Primary_color, darkOfPrimary} from '../../../common/Colors/colors'
+import {App_Primary_color, darkMode25, darkOfPrimary} from '../../../common/Colors/colors'
 import IMG from '../../../assets/Images'
+import { useSelector } from 'react-redux'
 
 const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
@@ -499,6 +500,8 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const [selectedDate, setSelectedDate] = useState(null)
   const [currentMonth, setCurrentMonth] = useState(moment())
   const {showLoader, hideLoader} = useLoader()
+  const {isDarkMode} = useSelector(state => state.theme)
+
 
   console.log()
 
@@ -788,6 +791,421 @@ const InfluencerCapaignListOfaBrand = ({navigation, route}) => {
   const keyExtractor = (item, index) => {
     return item?._id?.toString() || item?.id?.toString() || index.toString()
   }
+
+  const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#F5F5F5',
+  },
+  headerContainer: {
+    backgroundColor: App_Primary_color,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 30,
+  },
+  backButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  // Search Expanded Styles
+  searchExpandedContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  searchInput: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  // Calendar Styles
+  calendarContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  monthNavButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+  },
+  disabledButton: {
+    backgroundColor: isDarkMode ? '#444' : '#e0e0e0',
+  },
+  monthNavText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? 'white' : '#333',
+  },
+  disabledText: {
+    color: isDarkMode ? '#666' : '#ccc',
+  },
+  monthYearText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? 'white' : '#333',
+  },
+  weekDaysRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  weekDayText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+    color: isDarkMode ? '#aaa' : '#666',
+    paddingVertical: 4,
+  },
+  daysGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  dayButton: {
+    width: '14.28%', // 100% / 7 days
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  dayText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  otherMonthDay: {
+    color: isDarkMode ? '#666' : '#ccc',
+  },
+  selectedDay: {
+    backgroundColor: darkOfPrimary,
+    borderRadius: 20,
+  },
+  selectedDayText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  todayDay: {
+    backgroundColor: isDarkMode ? '#555' : '#e0e0e0',
+    borderRadius: 20,
+  },
+  todayDayText: {
+    fontWeight: 'bold',
+    color: darkOfPrimary,
+  },
+  disabledDay: {
+    opacity: 0.3,
+  },
+  disabledDayText: {
+    color: isDarkMode ? '#444' : '#ccc',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  editButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  moreButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moreButtonText: {
+    color: 'white',
+    fontSize: 20,
+  },
+  content: {
+    flex: 1,
+    marginTop: 20,
+  },
+  flatListContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  emptyContentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  itemSeparator: {
+    height: 12,
+  },
+  // Empty state styles
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 60,
+  },
+  emptyIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: isDarkMode ? '#444' : '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: isDarkMode ? 0.3 : 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  emptyIcon: {
+    fontSize: 32,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  emptyDescription: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? '#ccc' : '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 32,
+  },
+  refreshButton: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  refreshButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  // Existing offer card styles
+  heroSection: {
+    height: 200,
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  heroImageStyle: {
+    borderRadius: 12,
+  },
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  playButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    position: 'absolute',
+  },
+  playButtonText: {
+    color: '#333',
+    fontSize: 16,
+    marginLeft: 2,
+  },
+  heroText: {
+    color: 'white',
+    fontSize: 40,
+    fontFamily: FONTS_FAMILY.Comfortaa_Bold,
+    textAlign: 'center',
+    lineHeight: 50,
+    letterSpacing: 2,
+  },
+  restaurantInfo: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 16,
+  },
+  restaurantName: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  restaurantCategory: {
+    fontSize: 14,
+    color: '#3D0066',
+  },
+  offersSection: {
+    paddingHorizontal: 16,
+  },
+  offersSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 18,
+  },
+  offersTitle: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  seeAllText: {
+    fontSize: 12,
+    color: '#8B5CF6',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  offerCard: {
+    flexDirection: 'row',
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: isDarkMode ? 0.3 : 0.1,
+    shadowRadius: 2,
+  },
+  offerImageContainer: {
+    position: 'relative',
+  },
+  offerImage: {
+    width: 95,
+    height: 108,
+    borderRadius: 12,
+    padding: 6,
+  },
+  discountBadge: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FF4444',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  discountText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  offerContent: {
+    flex: 1,
+    padding: 12,
+  },
+  dateTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  dateDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#C527D9',
+    marginRight: 8,
+  },
+  dateText: {
+    fontSize: 12,
+    color: isDarkMode ? '#aaa' : '#666',
+    marginRight: 8,
+  },
+  timeText: {
+    fontSize: 12,
+    color: isDarkMode ? '#aaa' : '#666',
+  },
+  offerTitle: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 4,
+  },
+  offerCategory: {
+    fontSize: 12,
+    color: '#8B5CF6',
+    fontWeight: '500',
+    marginBottom: 2,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  offerLocation: {
+    fontSize: 12,
+    color: isDarkMode ? '#ccc' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  requestSpotButton: {
+    backgroundColor: '#D64A3A',
+    marginHorizontal: 16,
+    marginVertical: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  requestSpotButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  homeIndicator: {
+    width: 134,
+    height: 5,
+    backgroundColor: isDarkMode ? '#666' : '#000',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+})
 
   return (
     <SafeAreaView style={styles.container}>

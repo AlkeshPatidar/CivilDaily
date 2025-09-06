@@ -19,7 +19,8 @@ import useLoader from '../../../utils/LoaderHook'
 import PaidInputModel from '../../Restaurent/PaidInputCostModel'
 import ConfirmationCampaignModel from './ConfirmationCampaignModel'
 import { ToastMsg } from '../../../utils/helperFunctions'
-import { App_Primary_color } from '../../../common/Colors/colors'
+import { App_Primary_color, darkMode25 } from '../../../common/Colors/colors'
+import { useSelector } from 'react-redux'
 
 const InfluencerOfferDetail = ({navigation, route}) => {
   const [isCampModalVisible, setIsCampModalVisible] = useState(false)
@@ -29,6 +30,8 @@ const InfluencerOfferDetail = ({navigation, route}) => {
   console.log(route?.params?.id,'+++++++++++=');
   const [offerDetail, setOfferDetail]=useState(null)
   const {showLoader, hideLoader}=useLoader()
+    const {isDarkMode} = useSelector(state => state.theme)
+
 
     const [isPaidModelVisible, setIsInputModelVisible] = useState(false)
     const [confirmationModelVisible, setIsConfirmationModelVisible] =
@@ -130,7 +133,158 @@ const InfluencerOfferDetail = ({navigation, route}) => {
     
   }
   
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#F5F5F5',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    // marginTop: 30,
+    height: 64,
+  },
+  backButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  editButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moreButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+  },
+  titleSection: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 16,
+  },
+  offerTitle: {
+    fontSize: 18,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 4,
+  },
+  offerCategory: {
+    fontSize: 14,
+    color: App_Primary_color,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  imageContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  imageScrollView: {
+    height: 200,
+  },
+  offerImage: {
+    width: 277,
+    height: 200,
+    borderRadius: 12,
+    resizeMode: 'cover',
+    marginRight: 12,
+  },
+  detailsSection: {
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+    alignItems:'center'
 
+  },
+  iconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: isDarkMode ? '#555' : '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  iconText: {
+    fontSize: 16,
+  },
+  detailContent: {
+    flex: 1,
+  },
+  detailLabel: {
+    fontSize: 13,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? '#ccc' : '#4B5563',
+    marginBottom: 2,
+  },
+  detailSubtext: {
+    fontSize: 12,
+    color: isDarkMode ? '#aaa' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  descriptionSection: {
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  descriptionTitle: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 12,
+  },
+  descriptionText: {
+    fontSize: 13,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? '#ccc' : '#4B5563',
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  seeMoreText: {
+    fontSize: 14,
+    color: App_Primary_color,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  requestSpotButton: {
+    backgroundColor: '#D64A3A',
+    marginHorizontal: 16,
+    marginVertical: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  requestSpotButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  homeIndicator: {
+    width: 134,
+    height: 5,
+    backgroundColor: isDarkMode ? '#666' : '#000',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+})
 
 
   return (
@@ -292,157 +446,6 @@ const InfluencerOfferDetail = ({navigation, route}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: App_Primary_color,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    // marginTop: 30,
-    height: 64,
-  },
-  backButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  editButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  moreButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-  },
-  titleSection: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  offerTitle: {
-    fontSize: 18,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#333',
-    marginBottom: 4,
-  },
-  offerCategory: {
-    fontSize: 14,
-    color: '#3D0066',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  imageContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 20,
-  },
-  imageScrollView: {
-    height: 200,
-  },
-  offerImage: {
-    width: 277,
-    height: 200,
-    borderRadius: 12,
-    resizeMode: 'cover',
-    marginRight: 12,
-  },
-  detailsSection: {
-    paddingHorizontal: 16,
-    marginBottom: 20,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    alignItems:'center'
 
-  },
-  iconCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F0F0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  iconText: {
-    fontSize: 16,
-  },
-  detailContent: {
-    flex: 1,
-  },
-  detailLabel: {
-    fontSize: 13,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#4B5563',
-    marginBottom: 2,
-  },
-  detailSubtext: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  descriptionSection: {
-    paddingHorizontal: 16,
-    marginBottom: 20,
-  },
-  descriptionTitle: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#333',
-    marginBottom: 12,
-  },
-  descriptionText: {
-    fontSize: 13,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#4B5563',
-    lineHeight: 20,
-    marginBottom: 8,
-  },
-  seeMoreText: {
-    fontSize: 14,
-    color: '#3D0066',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  requestSpotButton: {
-    backgroundColor: '#D64A3A',
-    marginHorizontal: 16,
-    marginVertical: 16,
-    paddingVertical: 14,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  requestSpotButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    backgroundColor: '#000',
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginBottom: 8,
-  },
-})
 
 export default InfluencerOfferDetail

@@ -2202,7 +2202,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {FONTS_FAMILY} from '../../../assets/Fonts'
-import {App_Primary_color, darkOfPrimary} from '../../../common/Colors/colors'
+import {App_Primary_color, darkMode25, darkOfPrimary, white} from '../../../common/Colors/colors'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
 import Row from '../../../components/wrapper/row'
 import IMG from '../../../assets/Images'
@@ -2224,6 +2224,8 @@ const BrandHome = ({navigation}) => {
 
   const categories = ['Current Campaign', 'Future Campaign', 'Past Campaign']
   const {showLoader, hideLoader} = useLoader()
+      const {isDarkMode} = useSelector(state => state.theme)
+
 
   let selector = useSelector(state => state?.user?.userData)
   if (Object.keys(selector).length != 0) {
@@ -2483,6 +2485,338 @@ const BrandHome = ({navigation}) => {
     </TouchableOpacity>
   )
 
+
+  const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25: '#f5f5f5',
+  },
+  header: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    gap: 10,
+    height: 280,
+  },
+  profileImage: {
+    height: 30,
+    width: 30,
+    borderRadius: 100,
+  },
+  welcomeText: {
+    color: 'white',
+    fontSize: 24,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  searchContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 12,
+    padding: 20,
+    position: 'absolute',
+    alignSelf: 'center',
+    width: '100%',
+    bottom: -110,
+    zIndex: 1000,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+    marginBottom: 5,
+  },
+  searchInputContainer: {
+    borderWidth: 1,
+    borderColor: isDarkMode ? '#555' : '#D1D5DB',
+    paddingHorizontal: 5,
+    borderRadius: 8,
+  },
+  searchInput: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    flex: 1,
+    color: isDarkMode ? 'white' : 'black',
+  },
+  clearButton: {
+    paddingHorizontal: 5,
+  },
+  searchButton: {
+    marginTop: 16,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 130,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+      zIndex: -1000,
+  },
+
+  // Statistics Card Styles
+  statisticsCard: {
+    backgroundColor: '#FFFFFF26',
+    borderRadius: 12,
+    padding: 10,
+    width: '100%',
+    height: 112,
+    justifyContent: 'space-between',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardHeaderText: {
+    fontSize: 10,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#fff',
+  },
+  mainStats: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+  },
+  mainNumber: {
+    fontSize: 24,
+    fontFamily: FONTS_FAMILY.Poppins_Bold,
+    color: '#fff',
+  },
+  mainLabel: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: '#fff',
+    marginTop: 8,
+  },
+  bottomStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bottomStatItem: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 3,
+  },
+  statDot: {
+    height: 6,
+    width: 6,
+    borderRadius: 100,
+    backgroundColor: '#3170FA',
+  },
+  bottomStatNumber: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Comfortaa_Medium,
+    color: '#fff',
+  },
+
+  // Filter Buttons
+  filterContainer: {
+    marginBottom: 20,
+  },
+  categoryButton: {
+    backgroundColor: isDarkMode ? '#444' : '#fff',
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    borderRadius: 6,
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: App_Primary_color,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: isDarkMode ? 0 : 0.1,
+    shadowRadius: 4,
+    elevation: isDarkMode ? 0 : 2,
+  },
+  selectedCategoryButton: {
+    backgroundColor: darkOfPrimary,
+    borderColor: darkOfPrimary,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: isDarkMode ? white : App_Primary_color,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  selectedCategoryText: {
+    color: '#fff',
+  },
+
+  // Section Header
+  sectionHeader: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#1F2937',
+  },
+  searchResultsText: {
+    fontSize: 12,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? '#aaa' : '#6B7280',
+  },
+  seeAllText: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: App_Primary_color,
+  },
+
+  // No Results Styles
+  noResultsContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  noResultsText: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? '#aaa' : '#6B7280',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  clearSearchButton: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  clearSearchText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+
+  // Cards Container
+  cardsContainer: {
+    gap: 16,
+  },
+
+  // Campaign Card Styles
+  campaignCard: {
+    backgroundColor: isDarkMode ? '#2a2a2a' : '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: isDarkMode ? 0.3 : 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+    marginBottom: 5,
+    marginHorizontal: 5,
+    padding: 10,
+  },
+
+  // Card Image
+  cardImageContainer: {
+    height: 160,
+  },
+  cardImage: {
+    width: '100%',
+    height: '95%',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+
+  // Card Content
+  cardContent: {
+    // Removed padding since it's already on parent
+  },
+  hubName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: isDarkMode ? 'white' : '#1F2937',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    marginBottom: 4,
+  },
+  categoryName: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#6B7280',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    marginBottom: 12,
+  },
+
+  // Card Footer
+  cardFooter: {
+    alignItems: 'center',
+    backgroundColor: isDarkMode ? 'rgba(212, 60, 49, 0.2)' : '#D43C3114',
+    paddingHorizontal: 8,
+    borderRadius: 20,
+    paddingVertical: 5,
+  },
+  attendeesText: {
+    fontSize: 13,
+    color: isDarkMode ? 'white' : 'black',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  attendeesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  avatarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatarImage: {
+    height: 22,
+    width: 22,
+  },
+  attendeesCount: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: isDarkMode ? 'white' : '#1F2937',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+
+  // Status Badge
+  statusContainer: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 18,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#fff',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+
+  // Floating Button
+  floatingButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    backgroundColor: darkOfPrimary,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+
+  // Extra padding at bottom
+  bottomPadding: {
+    height: 100,
+  },
+});
+
   return (
     <>
       <ScrollView
@@ -2653,316 +2987,6 @@ const BrandHome = ({navigation}) => {
 }
 
 // Styles remain the same as original
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    backgroundColor: App_Primary_color,
-    paddingHorizontal: 16,
-    paddingVertical: 18,
-    gap: 10,
-    height: 280,
-  },
-  profileImage: {
-    height: 30,
-    width: 30,
-    borderRadius: 100,
-  },
-  welcomeText: {
-    color: 'white',
-    fontSize: 24,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  searchContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    position: 'absolute',
-    alignSelf: 'center',
-    width: '100%',
-    bottom: -110,
-    zIndex: 100,
-  },
-  searchInputContainer: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    paddingHorizontal: 5,
-    borderRadius: 8,
-  },
-  searchInput: {
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    flex: 1,
-    color: 'black',
-  },
-  clearButton: {
-    paddingHorizontal: 5,
-  },
-  searchButton: {
-    marginTop: 16,
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 130,
-  },
 
-  // Statistics Card Styles
-  statisticsCard: {
-    backgroundColor: '#FFFFFF26',
-    borderRadius: 12,
-    padding: 10,
-    width: '100%',
-    height: 112,
-    justifyContent: 'space-between',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cardHeaderText: {
-    fontSize: 10,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#fff',
-  },
-  mainStats: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-  },
-  mainNumber: {
-    fontSize: 24,
-    fontFamily: FONTS_FAMILY.Poppins_Bold,
-    color: '#fff',
-  },
-  mainLabel: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#fff',
-    marginTop: 8,
-  },
-  bottomStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  bottomStatItem: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 3,
-  },
-  statDot: {
-    height: 6,
-    width: 6,
-    borderRadius: 100,
-    backgroundColor: '#3170FA',
-  },
-  bottomStatNumber: {
-    fontSize: 12,
-    fontFamily: FONTS_FAMILY.Comfortaa_Medium,
-    color: '#fff',
-  },
-
-  // Filter Buttons
-  filterContainer: {
-    marginBottom: 20,
-  },
-  categoryButton: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    borderRadius: 6,
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: App_Primary_color,
-  },
-  selectedCategoryButton: {
-    backgroundColor: darkOfPrimary,
-    borderColor: darkOfPrimary,
-  },
-  categoryText: {
-    fontSize: 12,
-    color: App_Primary_color,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  selectedCategoryText: {
-    color: '#fff',
-  },
-
-  // Section Header
-  sectionHeader: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#1F2937',
-  },
-  searchResultsText: {
-    fontSize: 12,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#6B7280',
-  },
-  seeAllText: {
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#3D0066',
-  },
-
-  // No Results Styles
-  noResultsContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  noResultsText: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#6B7280',
-    textAlign: 'center',
-    marginTop: 16,
-    marginBottom: 20,
-  },
-  clearSearchButton: {
-    backgroundColor: App_Primary_color,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  clearSearchText: {
-    color: '#fff',
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-
-  // Cards Container
-  cardsContainer: {
-    gap: 16,
-  },
-
-  // Campaign Card Styles
-  campaignCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 6,
-    borderWidth: 0.5,
-    borderColor: 'rgba(0,0,0,0.05)',
-    marginBottom: 5,
-    marginHorizontal: 5,
-    padding: 10,
-  },
-
-  // Card Image
-  cardImageContainer: {
-    height: 160,
-  },
-  cardImage: {
-    width: '100%',
-    height: '95%',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-
-  // Card Content
-  cardContent: {
-    // Removed padding since it's already on parent
-  },
-  hubName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1F2937',
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    marginBottom: 4,
-  },
-  categoryName: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    marginBottom: 12,
-  },
-
-  // Card Footer
-  cardFooter: {
-    alignItems: 'center',
-    backgroundColor: '#D43C3114',
-    paddingHorizontal: 8,
-    borderRadius: 20,
-    paddingVertical: 5,
-  },
-  attendeesText: {
-    fontSize: 13,
-    color: 'black',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  attendeesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  avatarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatarImage: {
-    height: 22,
-    width: 22,
-  },
-  attendeesCount: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1F2937',
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-  },
-
-  // Status Badge
-  statusContainer: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 18,
-  },
-  statusText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#fff',
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-  },
-
-  // Floating Button
-  floatingButton: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: darkOfPrimary,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-
-  // Extra padding at bottom
-  bottomPadding: {
-    height: 100,
-  },
-})
 
 export default BrandHome

@@ -531,7 +531,7 @@ import {
 } from '../../assets/SVGs'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color, font_gray} from '../../common/Colors/colors'
+import color, {App_Primary_color, darkMode25, font_gray} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import IMG from '../../assets/Images'
 import SpaceBetweenRow from '../../components/wrapper/spacebetween'
@@ -541,6 +541,7 @@ import useLoader from '../../utils/LoaderHook'
 import {useIsFocused} from '@react-navigation/native'
 import { ToastMsg } from '../../utils/helperFunctions'
 import ForgotPassword from '../Auth/ForgetPassword'
+import { useSelector } from 'react-redux'
 
 const {width, height} = Dimensions.get('window')
 
@@ -773,7 +774,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
     return (
       <TouchableOpacity
         style={{
-          backgroundColor: 'white',
+          backgroundColor:isDarkMode?'#333': 'white',
           borderRadius: 12,
           padding: 16,
           marginBottom: 12,
@@ -815,7 +816,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
           <View>
             <CustomText
               style={{
-                color: 'black',
+             
                 fontSize: 14,
                 fontFamily: FONTS_FAMILY.Poppins_Regular,
               }}>
@@ -823,7 +824,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
             </CustomText>
             <CustomText
               style={{
-                color: '#4B5563',
+                color: App_Primary_color,
                 fontSize: 12,
                 fontFamily: FONTS_FAMILY.Poppins_Regular,
               }}>
@@ -892,7 +893,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
     return (
       <TouchableOpacity
         style={{
-          backgroundColor: 'white',
+          backgroundColor:isDarkMode?'#333': 'white',
           borderRadius: 12,
           padding: 16,
           marginBottom: 12,
@@ -911,7 +912,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
           style={{
             fontSize: 12,
             fontFamily: FONTS_FAMILY.Poppins_Regular,
-            color: '#4B5563',
           }}>
           27 Dec 2023, 14:00
         </CustomText>
@@ -934,7 +934,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
           <View>
             <CustomText
               style={{
-                color: 'black',
                 fontSize: 14,
                 fontFamily: FONTS_FAMILY.Poppins_Regular,
               }}>
@@ -944,7 +943,7 @@ const BrandCampaignDetail = ({navigation, route}) => {
             </CustomText>
             <CustomText
               style={{
-                color: '#4B5563',
+                color: App_Primary_color,
                 fontSize: 12,
                 fontFamily: FONTS_FAMILY.Poppins_Regular,
               }}>
@@ -1084,6 +1083,321 @@ const BrandCampaignDetail = ({navigation, route}) => {
       </TouchableOpacity>
     </Modal>
   )
+
+      const {isDarkMode} = useSelector(state => state.theme)
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#F5F5F5',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    height: 64,
+  },
+  backButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  editButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moreButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+  },
+
+  // Hero Section
+  heroContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    padding: 8,
+    borderRadius: 8,
+    margin: 16,
+  },
+  heroSection: {
+    height: 200,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  heroImageStyle: {
+    borderRadius: 12,
+  },
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  playButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    position: 'absolute',
+  },
+  playButtonText: {
+    color: '#333',
+    fontSize: 16,
+    marginLeft: 2,
+  },
+  heroText: {
+    color: 'white',
+    fontSize: 40,
+    fontFamily: FONTS_FAMILY.Comfortaa_Bold,
+    textAlign: 'center',
+    lineHeight: 50,
+    letterSpacing: 2,
+  },
+  restaurantInfo: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 16,
+  },
+  restaurantName: {
+    fontSize: 16,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: isDarkMode ? 'white' : '#333',
+  },
+  restaurantCategory: {
+    fontSize: 14,
+    color: App_Primary_color,
+  },
+
+  // Tab Navigation
+  tabContainer: {
+    // backgroundColor: 'white',
+    paddingVertical: 6,
+    marginHorizontal: 2,
+    marginBottom: 16,
+    borderRadius: 12,
+  },
+  tabScrollView: {
+    paddingHorizontal: 16,
+  },
+  tabButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginRight: 12,
+    backgroundColor: isDarkMode ? '#555' : '#F5F5F5',
+    borderWidth: 1,
+    borderColor: App_Primary_color,
+  },
+  activeTabButton: {
+    backgroundColor: '#D64A3A',
+    borderColor: '#D64A3A',
+  },
+  tabButtonText: {
+    fontSize: 12,
+    color: isDarkMode ? 'white' : App_Primary_color,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  activeTabButtonText: {
+    color: 'white',
+  },
+
+  // Tab Content
+  tabContent: {
+    paddingHorizontal: 16,
+  },
+
+  // Attendee Card
+  attendeeCard: {
+    flexDirection: 'row',
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 12,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  attendeeAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 12,
+  },
+  attendeeInfo: {
+    flex: 1,
+  },
+  attendeeName: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 2,
+  },
+  attendeeRole: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  attendeeTime: {
+    fontSize: 12,
+    color: isDarkMode ? '#aaa' : '#999',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+
+  // New Request Card Design
+  newRequestCard: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 12,
+    marginBottom: 12,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  newRequestImage: {
+    width: '100%',
+    height: 140,
+    resizeMode: 'cover',
+  },
+  newRequestContent: {
+    padding: 12,
+  },
+  newRequestHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  newRequestTitle: {
+    fontSize: 14,
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    color: isDarkMode ? 'white' : '#333',
+    flex: 1,
+    marginRight: 8,
+  },
+  collaborationTypeContainer: {
+    alignItems: 'flex-end',
+  },
+  collaborationType: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  collaborationTypeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: 'white',
+    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+  },
+  newRequestCategory: {
+    fontSize: 12,
+    color: '#8B5CF6',
+    fontWeight: '500',
+    marginBottom: 4,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  newRequestLocation: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    marginBottom: 8,
+  },
+  newRequestFooter: {
+    marginTop: 8,
+  },
+  calendarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  calendarIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  calendarText: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  rescheduleNote: {
+    fontSize: 11,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    marginBottom: 2,
+  },
+
+  homeIndicator: {
+    width: 134,
+    height: 5,
+    backgroundColor: isDarkMode ? '#666' : '#000',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+
+  // Three Dots Menu Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  menuContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 8,
+    marginTop: 64,
+    marginRight: 16,
+    minWidth: 120,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  menuItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  menuItemText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: isDarkMode ? '#555' : '#E5E5E5',
+    marginHorizontal: 8,
+  },
+});
 
   return (
     <SafeAreaView style={styles.container}>
@@ -1297,318 +1611,6 @@ const BrandCampaignDetail = ({navigation, route}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#D64A3A',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    height: 64,
-  },
-  backButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  editButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  moreButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-  },
 
-  // Hero Section
-  heroContainer: {
-    backgroundColor: 'white',
-    padding: 8,
-    borderRadius: 8,
-    margin: 16,
-  },
-  heroSection: {
-    height: 200,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  heroImageStyle: {
-    borderRadius: 12,
-  },
-  heroOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  playButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    position: 'absolute',
-  },
-  playButtonText: {
-    color: '#333',
-    fontSize: 16,
-    marginLeft: 2,
-  },
-  heroText: {
-    color: 'white',
-    fontSize: 40,
-    fontFamily: FONTS_FAMILY.Comfortaa_Bold,
-    textAlign: 'center',
-    lineHeight: 50,
-    letterSpacing: 2,
-  },
-  restaurantInfo: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  restaurantName: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    color: '#333',
-  },
-  restaurantCategory: {
-    fontSize: 14,
-    color: '#3D0066',
-  },
-
-  // Tab Navigation
-  tabContainer: {
-    // backgroundColor: 'white',
-    paddingVertical: 6,
-    marginHorizontal: 2,
-    marginBottom: 16,
-    borderRadius: 12,
-  },
-  tabScrollView: {
-    paddingHorizontal: 16,
-  },
-  tabButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderRadius: 6,
-    marginRight: 12,
-    backgroundColor: '#F5F5F5',
-    borderWidth: 1,
-    borderColor: App_Primary_color,
-  },
-  activeTabButton: {
-    backgroundColor: '#D64A3A',
-    borderColor: '#D64A3A',
-  },
-  tabButtonText: {
-    fontSize: 12,
-    color: App_Primary_color,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  activeTabButtonText: {
-    color: 'white',
-  },
-
-  // Tab Content
-  tabContent: {
-    paddingHorizontal: 16,
-  },
-
-  // Attendee Card
-  attendeeCard: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 18,
-    marginBottom: 12,
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  attendeeAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 12,
-  },
-  attendeeInfo: {
-    flex: 1,
-  },
-  attendeeName: {
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    color: '#333',
-    marginBottom: 2,
-  },
-  attendeeRole: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  attendeeTime: {
-    fontSize: 12,
-    color: '#999',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-
-  // New Request Card Design
-  newRequestCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    marginBottom: 12,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  newRequestImage: {
-    width: '100%',
-    height: 140,
-    resizeMode: 'cover',
-  },
-  newRequestContent: {
-    padding: 12,
-  },
-  newRequestHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  newRequestTitle: {
-    fontSize: 14,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#333',
-    flex: 1,
-    marginRight: 8,
-  },
-  collaborationTypeContainer: {
-    alignItems: 'flex-end',
-  },
-  collaborationType: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  collaborationTypeText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: 'white',
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-  },
-  newRequestCategory: {
-    fontSize: 12,
-    color: '#8B5CF6',
-    fontWeight: '500',
-    marginBottom: 4,
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  newRequestLocation: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    marginBottom: 8,
-  },
-  newRequestFooter: {
-    marginTop: 8,
-  },
-  calendarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  calendarIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
-  calendarText: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  rescheduleNote: {
-    fontSize: 11,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-    marginBottom: 2,
-  },
-
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    backgroundColor: '#000',
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginBottom: 8,
-  },
-
-  // Three Dots Menu Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-  },
-  menuContainer: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginTop: 64,
-    marginRight: 16,
-    minWidth: 120,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  menuItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  menuItemText: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Regular,
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: '#E5E5E5',
-    marginHorizontal: 8,
-  },
-})
 
 export default BrandCampaignDetail

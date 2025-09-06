@@ -30,7 +30,7 @@
 //     try {
 //       showLoader()
 //       const res = await apiGet('/api/brand/GetCollaborationAttendanceList')
-      
+
 //       setAllInfluencers(res?.data)
 //       hideLoader()
 //     } catch (error) {
@@ -329,7 +329,7 @@
 
 // export default InfluencersScreen
 
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -343,23 +343,27 @@ import {
   FlatList,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {FONTS_FAMILY} from '../../assets/Fonts'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import { FONTS_FAMILY } from '../../assets/Fonts'
+import color, { App_Primary_color, darkMode25 } from '../../common/Colors/colors'
 import CustomText from '../../components/TextComponent'
 import useLoader from '../../utils/LoaderHook'
-import {apiGet} from '../../utils/Apis'
+import { apiGet, getItem } from '../../utils/Apis'
 import urls from '../../config/urls'
+import { useSelector } from 'react-redux'
 
-const InfluencersScreen = ({navigation}) => {
+const InfluencersScreen = ({ navigation }) => {
   const [allInfluencers, setAllInfluencers] = useState([])
   const [activeTab, setActiveTab] = useState('All')
   const [campaigns, setCampaigns] = useState([])
   const [selectedCampaign, setSelectedCampaign] = useState(null)
   const [showCampaignDropdown, setShowCampaignDropdown] = useState(false)
-  const {showLoader, hideLoader} = useLoader()
+  const { showLoader, hideLoader } = useLoader()
+
+  const { isDarkMode } = useSelector(state => state.theme)
+
 
   // Authorization token - you should replace this with your actual token management
-  const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODA3Yzk2NDI0MTFlNzViYjQ2NzFkMCIsImlhdCI6MTc1MzI1MTA5MH0.qMzCWcwdeXR97j-SUPzWdgwl65AXuic0-CIoEu9SleM'
+  // const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODA3Yzk2NDI0MTFlNzViYjQ2NzFkMCIsImlhdCI6MTc1MzI1MTA5MH0.qMzCWcwdeXR97j-SUPzWdgwl65AXuic0-CIoEu9SleM'
 
   useEffect(() => {
     getAllInfluencers()
@@ -372,21 +376,22 @@ const InfluencersScreen = ({navigation}) => {
   }, [activeTab, selectedCampaign])
 
   const getAllInfluencers = async () => {
+    const authToken = await getItem('token')
     try {
       showLoader()
       let apiUrl = '/api/brand/GetCollaborationAttendanceList'
-      
+
       // If a specific campaign is selected, use the filter API
       if (selectedCampaign && selectedCampaign.id !== 'all') {
         apiUrl = `/api/brand/GetCollaborationAttendanceListFilter?campaignId=${selectedCampaign.id}`
       }
-      
+
       const res = await apiGet(apiUrl, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       })
-      
+
       setAllInfluencers(res?.data || [])
       hideLoader()
     } catch (error) {
@@ -396,13 +401,15 @@ const InfluencersScreen = ({navigation}) => {
   }
 
   const getAllCampaigns = async () => {
+    const authToken = await getItem('token')
+
     try {
       const res = await apiGet('/api/brand/GetAllMyCampaign', {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       })
-      
+
       // Add "All" option at the beginning
       const allCampaigns = [
         { id: 'all', Title: 'All Campaigns' },
@@ -415,13 +422,15 @@ const InfluencersScreen = ({navigation}) => {
   }
 
   const getActiveCampaigns = async () => {
+    const authToken = await getItem('token')
+
     try {
       const res = await apiGet('/api/brand/GetAllMyActiveCampaign', {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       })
-      
+
       const activeCampaigns = [
         { id: 'all', Title: 'All Campaigns' },
         ...(res?.data || [])
@@ -433,13 +442,15 @@ const InfluencersScreen = ({navigation}) => {
   }
 
   const getCompletedCampaigns = async () => {
+    const authToken = await getItem('token')
+
     try {
       const res = await apiGet('/api/brand/GetAllMyCompletedCampaign', {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       })
-      
+
       const completedCampaigns = [
         { id: 'all', Title: 'All Campaigns' },
         ...(res?.data || [])
@@ -453,7 +464,7 @@ const InfluencersScreen = ({navigation}) => {
   const handleTabChange = (tab) => {
     setActiveTab(tab)
     setSelectedCampaign(null) // Reset campaign selection when tab changes
-    
+
     // Fetch campaigns based on active tab
     switch (tab) {
       case 'Active':
@@ -476,7 +487,7 @@ const InfluencersScreen = ({navigation}) => {
 
   const tabs = ['All', 'Active', 'Completed']
 
-  const TabButton = ({title, isActive, onPress}) => (
+  const TabButton = ({ title, isActive, onPress }) => (
     <TouchableOpacity
       style={[styles.tabButton, isActive && styles.activeTabButton]}
       onPress={onPress}>
@@ -486,10 +497,10 @@ const InfluencersScreen = ({navigation}) => {
     </TouchableOpacity>
   )
 
-  const FilterDropdown = ({title, onPress, showArrow = true}) => (
+  const FilterDropdown = ({ title, onPress, showArrow = true }) => (
     <TouchableOpacity style={styles.filterDropdown} onPress={onPress}>
       <Text style={styles.filterText}>{title}</Text>
-      {showArrow && <Icon name="chevron-down" size={16} color="#333" />}
+      {showArrow && <Icon name="chevron-down" size={16} color={isDarkMode?'white': "#333"} />}
     </TouchableOpacity>
   )
 
@@ -507,13 +518,15 @@ const InfluencersScreen = ({navigation}) => {
           <FlatList
             data={campaigns}
             keyExtractor={(item) => item?._id?.toString()}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <TouchableOpacity
                 style={[
                   styles.dropdownItem,
                   selectedCampaign?.id === item.id && styles.selectedDropdownItem
                 ]}
                 onPress={() => handleCampaignSelect(item)}>
+                  {console.log(item,'++++++++++=')
+                  }
                 <Text style={[
                   styles.dropdownItemText,
                   selectedCampaign?.id === item.id && styles.selectedDropdownItemText
@@ -533,7 +546,7 @@ const InfluencersScreen = ({navigation}) => {
     </Modal>
   )
 
-  const InfluencerCard = ({item}) => (
+  const InfluencerCard = ({ item }) => (
     <TouchableOpacity style={styles.influencerCard}>
       <View style={styles.imageContainer}>
         <Image
@@ -562,6 +575,248 @@ const InfluencersScreen = ({navigation}) => {
     </TouchableOpacity>
   )
 
+
+  const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+  },
+  header: {
+    backgroundColor: App_Primary_color,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    paddingTop: 40,
+    gap: 90,
+  },
+  backButton: {
+    marginRight: 12,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  // Tabs Styles
+  tabsContainer: {
+    backgroundColor: App_Primary_color,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  tabsScrollContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tabButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginRight: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  activeTabButton: {
+    backgroundColor: '#fff',
+  },
+  tabText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  activeTabText: {
+    color: 'black',
+  },
+  // Filters Styles
+  filtersContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomColor: isDarkMode ? '#555' : '#e0e0e0',
+  },
+  filterDropdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginRight: 16,
+    backgroundColor: isDarkMode ? '#555' : '#f8f8f8',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: isDarkMode ? '#666' : '#e0e0e0',
+    minWidth: 100,
+  },
+  filterText: {
+    fontSize: 13,
+    color: isDarkMode ? 'white' : '#333',
+    marginRight: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    // flex: 1,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dropdownContainer: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 8,
+    margin: 20,
+    maxHeight: 300,
+    minWidth: 250,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: isDarkMode ? '#333' : '#f0f0f0',
+  },
+  selectedDropdownItem: {
+    backgroundColor: isDarkMode ? '#333' : '#f0f8ff',
+  },
+  dropdownItemText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    flex: 1,
+  },
+  selectedDropdownItemText: {
+    color: App_Primary_color,
+    fontWeight: '600',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+  },
+  gridItem: {
+    width: '48%',
+    marginBottom: 16,
+  },
+  influencerCard: {
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    borderRadius: 7,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 1,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 0.5,
+    borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+    marginBottom: 5
+  },
+  imageContainer: {
+    position: 'relative',
+    marginBottom: 12,
+  },
+  profileImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  verifiedBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#4CAF50',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: isDarkMode ? '#333' : 'white',
+  },
+  cardContent: {
+    alignItems: 'center',
+    width: '100%',
+  },
+  influencerName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 4,
+    textAlign: 'center',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  influencerCategory: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#666',
+    marginBottom: 8,
+    textAlign: 'center',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  statusBadge: {
+    backgroundColor: '#00CD52',
+    padding: 4,
+    borderRadius: 19,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+    color: 'white',
+    fontSize: 10
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    marginRight: 4,
+  },
+  ratingText: {
+    fontSize: 12,
+    color: isDarkMode ? 'white' : '#333',
+    fontWeight: '600',
+    marginRight: 2,
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  reviewsText: {
+    fontSize: 12,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: isDarkMode ? '#bbb' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Regular,
+  },
+});
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -576,8 +831,8 @@ const InfluencersScreen = ({navigation}) => {
 
       {/* Tabs Section */}
       <View style={styles.tabsContainer}>
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tabsScrollContainer}>
           {tabs.map((tab) => (
@@ -594,7 +849,7 @@ const InfluencersScreen = ({navigation}) => {
       {/* Filters Section */}
       <View style={styles.filtersContainer}>
         {/* <FilterDropdown title="Date" showArrow={false} /> */}
-        <FilterDropdown 
+        <FilterDropdown
           title={selectedCampaign ? selectedCampaign.Title : "Campaign"}
           onPress={() => setShowCampaignDropdown(true)}
         />
@@ -614,7 +869,7 @@ const InfluencersScreen = ({navigation}) => {
             </View>
           ))}
         </View>
-        
+
         {allInfluencers.length === 0 && (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No influencers found</Text>
@@ -717,7 +972,7 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     minWidth: 250,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
@@ -765,7 +1020,7 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 1,

@@ -12,7 +12,8 @@ import {
 import {Cross} from '../../../assets/SVGs'
 import CustomInputField from '../../../components/wrapper/CustomInput'
 import SpaceBetweenRow from '../../../components/wrapper/spacebetween'
-import { App_Primary_color } from '../../../common/Colors/colors'
+import { App_Primary_color, darkMode25 } from '../../../common/Colors/colors'
+import { useSelector } from 'react-redux'
 
 const {height: screenHeight} = Dimensions.get('window')
 
@@ -20,6 +21,8 @@ const ConfirmationCampaignModel = ({isVisible, onClose, onNext}) => {
   const [selectedType, setSelectedType] = useState('Barter')
   const [slideAnim] = useState(new Animated.Value(screenHeight))
   const [cost, setCost] = useState(0)
+    const {isDarkMode} = useSelector(state => state.theme)
+
 
   useEffect(() => {
     if (isVisible) {
@@ -55,6 +58,96 @@ const ConfirmationCampaignModel = ({isVisible, onClose, onNext}) => {
     handleClose()
   }
 
+
+  const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor:isDarkMode?darkMode25 :'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 20,
+    minHeight: 200,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#666',
+    fontWeight: '300',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    color:isDarkMode?'white': '#333',
+    textAlign: 'center',
+  },
+  placeholder: {
+    width: 32,
+    height: 32,
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#D64A3A',
+    marginRight: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  radioButtonSelected: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#D64A3A',
+  },
+  radioLabel: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  nextButton: {
+    backgroundColor: App_Primary_color,
+    marginHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    width:'40%'
+  },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+})
   return (
     <Modal
       visible={isVisible}
@@ -110,94 +203,6 @@ const ConfirmationCampaignModel = ({isVisible, onClose, onNext}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingBottom: 20,
-    minHeight: 200,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#666',
-    fontWeight: '300',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-  },
-  placeholder: {
-    width: 32,
-    height: 32,
-  },
-  content: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-  },
-  radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  radioButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#D64A3A',
-    marginRight: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radioButtonSelected: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#D64A3A',
-  },
-  radioLabel: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-  },
-  nextButton: {
-    backgroundColor: App_Primary_color,
-    marginHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-    width:'40%'
-  },
-  nextButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-})
+
 
 export default ConfirmationCampaignModel

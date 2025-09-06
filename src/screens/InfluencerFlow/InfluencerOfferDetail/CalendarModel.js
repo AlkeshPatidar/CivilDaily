@@ -288,7 +288,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { App_Primary_color } from '../../../common/Colors/colors';
+import { App_Primary_color, darkMode25 } from '../../../common/Colors/colors';
+import { useSelector } from 'react-redux';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -296,6 +297,7 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
   const [slideAnim] = useState(new Animated.Value(screenHeight));
   const [selectedDate, setSelectedDate] = useState(initialDate.toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState('09:00 AM');
+  const {isDarkMode} = useSelector(state => state.theme)
 
   const timeSlots = [
     '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
@@ -359,6 +361,112 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
     }
   };
 
+
+  const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor:isDarkMode? darkMode25: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 20,
+    maxHeight: screenHeight * 0.85,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#666',
+    fontWeight: '300',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: isDarkMode?'white':'#333',
+  },
+  placeholder: {
+    width: 32,
+    height: 32,
+  },
+  content: {
+    // flex: 1,
+  },
+  section: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    // backgroundColor:'black'
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color:isDarkMode?'white': '#333',
+    marginBottom: 16,
+  },
+  selectedDateText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  calendar: {
+    borderRadius: 12,
+    backgroundColor:isDarkMode?'#5555':'white'
+  },
+  timeSlots: {
+    gap: 8,
+  },
+  timeSlot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 4,
+    backgroundColor:isDarkMode?'#5555': '#F5F5F5',
+  },
+  selectedTimeSlot: {
+    backgroundColor: App_Primary_color,
+  },
+  timeText: {
+    fontSize: 16,
+    color:isDarkMode?'white': '#333',
+  },
+  selectedTimeText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  submitButton: {
+    backgroundColor: App_Primary_color,
+    marginHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
   return (
     <Modal
       visible={isVisible}
@@ -399,38 +507,39 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
                     })}
                   </Text> */}
                   
-                  <Calendar
-                    onDayPress={onDayPress}
-                    markedDates={markedDates}
-                    minDate={today} // Disable past dates
-                    enableSwipeMonths={true} // Enable month navigation
-                    theme={{
-                      backgroundColor: '#ffffff',
-                      calendarBackground: '#ffffff',
-                      textSectionTitleColor: '#b6c1cd',
-                      selectedDayBackgroundColor: App_Primary_color,
-                      selectedDayTextColor: '#ffffff',
-                      todayTextColor: App_Primary_color,
-                      dayTextColor: '#2d4150',
-                      textDisabledColor: '#d9e1e8',
-                      dotColor: App_Primary_color,
-                      selectedDotColor: '#ffffff',
-                      arrowColor: App_Primary_color,
-                      disabledArrowColor: '#d9e1e8',
-                      monthTextColor: '#2d4150',
-                      indicatorColor: App_Primary_color,
-                      textDayFontFamily: 'System',
-                      textMonthFontFamily: 'System',
-                      textDayHeaderFontFamily: 'System',
-                      textDayFontWeight: '400',
-                      textMonthFontWeight: '600',
-                      textDayHeaderFontWeight: '600',
-                      textDayFontSize: 16,
-                      textMonthFontSize: 16,
-                      textDayHeaderFontSize: 12
-                    }}
-                    style={styles.calendar}
-                  />
+                 <Calendar
+  onDayPress={onDayPress}
+  markedDates={markedDates}
+  minDate={today} // Disable past dates
+  enableSwipeMonths={true} // Enable month navigation
+  
+  theme={{
+    backgroundColor: isDarkMode ? '#333333' : '#ffffff',
+    calendarBackground: isDarkMode ? '#333333' : '#ffffff',
+    textSectionTitleColor: isDarkMode ? '#aaaaaa' : '#b6c1cd',
+    selectedDayBackgroundColor: App_Primary_color,
+    selectedDayTextColor: '#ffffff',
+    todayTextColor: App_Primary_color,
+    dayTextColor: isDarkMode ? '#ffffff' : '#2d4150',
+    textDisabledColor: isDarkMode ? '#666666' : '#d9e1e8',
+    dotColor: App_Primary_color,
+    selectedDotColor: '#ffffff',
+    arrowColor: App_Primary_color,
+    disabledArrowColor: isDarkMode ? '#666666' : '#d9e1e8',
+    monthTextColor: isDarkMode ? '#ffffff' : '#2d4150',
+    indicatorColor: App_Primary_color,
+    textDayFontFamily: 'System',
+    textMonthFontFamily: 'System',
+    textDayHeaderFontFamily: 'System',
+    textDayFontWeight: '400',
+    textMonthFontWeight: '600',
+    textDayHeaderFontWeight: '600',
+    textDayFontSize: 16,
+    textMonthFontSize: 16,
+    textDayHeaderFontSize: 12
+  }}
+  style={styles.calendar}
+/>
                 </View>
 
                 {/* Select Time Section */}
@@ -470,107 +579,6 @@ const CalendarModal = ({ isVisible, onClose, onSubmit, initialDate = new Date() 
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingBottom: 20,
-    maxHeight: screenHeight * 0.85,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#666',
-    fontWeight: '300',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  placeholder: {
-    width: 32,
-    height: 32,
-  },
-  content: {
-    // flex: 1,
-  },
-  section: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 16,
-  },
-  selectedDateText: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 12,
-    fontStyle: 'italic',
-  },
-  calendar: {
-    borderRadius: 12,
-  },
-  timeSlots: {
-    gap: 8,
-  },
-  timeSlot: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 4,
-    backgroundColor: '#F5F5F5',
-  },
-  selectedTimeSlot: {
-    backgroundColor: App_Primary_color,
-  },
-  timeText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  selectedTimeText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  submitButton: {
-    backgroundColor: App_Primary_color,
-    marginHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+
 
 export default CalendarModal;

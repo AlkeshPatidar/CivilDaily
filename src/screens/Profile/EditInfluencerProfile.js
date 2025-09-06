@@ -18,13 +18,15 @@ import {ToastMsg} from '../../utils/helperFunctions'
 import urls from '../../config/urls'
 import {setUser} from '../../redux/reducer/user'
 import {BackArrow} from '../../assets/SVGs'
-import {App_Primary_color} from '../../common/Colors/colors'
+import {App_Primary_color, darkMode25} from '../../common/Colors/colors'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import { useLoginCheck } from '../../utils/Context'
 
 const EditInfluencerProfileScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
+    const {isDarkMode} = useSelector(state => state.theme)
+
   const [profileData, setProfileData] = useState({
     FirstName: '',
     Gender: 'Male',
@@ -263,132 +265,10 @@ const EditInfluencerProfileScreen = ({navigation}) => {
     }
   }
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackArrow />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      <View style={styles.content}>
-        {/* Profile Image Section */}
-        <View style={styles.imageSection}>
-          <TouchableOpacity onPress={selectImage} style={styles.imageContainer}>
-            {profileData.Image ? (
-              <Image
-                source={{uri: profileData.Image}}
-                style={styles.profileImage}
-                onError={error => console.log('Image load error:', error)}
-                onLoad={() => console.log('Image loaded successfully')}
-              />
-            ) : (
-              <View style={styles.placeholderImage}>
-                <Text style={styles.placeholderText}>Tap to select image</Text>
-              </View>
-            )}
-            {imageUploading && (
-              <View style={styles.imageLoader}>
-                <ActivityIndicator color='#007AFF' />
-              </View>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={selectImage}
-            style={styles.changeImageButton}>
-            <Text style={styles.changeImageText}>Change Profile Photo</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Form Section */}
-        <View style={styles.formSection}>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>First Name *</Text>
-            <TextInput
-              style={styles.input}
-              value={profileData.FirstName}
-              onChangeText={text => handleInputChange('FirstName', text)}
-              placeholder='Enter your first name'
-              placeholderTextColor='#999'
-            />
-          </View>
-
-     { loggedInby =='Influencers' &&    <View style={styles.inputGroup}>
-            <Text style={styles.label}>Gender</Text>
-            <View style={styles.genderContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.genderButton,
-                  profileData.Gender === 'Male' && styles.genderButtonActive,
-                ]}
-                onPress={() => handleInputChange('Gender', 'Male')}>
-                <Text
-                  style={[
-                    styles.genderButtonText,
-                    profileData.Gender === 'Male' &&
-                      styles.genderButtonTextActive,
-                  ]}>
-                  Male
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.genderButton,
-                  profileData.Gender === 'Female' && styles.genderButtonActive,
-                ]}
-                onPress={() => handleInputChange('Gender', 'Female')}>
-                <Text
-                  style={[
-                    styles.genderButtonText,
-                    profileData.Gender === 'Female' &&
-                      styles.genderButtonTextActive,
-                  ]}>
-                  Female
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.genderButton,
-                  profileData.Gender === 'Other' && styles.genderButtonActive,
-                ]}
-                onPress={() => handleInputChange('Gender', 'Other')}>
-                <Text
-                  style={[
-                    styles.genderButtonText,
-                    profileData.Gender === 'Other' &&
-                      styles.genderButtonTextActive,
-                  ]}>
-                  Other
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>}
-        </View>
-
-        {/* Save Button */}
-        <TouchableOpacity
-          style={[styles.saveButton, loading && styles.saveButtonDisabled]}
-          onPress={handleSaveProfile}
-          disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color='#FFF' />
-          ) : (
-            <Text style={styles.saveButtonText}>Save Changes</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  )
-}
-
-export default EditInfluencerProfileScreen
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor:isDarkMode?darkMode25: '#F8F9FA',
   },
   header: {
     flexDirection: 'row',
@@ -477,18 +357,18 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color:isDarkMode?'white': '#333',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#FFF',
+    backgroundColor:isDarkMode?'#5555': '#FFF',
     borderWidth: 1,
     borderColor: '#E5E5E5',
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
+    color:isDarkMode?'white': '#333',
   },
   genderContainer: {
     flexDirection: 'row',
@@ -496,7 +376,7 @@ const styles = StyleSheet.create({
   },
   genderButton: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor:isDarkMode?'#7777': '#FFF',
     borderWidth: 1,
     borderColor: '#E5E5E5',
     borderRadius: 10,
@@ -510,7 +390,7 @@ const styles = StyleSheet.create({
   },
   genderButtonText: {
     fontSize: 16,
-    color: '#666',
+    color:isDarkMode?'white': '#666',
     fontWeight: '500',
   },
   genderButtonTextActive: {
@@ -532,3 +412,127 @@ const styles = StyleSheet.create({
     fontFamily: FONTS_FAMILY.Poppins_Medium,
   },
 })
+
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <BackArrow />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <View style={styles.placeholder} />
+      </View>
+
+      <View style={styles.content}>
+        {/* Profile Image Section */}
+        <View style={styles.imageSection}>
+          <TouchableOpacity onPress={selectImage} style={styles.imageContainer}>
+            {profileData.Image ? (
+              <Image
+                source={{uri: profileData.Image}}
+                style={styles.profileImage}
+                onError={error => console.log('Image load error:', error)}
+                onLoad={() => console.log('Image loaded successfully')}
+              />
+            ) : (
+              <View style={styles.placeholderImage}>
+                <Text style={styles.placeholderText}>Tap to select image</Text>
+              </View>
+            )}
+            {imageUploading && (
+              <View style={styles.imageLoader}>
+                <ActivityIndicator color='#007AFF' />
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={selectImage}
+            style={styles.changeImageButton}>
+            <Text style={styles.changeImageText}>Change Profile Photo</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Form Section */}
+        <View style={styles.formSection}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>First Name *</Text>
+            <TextInput
+              style={styles.input}
+              value={profileData.FirstName}
+              onChangeText={text => handleInputChange('FirstName', text)}
+              placeholder='Enter your first name'
+              placeholderTextColor={isDarkMode? 'white': '#999'}
+            />
+          </View>
+
+     { loggedInby =='Influencers' &&    <View style={styles.inputGroup}>
+            <Text style={styles.label}>Gender</Text>
+            <View style={styles.genderContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  profileData.Gender === 'Male' && styles.genderButtonActive,
+                ]}
+                onPress={() => handleInputChange('Gender', 'Male')}>
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    profileData.Gender === 'Male' &&
+                      styles.genderButtonTextActive,
+                  ]}>
+                  Male
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  profileData.Gender === 'Female' && styles.genderButtonActive,
+                ]}
+                onPress={() => handleInputChange('Gender', 'Female')}>
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    profileData.Gender === 'Female' &&
+                      styles.genderButtonTextActive,
+                  ]}>
+                  Female
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  profileData.Gender === 'Other' && styles.genderButtonActive,
+                ]}
+                onPress={() => handleInputChange('Gender', 'Other')}>
+                <Text
+                  style={[
+                    styles.genderButtonText,
+                    profileData.Gender === 'Other' &&
+                      styles.genderButtonTextActive,
+                  ]}>
+                  Other
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>}
+        </View>
+
+        {/* Save Button */}
+        <TouchableOpacity
+          style={[styles.saveButton, loading && styles.saveButtonDisabled]}
+          onPress={handleSaveProfile}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color='#FFF' />
+          ) : (
+            <Text style={styles.saveButtonText}>Save Changes</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  )
+}
+
+export default EditInfluencerProfileScreen
+

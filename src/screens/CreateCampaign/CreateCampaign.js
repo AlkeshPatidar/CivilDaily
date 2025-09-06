@@ -283,7 +283,7 @@
 //           <View style={styles.formSection}>
 //             <View style={styles.section}>
 //               <Row style={{gap: 15, marginBottom: 10}}>
-//                 <Label />
+                // <Label />
 //                 <Text style={styles.radioText}>Campaign Title</Text>
 //               </Row>
 //               <View style={styles.inputContainer}>
@@ -703,13 +703,14 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import {launchImageLibrary} from 'react-native-image-picker'
 import {FONTS_FAMILY} from '../../assets/Fonts'
 import IMG from '../../assets/Images'
-import {App_Primary_color} from '../../common/Colors/colors'
+import {App_Primary_color, darkMode25} from '../../common/Colors/colors'
 import {BackArrow, Label} from '../../assets/SVGs'
 import Row from '../../components/wrapper/row'
 import useLoader from '../../utils/LoaderHook'
 import { ToastMsg } from '../../utils/helperFunctions'
 import { getItem, apiGet } from '../../utils/Apis'
 import { urls } from '../../utils/Apis' // Assuming urls is exported from Apis
+import { useSelector } from 'react-redux'
 
 const CreateCampaign = ({navigation, route}) => {
   const [campaignName, setCampaignName] = useState('')
@@ -969,6 +970,239 @@ const CreateCampaign = ({navigation, route}) => {
     }
   }
 
+ const {isDarkMode} = useSelector(state => state.theme)
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomColor: isDarkMode ? '#555' : '#f0f0f0',
+    backgroundColor: App_Primary_color,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white',
+    textAlign: 'center',
+  },
+  placeholder: {
+    width: 40,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    backgroundColor: isDarkMode ? darkMode25 : '#f5f5f5',
+  },
+  formSection: {
+    padding: 15,
+    borderRadius: 12,
+    backgroundColor: isDarkMode ? '#333' : 'white',
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  section: {
+    // marginBottom: 10,
+  },
+  inputContainer: {
+    borderColor: isDarkMode ? '#555' : '#e0e0e0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    minHeight: 48,
+    backgroundColor: isDarkMode ? '#444' : '#f9f9f9',
+  },
+  textInput: {
+    fontSize: 16,
+    color: isDarkMode ? 'white' : '#333',
+    flex: 1,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  datePickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: isDarkMode ? '#555' : '#e0e0e0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 15,
+    backgroundColor: isDarkMode ? '#444' : '#f9f9f9',
+  },
+  datePickerText: {
+    fontSize: 16,
+    color: isDarkMode ? 'white' : '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  radioText: {
+    fontSize: 16,
+    color: isDarkMode ? 'white' : '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+    fontWeight: '600',
+  },
+  categoryScroll: {
+    marginTop: 5,
+  },
+  categoryButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: isDarkMode ? '#555' : '#f0f0f0',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: isDarkMode ? '#666' : '#e0e0e0',
+  },
+  selectedCategoryButton: {
+    backgroundColor: App_Primary_color,
+    borderColor: App_Primary_color,
+  },
+  customCategoryButton: {
+    backgroundColor: isDarkMode ? '#333' : '#fff',
+    borderColor: App_Primary_color,
+    borderStyle: 'dashed',
+  },
+  selectedCustomCategoryButton: {
+    backgroundColor: App_Primary_color,
+    borderColor: App_Primary_color,
+    borderStyle: 'solid',
+  },
+  categoryButtonText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#666',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  selectedCategoryButtonText: {
+    color: 'white',
+  },
+  customCategoryButtonText: {
+    color: App_Primary_color,
+    fontWeight: '600',
+  },
+  selectedCustomCategoryButtonText: {
+    color: 'white',
+  },
+  colorContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginTop: 5,
+  },
+  colorButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedColorButton: {
+    borderColor: isDarkMode ? 'white' : '#333',
+    borderWidth: 3,
+  },
+  uploadContainer: {
+    borderWidth: 1,
+    borderColor: isDarkMode ? '#555' : '#e0e0e0',
+    borderRadius: 8,
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    backgroundColor: isDarkMode ? '#444' : '#fafafa',
+    borderStyle: 'dashed',
+  },
+  uploadIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: isDarkMode ? '#333' : '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  uploadTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: isDarkMode ? 'white' : '#333',
+    marginBottom: 8,
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  uploadSubtitle: {
+    fontSize: 14,
+    color: isDarkMode ? '#bbb' : '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  selectedImageContainer: {
+    alignItems: 'center',
+  },
+  selectedImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  selectedImageText: {
+    fontSize: 14,
+    color: isDarkMode ? 'white' : '#333',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+  assetImage: {
+    alignSelf: 'center',
+    height: 200,
+    width: '100%',
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  submitButton: {
+    backgroundColor: App_Primary_color,
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  submitButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    fontFamily: FONTS_FAMILY.Poppins_Medium,
+  },
+});
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
@@ -999,7 +1233,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Campaign Name</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1018,7 +1252,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Campaign Title</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1037,7 +1271,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Start Date</Text>
               </Row>
               <TouchableOpacity
@@ -1065,7 +1299,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Description</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1085,7 +1319,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Expectations</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1105,7 +1339,7 @@ const CreateCampaign = ({navigation, route}) => {
           {/* <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                // <Label />
                 <Text style={styles.radioText}>Description 2</Text>
               </Row>
               <View style={styles.inputContainer}>
@@ -1125,7 +1359,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Select Category</Text>
               </Row>
               
@@ -1191,7 +1425,7 @@ const CreateCampaign = ({navigation, route}) => {
           <View style={styles.formSection}>
             <View style={styles.section}>
               <Row style={{gap: 15, marginBottom: 10}}>
-                <Label />
+                {/* <Label /> */}
                 <Text style={styles.radioText}>Upload Campaign Image</Text>
               </Row>
               <TouchableOpacity
@@ -1235,234 +1469,234 @@ const CreateCampaign = ({navigation, route}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: App_Primary_color,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center',
-  },
-  placeholder: {
-    width: 40,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  formSection: {
-    padding: 15,
-    borderRadius: 12,
-    backgroundColor: 'white',
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  section: {
-    // marginBottom: 10,
-  },
-  inputContainer: {
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    minHeight: 48,
-    backgroundColor: '#f9f9f9',
-  },
-  textInput: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  datePickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 15,
-    backgroundColor: '#f9f9f9',
-  },
-  datePickerText: {
-    fontSize: 16,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  radioText: {
-    fontSize: 16,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-    fontWeight: '600',
-  },
-  categoryScroll: {
-    marginTop: 5,
-  },
-  categoryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  selectedCategoryButton: {
-    backgroundColor: App_Primary_color,
-    borderColor: App_Primary_color,
-  },
-  customCategoryButton: {
-    backgroundColor: '#fff',
-    borderColor: App_Primary_color,
-    borderStyle: 'dashed',
-  },
-  selectedCustomCategoryButton: {
-    backgroundColor: App_Primary_color,
-    borderColor: App_Primary_color,
-    borderStyle: 'solid',
-  },
-  categoryButtonText: {
-    fontSize: 14,
-    color: '#666',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  selectedCategoryButtonText: {
-    color: 'white',
-  },
-  customCategoryButtonText: {
-    color: App_Primary_color,
-    fontWeight: '600',
-  },
-  selectedCustomCategoryButtonText: {
-    color: 'white',
-  },
-  colorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 5,
-  },
-  colorButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedColorButton: {
-    borderColor: '#333',
-    borderWidth: 3,
-  },
-  uploadContainer: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-    borderStyle: 'dashed',
-  },
-  uploadIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  uploadTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  uploadSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  selectedImageContainer: {
-    alignItems: 'center',
-  },
-  selectedImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  selectedImageText: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-  assetImage: {
-    alignSelf: 'center',
-    height: 200,
-    width: '100%',
-    marginTop: 16,
-    marginBottom: 20,
-  },
-  submitButton: {
-    backgroundColor: App_Primary_color,
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  submitButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-    fontFamily: FONTS_FAMILY.Poppins_Medium,
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     paddingHorizontal: 16,
+//     paddingVertical: 12,
+//     borderBottomColor: '#f0f0f0',
+//     backgroundColor: App_Primary_color,
+//   },
+//   backButton: {
+//     width: 40,
+//     height: 40,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   headerTitle: {
+//     flex: 1,
+//     fontSize: 18,
+//     fontWeight: '600',
+//     color: 'white',
+//     textAlign: 'center',
+//   },
+//   placeholder: {
+//     width: 40,
+//   },
+//   content: {
+//     flex: 1,
+//     paddingHorizontal: 20,
+//     paddingTop: 20,
+//   },
+//   formSection: {
+//     padding: 15,
+//     borderRadius: 12,
+//     backgroundColor: 'white',
+//     marginBottom: 15,
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 1,
+//     },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 2,
+//     elevation: 2,
+//   },
+//   section: {
+//     // marginBottom: 10,
+//   },
+//   inputContainer: {
+//     borderColor: '#e0e0e0',
+//     borderRadius: 8,
+//     paddingHorizontal: 12,
+//     paddingVertical: 12,
+//     minHeight: 48,
+//     backgroundColor: '#f9f9f9',
+//   },
+//   textInput: {
+//     fontSize: 16,
+//     color: '#333',
+//     flex: 1,
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   datePickerContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//     borderColor: '#e0e0e0',
+//     borderRadius: 8,
+//     paddingHorizontal: 12,
+//     paddingVertical: 15,
+//     backgroundColor: '#f9f9f9',
+//   },
+//   datePickerText: {
+//     fontSize: 16,
+//     color: '#333',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   radioText: {
+//     fontSize: 16,
+//     color: '#333',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//     fontWeight: '600',
+//   },
+//   categoryScroll: {
+//     marginTop: 5,
+//   },
+//   categoryButton: {
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 20,
+//     backgroundColor: '#f0f0f0',
+//     marginRight: 10,
+//     borderWidth: 1,
+//     borderColor: '#e0e0e0',
+//   },
+//   selectedCategoryButton: {
+//     backgroundColor: App_Primary_color,
+//     borderColor: App_Primary_color,
+//   },
+//   customCategoryButton: {
+//     backgroundColor: '#fff',
+//     borderColor: App_Primary_color,
+//     borderStyle: 'dashed',
+//   },
+//   selectedCustomCategoryButton: {
+//     backgroundColor: App_Primary_color,
+//     borderColor: App_Primary_color,
+//     borderStyle: 'solid',
+//   },
+//   categoryButtonText: {
+//     fontSize: 14,
+//     color: '#666',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   selectedCategoryButtonText: {
+//     color: 'white',
+//   },
+//   customCategoryButtonText: {
+//     color: App_Primary_color,
+//     fontWeight: '600',
+//   },
+//   selectedCustomCategoryButtonText: {
+//     color: 'white',
+//   },
+//   colorContainer: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
+//     gap: 10,
+//     marginTop: 5,
+//   },
+//   colorButton: {
+//     width: 40,
+//     height: 40,
+//     borderRadius: 20,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderWidth: 2,
+//     borderColor: 'transparent',
+//   },
+//   selectedColorButton: {
+//     borderColor: '#333',
+//     borderWidth: 3,
+//   },
+//   uploadContainer: {
+//     borderWidth: 1,
+//     borderColor: '#e0e0e0',
+//     borderRadius: 8,
+//     paddingVertical: 30,
+//     paddingHorizontal: 20,
+//     alignItems: 'center',
+//     backgroundColor: '#fafafa',
+//     borderStyle: 'dashed',
+//   },
+//   uploadIcon: {
+//     width: 48,
+//     height: 48,
+//     borderRadius: 24,
+//     backgroundColor: '#fff',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginBottom: 16,
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 4,
+//     elevation: 3,
+//   },
+//   uploadTitle: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     color: '#333',
+//     marginBottom: 8,
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   uploadSubtitle: {
+//     fontSize: 14,
+//     color: '#666',
+//     textAlign: 'center',
+//     lineHeight: 20,
+//   },
+//   selectedImageContainer: {
+//     alignItems: 'center',
+//   },
+//   selectedImage: {
+//     width: 80,
+//     height: 80,
+//     borderRadius: 8,
+//     marginBottom: 10,
+//   },
+//   selectedImageText: {
+//     fontSize: 14,
+//     color: '#333',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+//   assetImage: {
+//     alignSelf: 'center',
+//     height: 200,
+//     width: '100%',
+//     marginTop: 16,
+//     marginBottom: 20,
+//   },
+//   submitButton: {
+//     backgroundColor: App_Primary_color,
+//     borderRadius: 8,
+//     paddingVertical: 16,
+//     alignItems: 'center',
+//     marginBottom: 30,
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 4,
+//     elevation: 4,
+//   },
+//   submitButtonText: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     color: '#fff',
+//     fontFamily: FONTS_FAMILY.Poppins_Medium,
+//   },
+// })
 
 export default CreateCampaign
