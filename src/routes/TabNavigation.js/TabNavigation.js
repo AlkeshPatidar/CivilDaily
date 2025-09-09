@@ -7,13 +7,13 @@ import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import CustomText from '../../components/TextComponent'
 import color, { App_Primary_color } from '../../common/Colors/colors'
 import { FONTS_FAMILY } from '../../assets/Fonts'
-import BrandHome from '../../screens/BrandFlow/BrandHome/BrandHome'
-import IMG, { Home } from '../../assets/Images'
-import MessageScreen from '../../screens/Message/MessageList'
-import ProfileScreen from '../../screens/Profile/Profile'
-import InfluencersScreen from '../../screens/Influencer/Influencerlist'
-import Fontisto from 'react-native-vector-icons/Fontisto'
+import IMG from '../../assets/Images'
+
 import { useSelector } from 'react-redux'
+import HomeScreen from '../../screens/Home/Home'
+import Category from '../../screens/Category/Category'
+import Favourite from '../../screens/Favourites/Favourites'
+import ProfilePage from '../../screens/Profile/Profile'
 
 const Tab = createBottomTabNavigator()
 
@@ -63,7 +63,7 @@ function TabNavigation() {
       }}>
       <Tab.Screen
         name='Home'
-        component={BrandHome}
+        component={HomeScreen}
         options={{
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) =>
@@ -74,27 +74,21 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.Home}
+                  source={IMG.activeHome}
                   style={{
-                    height: 25,
-                    width: 25,
-                    tintColor: App_Primary_color,
+                    height: 56,
+                    width: 56,
+                    bottom:30
+                    // tintColor: App_Primary_color,
 
                   }}
                 />
-                <CustomText
-                  style={{
-                    color: App_Primary_color,
-                    fontSize: 10,
-                    fontFamily: FONTS_FAMILY.Poppins_Regular,
-                  }}>
-                  Home
-                </CustomText>
+               
               </View>
             ) : (
               <View>
                 <Image
-                  source={IMG.Home}
+                  source={IMG.deActiveHome}
                   style={{
                     height: 25,
                     width: 25,
@@ -104,7 +98,7 @@ function TabNavigation() {
                 <CustomText
                   style={{
                     color: isDarkMode ? 'white' : '#6B7280',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
                   Home
@@ -115,7 +109,7 @@ function TabNavigation() {
       />
       <Tab.Screen
         name='Fav'
-        component={InfluencersScreen}
+        component={Category}
         options={{
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) =>
@@ -125,23 +119,15 @@ function TabNavigation() {
                   alignItems: 'center',
                   gap: 8,
                 }}>
-                {/* <Image
-                  source={IMG.heart}
+                <Image
+                  source={IMG.activeCategroy}
                   style={{
-                    height: 25,
-                    width: 25,
-                    tintColor: App_Primary_color,
+                    height: 56,
+                    width: 56,
+                    bottom:30
                   }}
-                /> */}
-                <Fontisto color={App_Primary_color} size={22} name='person' />
-                <CustomText
-                  style={{
-                    color: App_Primary_color,
-                    fontSize: 10,
-                    fontFamily: FONTS_FAMILY.Poppins_Regular,
-                  }}>
-                  Influencers
-                </CustomText>
+                />
+             
               </View>
             ) : (
               <View
@@ -149,23 +135,22 @@ function TabNavigation() {
                   alignItems: 'center',
                   gap: 8,
                 }}>
-                {/* <Image
-                  source={IMG.heart}
+                <Image
+                  source={IMG.deActiveCategory}
                   style={{
                     height: 25,
                     width: 25,
                     tintColor: '#6B7280',
                   }}
-                /> */}
-                <Fontisto color={isDarkMode ? 'white' : '#6B7280'} size={22} name='person' />
+                />
 
                 <CustomText
                   style={{
                     color: isDarkMode ? 'white' : '#6B7280',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Influencers
+                  Categroy
                 </CustomText>
               </View>
             ),
@@ -173,7 +158,7 @@ function TabNavigation() {
       />
       <Tab.Screen
         name='Message'
-        component={MessageScreen}
+        component={Favourite}
         options={{
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) =>
@@ -184,21 +169,14 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.msg}
+                  source={IMG.activeFav}
                   style={{
-                    height: 25,
-                    width: 25,
-                    tintColor: App_Primary_color,
+                     height: 56,
+                    width: 56,
+                    bottom:30
                   }}
                 />
-                <CustomText
-                  style={{
-                    color: App_Primary_color,
-                    fontSize: 10,
-                    fontFamily: FONTS_FAMILY.Poppins_Regular,
-                  }}>
-                  Message
-                </CustomText>
+              
               </View>
             ) : (
               <View
@@ -207,20 +185,20 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.msg}
+                  source={IMG.deActiveFav}
                   style={{
                     height: 25,
                     width: 25,
-                    tintColor: isDarkMode ? 'white' : '#6B7280'
+                    // tintColor: isDarkMode ? 'white' : '#6B7280'
                   }}
                 />
                 <CustomText
                   style={{
                     color: isDarkMode ? 'white' : '#6B7280',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Message
+                  Favourite
                 </CustomText>
               </View>
             ),
@@ -229,7 +207,7 @@ function TabNavigation() {
 
       <Tab.Screen
         name='Profile'
-        component={ProfileScreen}
+        component={ProfilePage}
         options={{
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) =>
@@ -240,21 +218,14 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.profile}
+                  source={IMG.activeProfile}
                   style={{
-                    height: 25,
-                    width: 25,
-                    tintColor: App_Primary_color,
+                     height: 56,
+                    width: 56,
+                    bottom:30
                   }}
                 />
-                <CustomText
-                  style={{
-                    color: App_Primary_color,
-                    fontSize: 10,
-                    fontFamily: FONTS_FAMILY.Poppins_Regular,
-                  }}>
-                  Profile
-                </CustomText>
+             
               </View>
             ) : (
               <View
@@ -263,20 +234,20 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.profile}
+                  source={IMG.deActiveProfile}
                   style={{
                     height: 25,
                     width: 25,
-                    tintColor: isDarkMode ? 'white' : '#6B7280'
+                    // tintColor: isDarkMode ? 'white' : '#6B7280'
                   }}
                 />
                 <CustomText
                   style={{
                     color: isDarkMode ? 'white' : '#6B7280',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: FONTS_FAMILY.Poppins_Regular,
                   }}>
-                  Profile
+                  More
                 </CustomText>
               </View>
             ),

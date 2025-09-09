@@ -16,14 +16,15 @@ const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeh
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: 'rgba(218, 218, 218, 1)',
-    borderRadius: 15,
+    borderRadius: 8,
     paddingHorizontal: 10,
-    // backgroundColor: '#F3F4F6',
+    backgroundColor: '#F2F2F3',
     width: '100%',
     height: verticalScale(44),
-    gap: 10
+    gap: 10,
+    marginBottom:10
   },
   icon: {
     marginRight: 10,

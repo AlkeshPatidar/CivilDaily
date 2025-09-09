@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     button: {
         width: '100%',
         height: verticalScale(40),
-        borderRadius: moderateScale(8),
+        borderRadius: moderateScale(100),
         backgroundColor: color.App_Primary_color,
         justifyContent: 'center',
         alignItems: 'center',

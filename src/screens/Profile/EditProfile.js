@@ -378,16 +378,18 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import { App_Primary_color } from '../../common/Colors/colors';
 import { BackWhite, ForwordChev } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
+import CustomInputField from '../../components/wrapper/CustomInput';
+import CustomButton from '../../components/Button';
 
-const ProfilePage = ({navigation}) => {
+const EditProfile = ({navigation}) => {
   const menuItems = [
     {
       section: 'General',
       items: [
-        { icon: '📍', title: 'Address Detail', onPress: () => {navigation.navigate('AddressDetailsPage') } },
+        { icon: '📍', title: 'Address Detail', onPress: () => { } },
         { icon: '📦', title: 'Pickup Option', onPress: () => { } },
-        { icon: '🧾', title: 'My Orders', onPress: () => {navigation.navigate('MyOrdersPage') } },
-        { icon: 'ℹ️', title: 'Appearance', onPress: () => {navigation.navigate('AppearancePage') } },
+        { icon: '🧾', title: 'My Orders', onPress: () => { } },
+        { icon: 'ℹ️', title: 'Appearance', onPress: () => { } },
         { icon: '🔒', title: 'Change Password', onPress: () => { } },
       ],
     },
@@ -428,15 +430,20 @@ const ProfilePage = ({navigation}) => {
         style={styles.header}
       >
         <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity style={styles.backButton}
+          onPress={()=>navigation.goBack()}
+          >
             {/* <Text style={styles.backArrow}>‹</Text> */}
             <BackWhite />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>My Profile</Text>
+          <Text style={styles.headerTitle}>Edit Profile</Text>
           <View style={styles.headerRight} />
         </View>
 
         {/* Profile Card */}
+      
+      </LinearGradient>
+
         <View style={styles.profileCard}>
           <Image
             source={{
@@ -448,35 +455,37 @@ const ProfilePage = ({navigation}) => {
             <Text style={styles.profileName}>John Doe</Text>
             <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
           </View>
-          <TouchableOpacity style={styles.editButton}
-          onPress={()=>navigation.navigate('EditProfile')}
-          >
-            <Text style={styles.editIcon}>✏️</Text>
-          </TouchableOpacity>
+        
         </View>
-      </LinearGradient>
 
       {/* Menu Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {menuItems.map((section) => (
-          <View key={section.section} style={styles.section}>
-            <Text style={styles.sectionTitle}>{section.section}</Text>
-            <View style={styles.menuContainer}>
-              {section.items.map(renderMenuItem)}
-            </View>
-          </View>
-        ))}
+       <CustomInputField
+       label={'Name'}
+       placeholder={'Enter Name'}
+       />
 
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <View style={styles.menuItemLeft}>
-            <View style={styles.iconContainer}>
-              <Text style={styles.logoutIcon}>⚪</Text>
-            </View>
-            <Text style={styles.logoutText}>Log Out</Text>
-          </View>
-        </TouchableOpacity>
+        <CustomInputField
+       label={'Email'}
+       placeholder={'Enter Email'}
+
+       />
+
+         <CustomInputField
+       label={'Number'}
+       placeholder={'Enter Number'}
+
+       />
+
       </ScrollView>
+      <CustomButton
+      title={'Save'}
+      style={{
+        position:'absolute',
+        bottom:20,
+        width:'90%'
+      }}
+      />
     </SafeAreaView>
   );
 };
@@ -488,14 +497,14 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 10,
-    paddingBottom: 30,
+    paddingBottom: 0,
     paddingHorizontal: 20,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   backButton: {
     width: 40,
@@ -517,11 +526,13 @@ const styles = StyleSheet.create({
     width: 40,
   },
   profileCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
+    backgroundColor: '#9AB0EA',
+    borderRadius: 10,
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical:10,
+    marginHorizontal:20
   },
   profileImage: {
     width: 60,
@@ -554,11 +565,14 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: 'white',
-    marginTop: -15,
+    // backgroundColor: 'white',
+    // marginTop: -15,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 30,
+    marginHorizontal:20,
+
+    
   },
   section: {
     marginBottom: 30,
@@ -633,4 +647,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfilePage;
+export default EditProfile;

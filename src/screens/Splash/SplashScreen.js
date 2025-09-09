@@ -8,6 +8,7 @@ import {
   Dimensions,
   ActivityIndicator,
   StatusBar,
+  ImageBackground,
 } from 'react-native'
 import IMG, {Logo} from '../../assets/Images'
 import {App_Primary_color} from '../../common/Colors/colors'
@@ -27,8 +28,12 @@ const SplashScreen = ({navigation}) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    roleCheck()
-        initializeTheme();
+    // roleCheck()
+    //     initializeTheme();
+
+    setTimeout(()=>{
+      navigation.navigate('Onboarding')
+    },3000)
 
   }, [])
 
@@ -66,27 +71,9 @@ const SplashScreen = ({navigation}) => {
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={App_Primary_color} barStyle='light-content' />
+    <ImageBackground source={IMG.SplashScreen}style={{flex:1}}>
 
-      <Image
-        source={IMG.Logo}
-        style={{
-          height: 56,
-          width: 128,
-        }}
-      />
-      {loading && (
-        <ActivityIndicator
-          size={'large'}
-          color={'white'}
-          style={{
-            position: 'absolute',
-            bottom: 30,
-          }}
-        />
-      )}
-    </View>
+    </ImageBackground>
   )
 }
 
@@ -95,9 +82,7 @@ export default SplashScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: App_Primary_color,
-    alignItems: 'center',
-    justifyContent: 'center',
+
   },
   topSection: {
     flex: 1.2,

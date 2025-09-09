@@ -5,6 +5,7 @@ import color, {App_Primary_color} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
+  BackIcon,
   BackMsg,
   Divider,
   EyeIcon,
@@ -27,6 +28,7 @@ const OtpScreen = ({navigation}) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('Influencers')
+  const [otpValue, setOtpValue] = useState('')
   const {showLoader, hideLoader} = useLoader()
   const [role, setRole] = useState('')
   const dispatch = useDispatch()
@@ -74,95 +76,120 @@ const OtpScreen = ({navigation}) => {
 
   const renderHeader = () => {
     return (
-      <Row style={{marginTop: 50, marginHorizontal: 20, gap: 70}}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackMsg />
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 50,
+        paddingBottom: 20,
+      }}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={{padding: 5}}>
+            <BackIcon/>
         </TouchableOpacity>
-        <CustomText
-          style={{
-            color: 'black',
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            fontSize: 20,
-          }}>
-          Email Verification
-        </CustomText>
-      </Row>
-    )
-  }
-
-  const renderLogoAndInputItems = () => {
-    return (
-      <View style={{alignItems: 'center', marginTop: 0, gap: 20}}>
-        <CustomText
-          style={{
-            fontSize: 14,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-          }}>
-          To verify your account, enter the verification code sent to
-          leslie.alexander@gmail.com
-        </CustomText>
-        <OTPInput numInputs={6} onChangeText={text => console.log(text)} />
       </View>
     )
   }
 
-  const renderWhiteBgItmes = () => {
+  const renderContent = () => {
     return (
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          marginTop: 30,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-          paddingHorizontal: 20,
-          paddingVertical: 20,
-        }}>
-        {renderLogoAndInputItems()}
-        {renderButton()}
-      </ScrollView>
-    )
-  }
+      <View style={{
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+      }}>
+        <CustomText
+          style={{
+            fontSize: 28,
+            fontWeight: '600',
+            color: '#000',
+            marginBottom: 8,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+          }}>
+          Enter your OTP number
+        </CustomText>
+        
+        <CustomText
+          style={{
+            fontSize: 16,
+            color: '#666',
+            lineHeight: 24,
+            marginBottom: 40,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+          }}>
+          We've sent the OTP number via sms to{'\n'}+92 888 1234 5678
+        </CustomText>
 
-  const renderButton = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
+        {/* OTP Input */}
+        <View style={{marginBottom: 40}}>
+          <OTPInput 
+            numInputs={6} 
+            onChangeText={text => {
+              console.log(text)
+              setOtpValue(text)
+            }}
+            containerStyle={{
+              justifyContent: 'space-between',
+              paddingHorizontal: 10,
+            }}
+            inputStyle={{
+              width: 60,
+              height: 60,
+              borderRadius: 8,
+              textAlign: 'center',
+              fontSize: 20,
+              fontFamily: FONTS_FAMILY.Poppins_Medium,
+              backgroundColor: '#F2F2F3',
+            }}
+            focusedStyle={{
+              borderColor: '#4A90E2',
+              borderWidth: 2,
+            }}
+          />
+        </View>
+
+        {/* Continue Button */}
         <CustomButton
-          style={{marginTop: 40}}
-          title={'Verify'}
-          //  navigation.navigate('Tab')
-          // onSubmit()
-          // onPress={() => navigation.navigate('MessageScreen')}
-          // onPress={() => navigation.navigate('RestaurantScreen')}
-          // onPress={() => navigation.navigate('InfluencerHome')}
+          style={{
+            borderRadius: 25,
+            height: 50,
+            marginTop: 20,
+          }}
+          title={'Continue'}
+          titleStyle={{
+            color: '#ffffff',
+            fontSize: 16,
+            fontWeight: '600',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+          }}
           onPress={() => {
-            if (role == 'Influencers') {
-              navigation.navigate('InfluenceTab')
-            } else {
-              navigation.navigate('TabBrand')
-            }
+              navigation.navigate('LocationPermissionScreen')
           }}
         />
 
-        <Row style={{gap: 3, marginTop: 20}}>
+        {/* Terms and Privacy Policy */}
+        <View style={{
+          alignItems: 'center',
+          marginTop: 20,
+          // paddingHorizontal: 20,
+        }}>
           <CustomText
             style={{
               fontSize: 12,
-              fontFamily: FONTS_FAMILY.Poppins_Medium,
+              color: '#666',
+              textAlign: 'center',
+              lineHeight: 18,
+              fontFamily: FONTS_FAMILY.Poppins_Regular,
             }}>
-            Didn’t receive the code?{' '}
+            By clicking, I accept the{' '}
+            <CustomText style={{color: 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Terms and Conditions</CustomText>
+            {' '}&{' '}
+            <CustomText style={{color: 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Privacy Policy</CustomText>
           </CustomText>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <CustomText
-              style={{
-                fontSize: 12,
-                fontFamily: FONTS_FAMILY.Poppins_Medium,
-                color: '#3D0066',
-              }}>
-              Resend{' '}
-            </CustomText>
-          </TouchableOpacity>
-        </Row>
+        </View>
+
+       
       </View>
     )
   }
@@ -170,29 +197,17 @@ const OtpScreen = ({navigation}) => {
   return (
     <View
       style={{
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         flex: 1,
       }}>
       <StatusBar
-        translucent={true}
-        backgroundColor='transparent'
         barStyle='dark-content'
+        backgroundColor="#ffffff"
       />
       {renderHeader()}
-
-      {renderWhiteBgItmes()}
-
-      <View
-        style={{
-          height: 5,
-          width: 134,
-          backgroundColor: 'rgba(202, 202, 202, 1)',
-          alignSelf: 'center',
-          position: 'absolute',
-          bottom: 8,
-          borderRadius: 8,
-        }}
-      />
+      {renderContent()}
+      
+   
     </View>
   )
 }
