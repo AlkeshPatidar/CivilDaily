@@ -95,7 +95,9 @@ const CartScreen = ({navigation}) => {
                     <Text style={styles.orderPrice}>$18.99</Text>
                     <Text style={styles.orderItems}> • 2 Items</Text>
                 </View>
-                <TouchableOpacity style={styles.trackOrderButton}>
+                <TouchableOpacity style={styles.trackOrderButton}
+                onPress={()=>navigation.navigate('OrderTrackingScreen')}
+                >
                     <Text style={styles.trackOrderText}>Track Order</Text>
                     <Text style={styles.chevron}>›</Text>
                 </TouchableOpacity>

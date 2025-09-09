@@ -7,6 +7,12 @@ import AddButton from './AddButton.svg'
 import BackWhite from './BackWhite.svg'
 import ForwordChev from './ForwardChev.svg'
 import EditIcon from './EditIcon.svg'
+import BackBlackBg from './BackBlackBg.svg'
+import SearchWIthBg from './SearchWIthBg.svg'
+import Filter from './Filter.svg'
+
+
+
 
 
 
@@ -22,6 +28,9 @@ export {
   AddButton,
   BackWhite,
   ForwordChev,
-  EditIcon
+  EditIcon,
+  BackBlackBg,
+  SearchWIthBg,
+  Filter
 
 }

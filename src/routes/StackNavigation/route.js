@@ -24,6 +24,8 @@ import AddressDetailsPage from '../../screens/Profile/AddressDetial';
 import AppearancePage from '../../screens/Profile/Appereances';
 import MyOrdersPage from '../../screens/Orders/Orders';
 import OrderDetailsPage from '../../screens/Orders/OrderDetials';
+import OrderTrackingScreen from '../../screens/Orders/TrackOrder';
+import CategoryProducts from '../../screens/Category/CategoriesProducts';
 
 
 
@@ -64,6 +66,10 @@ const StackNavigation = () => {
         <Stack.Screen name={'AppearancePage'} component={AppearancePage} />
         <Stack.Screen name={'MyOrdersPage'} component={MyOrdersPage} />
         <Stack.Screen name={'OrderDetailsPage'} component={OrderDetailsPage} />
+        <Stack.Screen name={'OrderTrackingScreen'} component={OrderTrackingScreen} />
+        <Stack.Screen name={'CategoryProducts'} component={CategoryProducts} />
+
+
 
 
 

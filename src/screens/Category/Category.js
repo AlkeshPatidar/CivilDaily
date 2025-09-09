@@ -104,7 +104,7 @@ export default function Category({ navigation }) {
                 originalPrice: "$3.99",
             },
 
-             {
+            {
                 name: "Cooking Essential",
                 image: IMG.sprite,
                 quantity: '100ml',
@@ -120,7 +120,7 @@ export default function Category({ navigation }) {
                 originalPrice: "$3.99",
             },
 
-          
+
 
         ];
 
@@ -130,15 +130,17 @@ export default function Category({ navigation }) {
 
                 <View style={styles.productsGrid}>
                     {todaysChoices.map((item, index) => (
-                        <View key={index} style={styles.productCard}>
-                            <View style={{alignItems:'center'}}>
+                        <TouchableOpacity key={index} style={styles.productCard}
+                        onPress={()=>navigation.navigate('CategoryProducts')}
+                        >
+                            <View style={{ width:115 }}>
 
                                 <Image source={item?.image} style={{
-                                    height: 87, width: 87
+                                    height: 87, width: 100
                                 }} />
                                 <Text style={styles.productName}>{item.name}</Text>
-                                </View>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                     ))}
                 </View>
             </View>
@@ -246,7 +248,6 @@ const styles = StyleSheet.create({
 
     // Section Styles
     sectionContainer: {
-        // backgroundColor: 'white',
         paddingHorizontal: 16,
         paddingVertical: 15,
         // marginBottom: 8,
@@ -354,32 +355,33 @@ const styles = StyleSheet.create({
 
     // Products Grid Styles
     productsGrid: {
-       flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16, // Modern approach
-    paddingHorizontal: 16,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10, // Modern approach
+        // paddingHorizontal: 16,
     },
     productCard: {
         // flex: 1,
-    backgroundColor: '#F8F8F8',
-    maxWidth:'48%',
-    borderRadius: 16,
-    padding: 20,
-    paddingHorizontal:20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-        width: 0,
-        height: 1,
+        // backgroundColor: '#F8F8F8',
+        backgroundColor: '#F2F2F3',
+        maxWidth: '50%',
+        borderRadius: 16,
+        padding: 20,
+        paddingHorizontal: 20,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    },
-   
-  
+
+
     discountText: {
         color: 'white',
         fontSize: 10,
@@ -389,7 +391,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: FONTS_FAMILY.Poppins_Medium,
         color: '#1F2937',
-        alignSelf:'center'
+        alignSelf: 'center'
         // marginBottom: 4,
     },
     ratingContainer: {

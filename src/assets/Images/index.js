@@ -31,6 +31,8 @@ const IMG = {
   activeCategroy: require('../Images/activeCategory.png'),
   activeFav: require('../Images/activeFav.png'),
   activeProfile: require('../Images/activeProfile.png'),
+  MapImage: require('../Images/MapImage.png'),
+
 
 
 
