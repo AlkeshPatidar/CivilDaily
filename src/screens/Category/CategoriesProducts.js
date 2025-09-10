@@ -472,7 +472,7 @@ import {
     Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import Row from '../../components/wrapper/row';
 import { AddButton, BackWhite, DownChev, Filter, SearchWIthBg } from '../../assets/SVGs';
@@ -480,6 +480,7 @@ import IMG from '../../assets/Images';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import CustomText from '../../components/TextComponent';
 import { SearchBar } from 'react-native-screens';
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 
@@ -498,8 +499,8 @@ export default function CategoryProducts({ navigation }) {
             onRequestClose={() => setIsFilterVisible(false)}
         >
             <View style={styles.modalOverlay}>
-                <TouchableOpacity 
-                    style={styles.modalBackground} 
+                <TouchableOpacity
+                    style={styles.modalBackground}
                     activeOpacity={1}
                     onPress={() => setIsFilterVisible(false)}
                 />
@@ -598,7 +599,7 @@ export default function CategoryProducts({ navigation }) {
 
                     {/* Apply Filter Button */}
                     <View style={styles.modalFooter}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.applyButton}
                             onPress={() => {
                                 // Handle filter application logic here
@@ -640,7 +641,7 @@ export default function CategoryProducts({ navigation }) {
                     <TouchableOpacity style={styles.iconButton}>
                         <SearchWIthBg />
                     </TouchableOpacity>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.iconButton}
                         onPress={() => setIsFilterVisible(true)}
                     >
@@ -737,6 +738,329 @@ export default function CategoryProducts({ navigation }) {
         );
     };
 
+    const { isDarkMode } = useSelector(state => state.theme)
+
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
+        },
+
+        // Header Styles
+        headerContainer: {
+            backgroundColor: App_Primary_color,
+            paddingHorizontal: 16,
+            paddingTop: 16,
+            paddingBottom: 24,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            zIndex: 10000000
+        },
+        topBar: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        leftHeader: {
+
+        },
+        avatarContainer: {
+            width: 32,
+            height: 32,
+            backgroundColor: 'white',
+            borderRadius: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: 8,
+        },
+        avatarText: {
+            color: 'white',
+            fontFamily: FONTS_FAMILY.Poppins_Bold,
+            fontSize: 30,
+        },
+        timeText: {
+            color: 'white',
+            fontSize: 14,
+            opacity: 0.9,
+        },
+        rightHeader: {
+            flexDirection: 'row',
+        },
+        iconButton: {
+            marginLeft: 16,
+            backgroundColor: '#6C87CF',
+            padding: 5,
+            borderRadius: 100
+        },
+        titleContainer: {
+            marginBottom: 16,
+        },
+        mainTitle: {
+            color: 'white',
+            fontSize: 24,
+            fontWeight: 'bold',
+            marginBottom: 4,
+        },
+        subtitle: {
+            color: 'white',
+            fontSize: 14,
+            opacity: 0.9,
+        },
+        searchContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#3658B0',
+            borderRadius: 100,
+            paddingHorizontal: 16,
+            height: 40,
+        },
+        searchIcon: {
+            marginRight: 12,
+        },
+        searchInput: {
+            flex: 1,
+            fontSize: 13,
+            color: 'white',
+            fontFamily: FONTS_FAMILY.Poppins_Regular
+        },
+
+        // Section Styles
+        sectionContainer: {
+            paddingHorizontal: 16,
+            paddingVertical: 15,
+            zIndex: -100000,
+        },
+        sectionTitle: {
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: '#1F2937',
+            marginBottom: 16,
+        },
+        sectionHeader: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        seeAllText: {
+            color: '#3B82F6',
+            fontSize: 14,
+            fontWeight: '500',
+        },
+
+        // Categories Styles
+        categoriesGrid: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 10
+        },
+        categoryItem: {
+
+        },
+        categoryIcon: {
+            paddingHorizontal: 9,
+            borderRadius: 16,
+            paddingVertical: 10,
+            borderRadius: 100,
+            borderWidth: 1,
+            borderColor: '#B2BBCE'
+        },
+        categoryEmoji: {
+            fontSize: 28,
+        },
+        categoryText: {
+            fontSize: 13,
+            color: '#B2BBCE',
+            lineHeight: 16,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold
+        },
+
+        // Products Grid Styles
+        productsGrid: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 10,
+        },
+        productCard: {
+            backgroundColor: isDarkMode ? dark33 : '#F2F2F3',
+            maxWidth: '50%',
+            borderRadius: 16,
+            padding: 20,
+            paddingHorizontal: 20,
+            marginBottom: 16,
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        productName: {
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? white : '#1F2937',
+            alignSelf: 'center'
+        },
+
+        // Filter Modal Styles
+        modalOverlay: {
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'flex-end',
+        },
+        modalBackground: {
+            flex: 1,
+        },
+        filterModal: {
+            backgroundColor: isDarkMode ? dark55 : 'white',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingTop: 20,
+            height: height * 0.75,
+        },
+        modalHeader: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingBottom: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: '#E5E5E5',
+        },
+        modalTitle: {
+            fontSize: 18,
+            fontWeight: '600',
+            color: isDarkMode ? white : '#333',
+        },
+        filterSection: {
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+        },
+        filterSectionTitle: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: isDarkMode ? white : '#333',
+            marginBottom: 16,
+        },
+
+        // Price Range Styles
+        priceRangeContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 15,
+        },
+        priceLabel: {
+            fontSize: 14,
+            color: isDarkMode ? white : '#666',
+            fontWeight: '500',
+        },
+        sliderContainer: {
+            flex: 1,
+            height: 20,
+            justifyContent: 'center',
+            position: 'relative',
+        },
+        sliderTrack: {
+            height: 4,
+            backgroundColor: '#E5E5E5',
+            borderRadius: 2,
+        },
+        sliderRange: {
+            position: 'absolute',
+            height: 4,
+            backgroundColor: App_Primary_color,
+            borderRadius: 2,
+            left: '10%',
+            right: '15%',
+        },
+        sliderThumb: {
+            position: 'absolute',
+            width: 20,
+            height: 20,
+            backgroundColor: App_Primary_color,
+            borderRadius: 10,
+            top: -8,
+        },
+
+        // Ratings Styles
+        ratingsContainer: {
+            flexDirection: 'row',
+            gap: 12,
+        },
+        ratingOption: {
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 20,
+            // borderWidth: 1,
+            borderColor: '#E5E5E5',
+            backgroundColor: '#E5E5E5',
+        },
+        ratingOptionSelected: {
+            backgroundColor: App_Primary_color,
+            borderColor: App_Primary_color,
+        },
+        ratingText: {
+            fontSize: 14,
+            color: 'black',
+            fontWeight: '500',
+        },
+        ratingTextSelected: {
+            color: 'white',
+        },
+
+        // Vegan Friendly Styles
+        veganContainer: {
+            gap: 12,
+        },
+        veganOption: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+            paddingVertical: 4,
+        },
+        checkbox: {
+            width: 20,
+            height: 20,
+            borderRadius: 4,
+            borderWidth: 2,
+            borderColor: '#E5E5E5',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'white',
+        },
+        checkboxSelected: {
+            backgroundColor: '#22C55E',
+            borderColor: '#22C55E',
+        },
+        veganText: {
+            fontSize: 16,
+            color: isDarkMode ? 'white' : '#333',
+            fontWeight: '500',
+        },
+
+        // Modal Footer Styles
+        modalFooter: {
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            // borderTopWidth: 1,
+            borderTopColor: '#E5E5E5',
+        },
+        applyButton: {
+            backgroundColor: App_Primary_color,
+            borderRadius: 25,
+            paddingVertical: 16,
+            alignItems: 'center',
+        },
+        applyButtonText: {
+            color: 'white',
+            fontSize: 16,
+            fontWeight: '600',
+        },
+    });
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
@@ -749,323 +1073,3 @@ export default function CategoryProducts({ navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-    },
-
-    // Header Styles
-    headerContainer: {
-        backgroundColor: App_Primary_color,
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingBottom: 24,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-        zIndex: 10000000
-    },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    leftHeader: {
-        
-    },
-    avatarContainer: {
-        width: 32,
-        height: 32,
-        backgroundColor: 'white',
-        borderRadius: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 8,
-    },
-    avatarText: {
-        color: 'white',
-        fontFamily: FONTS_FAMILY.Poppins_Bold,
-        fontSize: 30,
-    },
-    timeText: {
-        color: 'white',
-        fontSize: 14,
-        opacity: 0.9,
-    },
-    rightHeader: {
-        flexDirection: 'row',
-    },
-    iconButton: {
-        marginLeft: 16,
-        backgroundColor: '#6C87CF',
-        padding: 5,
-        borderRadius: 100
-    },
-    titleContainer: {
-        marginBottom: 16,
-    },
-    mainTitle: {
-        color: 'white',
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    subtitle: {
-        color: 'white',
-        fontSize: 14,
-        opacity: 0.9,
-    },
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#3658B0',
-        borderRadius: 100,
-        paddingHorizontal: 16,
-        height: 40,
-    },
-    searchIcon: {
-        marginRight: 12,
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 13,
-        color: 'white',
-        fontFamily: FONTS_FAMILY.Poppins_Regular
-    },
-
-    // Section Styles
-    sectionContainer: {
-        paddingHorizontal: 16,
-        paddingVertical: 15,
-        zIndex: -100000,
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        color: '#1F2937',
-        marginBottom: 16,
-    },
-    sectionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    seeAllText: {
-        color: '#3B82F6',
-        fontSize: 14,
-        fontWeight: '500',
-    },
-
-    // Categories Styles
-    categoriesGrid: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 10
-    },
-    categoryItem: {
-        
-    },
-    categoryIcon: {
-        paddingHorizontal: 9,
-        borderRadius: 16,
-        paddingVertical: 10,
-        borderRadius: 100,
-        borderWidth: 1,
-        borderColor: '#B2BBCE'
-    },
-    categoryEmoji: {
-        fontSize: 28,
-    },
-    categoryText: {
-        fontSize: 13,
-        color: '#B2BBCE',
-        lineHeight: 16,
-        fontFamily: FONTS_FAMILY.Poppins_SemiBold
-    },
-
-    // Products Grid Styles
-    productsGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 10,
-    },
-    productCard: {
-        backgroundColor: '#F2F2F3',
-        maxWidth: '50%',
-        borderRadius: 16,
-        padding: 20,
-        paddingHorizontal: 20,
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    productName: {
-        fontSize: 14,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#1F2937',
-        alignSelf: 'center'
-    },
-
-    // Filter Modal Styles
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'flex-end',
-    },
-    modalBackground: {
-        flex: 1,
-    },
-    filterModal: {
-        backgroundColor: 'white',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingTop: 20,
-        height: height * 0.75,
-    },
-    modalHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingBottom: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5',
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#333',
-    },
-    filterSection: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-    },
-    filterSectionTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 16,
-    },
-    
-    // Price Range Styles
-    priceRangeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 15,
-    },
-    priceLabel: {
-        fontSize: 14,
-        color: '#666',
-        fontWeight: '500',
-    },
-    sliderContainer: {
-        flex: 1,
-        height: 20,
-        justifyContent: 'center',
-        position: 'relative',
-    },
-    sliderTrack: {
-        height: 4,
-        backgroundColor: '#E5E5E5',
-        borderRadius: 2,
-    },
-    sliderRange: {
-        position: 'absolute',
-        height: 4,
-        backgroundColor: App_Primary_color,
-        borderRadius: 2,
-        left: '10%',
-        right: '15%',
-    },
-    sliderThumb: {
-        position: 'absolute',
-        width: 20,
-        height: 20,
-        backgroundColor: App_Primary_color,
-        borderRadius: 10,
-        top: -8,
-    },
-
-    // Ratings Styles
-    ratingsContainer: {
-        flexDirection: 'row',
-        gap: 12,
-    },
-    ratingOption: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        // borderWidth: 1,
-        borderColor: '#E5E5E5',
-        backgroundColor: '#E5E5E5',
-    },
-    ratingOptionSelected: {
-        backgroundColor: App_Primary_color,
-        borderColor: App_Primary_color,
-    },
-    ratingText: {
-        fontSize: 14,
-        color: 'black',
-        fontWeight: '500',
-    },
-    ratingTextSelected: {
-        color: 'white',
-    },
-
-    // Vegan Friendly Styles
-    veganContainer: {
-        gap: 12,
-    },
-    veganOption: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingVertical: 4,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderRadius: 4,
-        borderWidth: 2,
-        borderColor: '#E5E5E5',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-    },
-    checkboxSelected: {
-        backgroundColor: '#22C55E',
-        borderColor: '#22C55E',
-    },
-    veganText: {
-        fontSize: 16,
-        color: '#333',
-        fontWeight: '500',
-    },
-
-    // Modal Footer Styles
-    modalFooter: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        // borderTopWidth: 1,
-        borderTopColor: '#E5E5E5',
-    },
-    applyButton: {
-        backgroundColor: App_Primary_color,
-        borderRadius: 25,
-        paddingVertical: 16,
-        alignItems: 'center',
-    },
-    applyButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-});

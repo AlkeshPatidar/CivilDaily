@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
 import IMG from '../../assets/Images';
 import { FONTS_FAMILY } from '../../assets/Fonts';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
 import { BackWhite } from '../../assets/SVGs';
+import { useSelector } from 'react-redux';
 
-const CartScreen = ({navigation}) => {
+const CartScreen = ({ navigation }) => {
     const [cart1Quantity, setCart1Quantity] = useState(1);
     const [cart2Quantity, setCart2Quantity] = useState(1);
     const [activeTab, setActiveTab] = useState('My Cart');
@@ -89,14 +90,14 @@ const CartScreen = ({navigation}) => {
                     <Text style={styles.statusText}>On Progress</Text>
                 </View>
             </View>
-            
+
             <View style={styles.orderFooter}>
                 <View style={styles.orderPricing}>
                     <Text style={styles.orderPrice}>$18.99</Text>
                     <Text style={styles.orderItems}> • 2 Items</Text>
                 </View>
                 <TouchableOpacity style={styles.trackOrderButton}
-                onPress={()=>navigation.navigate('OrderTrackingScreen')}
+                    onPress={() => navigation.navigate('OrderTrackingScreen')}
                 >
                     <Text style={styles.trackOrderText}>Track Order</Text>
                     <Text style={styles.chevron}>›</Text>
@@ -123,6 +124,309 @@ const CartScreen = ({navigation}) => {
                 return renderMyCartContent();
         }
     };
+    const { isDarkMode } = useSelector(state => state.theme)
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: isDarkMode ? darkMode25 : 'white',
+
+        },
+        header: {
+            backgroundColor: App_Primary_color,
+            height: 90,
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            paddingBottom: 15,
+            paddingHorizontal: 20,
+        },
+        backButton: {
+            width: 30,
+            bottom: 9
+        },
+        backIcon: {
+            color: 'white',
+        },
+        headerTitle: {
+            color: 'white',
+            fontSize: 22,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            marginLeft: 10,
+        },
+        headerRight: {
+            width: 30,
+        },
+        tabContainer: {
+            backgroundColor: isDarkMode ? darkMode25 : 'white',
+            flexDirection: 'row',
+            paddingHorizontal: 20,
+            paddingVertical: 15,
+        },
+        tab: {
+            marginRight: 25,
+            paddingBottom: 8,
+        },
+        activeTab: {
+            borderBottomWidth: 3,
+            borderBottomColor: '#5A6ACF',
+        },
+        tabText: {
+            fontSize: 16,
+            color: '#999',
+            fontFamily: FONTS_FAMILY.Poppins_Medium
+        },
+        activeTabText: {
+            color: isDarkMode ? 'white' : '#333',
+            fontFamily: FONTS_FAMILY.Poppins_Medium
+        },
+        content: {
+            flex: 1,
+            padding: 20,
+        },
+        cartContainer: {
+            backgroundColor: isDarkMode ? dark33 : 'white',
+            borderRadius: 12,
+            padding: 20,
+            marginBottom: 20,
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.05,
+            shadowRadius: 3,
+            borderWidth: 1,
+            borderColor: '#CCCCCC'
+        },
+        cartHeader: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingBottom: 15,
+            borderBottomWidth: 1,
+            borderBottomColor: '#E0E0E0',
+            marginBottom: 20,
+        },
+        cartTitle: {
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? 'white' : '#333',
+        },
+        checkIcon: {
+            backgroundColor: '#4CAF50',
+            width: 24,
+            height: 24,
+            borderRadius: 4,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        checkMark: {
+            color: isDarkMode ? 'white' : 'white',
+            fontSize: 14,
+            fontWeight: 'bold',
+        },
+        storeSection: {
+            marginBottom: 20,
+        },
+        sectionTitle: {
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? 'white' : '#333',
+        },
+        storeName: {
+            fontSize: 15,
+            color: isDarkMode ? 'white' : '#888',
+        },
+        productSection: {
+            marginBottom: 10,
+        },
+        productItem: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        productImage: {
+            width: 95,
+            height: 80,
+            borderRadius: 8,
+            marginRight: 15,
+        },
+        productDetails: {
+            flex: 1,
+            marginTop: 8
+        },
+        productName: {
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? 'white' : '#333',
+            marginBottom: 4,
+        },
+        productVariant: {
+            fontSize: 14,
+            color: isDarkMode ? 'white' : '#888',
+            marginBottom: 6,
+        },
+        productPrice: {
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: '#333',
+        },
+        quantityContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            position: 'absolute',
+            right: 0,
+            bottom: 0
+        },
+        quantityButton: {
+            backgroundColor: App_Primary_color,
+            width: 25,
+            height: 25,
+            borderRadius: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        quantityButtonText: {
+            fontSize: 18,
+            color: isDarkMode ? 'white' : 'white',
+            fontWeight: '600',
+        },
+        quantityText: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: isDarkMode ? 'white' : '#333',
+            marginHorizontal: 5,
+            minWidth: 20,
+            textAlign: 'center',
+        },
+        // Current Order Styles
+        currentOrderCard: {
+            // backgroundColor: 'white',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 16,
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.05,
+            shadowRadius: 3,
+            // elevation: 2,
+            // borderWidth: 1,
+            borderColor: '#CCCCCC',
+        },
+        orderHeader: {
+            flexDirection: 'row',
+            marginBottom: 16,
+        },
+        orderImage: {
+            width: 60,
+            height: 60,
+            borderRadius: 8,
+            marginRight: 12,
+        },
+        orderInfo: {
+            flex: 1,
+            justifyContent: 'center',
+        },
+        orderTitle: {
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? 'white' : '#333',
+            marginBottom: 2,
+        },
+        orderId: {
+            fontSize: 14,
+            color: isDarkMode ? 'white' : '#333',
+            fontWeight: '500',
+            marginBottom: 4,
+        },
+        statusBadge: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 8,
+            paddingVertical: 4,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: '#FF9500',
+            height: 24,
+        },
+        statusDot: {
+            width: 6,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: '#FF9500',
+            marginRight: 6,
+        },
+        statusText: {
+            fontSize: 12,
+            fontWeight: '500',
+            color: '#FF9500',
+        },
+        orderFooter: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        orderPricing: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        orderPrice: {
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? 'white' : '#333',
+        },
+        orderItems: {
+            fontSize: 14,
+            color: isDarkMode ? 'white' : 'black',
+            fontFamily: FONTS_FAMILY.Poppins_Regular
+        },
+        trackOrderButton: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        trackOrderText: {
+            fontSize: 14,
+            color: isDarkMode ? 'white' : '#888',
+            marginRight: 4,
+            fontFamily: FONTS_FAMILY.Poppins_Medium
+        },
+        chevron: {
+            fontSize: 16,
+            color: '#888',
+            fontWeight: '300',
+            bottom: 3
+        },
+        // Empty state
+        emptyContainer: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 60,
+        },
+        emptyText: {
+            fontSize: 16,
+            color: isDarkMode ? 'white' : '#888',
+        },
+        checkoutContainer: {
+            backgroundColor: isDarkMode ? darkMode25 : 'white',
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            paddingBottom: 35,
+        },
+        checkoutButton: {
+            backgroundColor: App_Primary_color,
+            height: 56,
+            borderRadius: 28,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        checkoutText: {
+            color: 'white',
+            fontSize: 16,
+            fontWeight: '600',
+        },
+    });
 
     return (
         <View style={styles.container}>
@@ -131,9 +435,9 @@ const CartScreen = ({navigation}) => {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton}
-                onPress={()=>navigation.goBack()}
+                    onPress={() => navigation.goBack()}
                 >
-                 <BackWhite/>
+                    <BackWhite />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Cart</Text>
                 <View style={styles.headerRight} />
@@ -141,19 +445,19 @@ const CartScreen = ({navigation}) => {
 
             {/* Tab Navigation */}
             <View style={styles.tabContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.tab, activeTab === 'My Cart' && styles.activeTab]}
                     onPress={() => setActiveTab('My Cart')}
                 >
                     <Text style={[styles.tabText, activeTab === 'My Cart' && styles.activeTabText]}>My Cart</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.tab, activeTab === 'Current Order' && styles.activeTab]}
                     onPress={() => setActiveTab('Current Order')}
                 >
                     <Text style={[styles.tabText, activeTab === 'Current Order' && styles.activeTabText]}>Current Order</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.tab, activeTab === 'Previous Order' && styles.activeTab]}
                     onPress={() => setActiveTab('Previous Order')}
                 >
@@ -169,7 +473,7 @@ const CartScreen = ({navigation}) => {
             {activeTab === 'My Cart' && (
                 <View style={styles.checkoutContainer}>
                     <TouchableOpacity style={styles.checkoutButton}
-                    onPress={()=>navigation.navigate('CheckoutSummary')}
+                        onPress={() => navigation.navigate('CheckoutSummary')}
                     >
                         <Text style={styles.checkoutText}>Checkout</Text>
                     </TouchableOpacity>
@@ -179,307 +483,6 @@ const CartScreen = ({navigation}) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
 
-    },
-    header: {
-        backgroundColor: App_Primary_color,
-        height: 90,
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        paddingBottom: 15,
-        paddingHorizontal: 20,
-    },
-    backButton: {
-        width: 30,
-        bottom:9
-    },
-    backIcon: {
-        color: 'white',
-    },
-    headerTitle: {
-        color: 'white',
-        fontSize: 22,
-       fontFamily:FONTS_FAMILY.Poppins_Medium,
-        marginLeft: 10,
-    },
-    headerRight: {
-        width: 30,
-    },
-    tabContainer: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-    },
-    tab: {
-        marginRight: 25,
-        paddingBottom: 8,
-    },
-    activeTab: {
-        borderBottomWidth: 3,
-        borderBottomColor: '#5A6ACF',
-    },
-    tabText: {
-        fontSize: 16,
-        color: '#999',
-       fontFamily:FONTS_FAMILY.Poppins_Medium
-    },
-    activeTabText: {
-        color: '#333',
-       fontFamily:FONTS_FAMILY.Poppins_Medium
-    },
-    content: {
-        flex: 1,
-        padding: 20,
-    },
-    cartContainer: {
-        backgroundColor: 'white',
-        borderRadius: 12,
-        padding: 20,
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
-        borderWidth: 1,
-        borderColor: '#CCCCCC'
-    },
-    cartHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingBottom: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
-        marginBottom: 20,
-    },
-    cartTitle: {
-        fontSize: 16,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-    },
-    checkIcon: {
-        backgroundColor: '#4CAF50',
-        width: 24,
-        height: 24,
-        borderRadius: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    checkMark: {
-        color: 'white',
-        fontSize: 14,
-        fontWeight: 'bold',
-    },
-    storeSection: {
-        marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 14,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-    },
-    storeName: {
-        fontSize: 15,
-        color: '#888',
-    },
-    productSection: {
-        marginBottom: 10,
-    },
-    productItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    productImage: {
-        width: 95,
-        height: 80,
-        borderRadius: 8,
-        marginRight: 15,
-    },
-    productDetails: {
-        flex: 1,
-        marginTop: 8
-    },
-    productName: {
-        fontSize: 14,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-        marginBottom: 4,
-    },
-    productVariant: {
-        fontSize: 14,
-        color: '#888',
-        marginBottom: 6,
-    },
-    productPrice: {
-        fontSize: 14,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-    },
-    quantityContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        position:'absolute',
-        right:0,
-        bottom:0
-    },
-    quantityButton: {
-        backgroundColor: App_Primary_color,
-        width: 25,
-        height: 25,
-        borderRadius: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    quantityButtonText: {
-        fontSize: 18,
-        color:'white',
-        fontWeight: '600',
-    },
-    quantityText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginHorizontal: 5,
-        minWidth: 20,
-        textAlign: 'center',
-    },
-    // Current Order Styles
-    currentOrderCard: {
-        // backgroundColor: 'white',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
-        // elevation: 2,
-        // borderWidth: 1,
-        borderColor: '#CCCCCC',
-    },
-    orderHeader: {
-        flexDirection: 'row',
-        marginBottom: 16,
-    },
-    orderImage: {
-        width: 60,
-        height: 60,
-        borderRadius: 8,
-        marginRight: 12,
-    },
-    orderInfo: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    orderTitle: {
-        fontSize: 16,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-        marginBottom: 2,
-    },
-    orderId: {
-        fontSize: 14,
-        color: '#333',
-        fontWeight: '500',
-        marginBottom: 4,
-    },
-    statusBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: '#FF9500',
-        height: 24,
-    },
-    statusDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: '#FF9500',
-        marginRight: 6,
-    },
-    statusText: {
-        fontSize: 12,
-        fontWeight: '500',
-        color: '#FF9500',
-    },
-    orderFooter: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    orderPricing: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    orderPrice: {
-        fontSize: 16,
-        fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#333',
-    },
-    orderItems: {
-        fontSize: 14,
-        color: 'black',
-        fontFamily:FONTS_FAMILY.Poppins_Regular
-    },
-    trackOrderButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    trackOrderText: {
-        fontSize: 14,
-        color: '#888',
-        marginRight: 4,
-        fontFamily:FONTS_FAMILY.Poppins_Medium
-    },
-    chevron: {
-        fontSize: 16,
-        color: '#888',
-        fontWeight: '300',
-        bottom:3
-    },
-    // Empty state
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 60,
-    },
-    emptyText: {
-        fontSize: 16,
-        color: '#888',
-    },
-    checkoutContainer: {
-        backgroundColor: 'white',
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        paddingBottom: 35,
-    },
-    checkoutButton: {
-        backgroundColor: App_Primary_color,
-        height: 56,
-        borderRadius: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    checkoutText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-});
 
 export default CartScreen;

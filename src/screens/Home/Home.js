@@ -11,12 +11,13 @@ import {
     Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import Row from '../../components/wrapper/row';
 import { AddButton, DownChev } from '../../assets/SVGs';
 import IMG from '../../assets/Images';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
+import { useSelector } from 'react-redux';
 
 export default function HomeScreen({ navigation }) {
     // Header Component
@@ -91,7 +92,7 @@ export default function HomeScreen({ navigation }) {
                     {categories.map((category, index) => (
 
                         <TouchableOpacity key={index} style={styles.categoryItem}>
-                            <View style={[styles.categoryIcon, { backgroundColor: '#d7e0f1ff' }]}>
+                            <View style={[styles.categoryIcon, { backgroundColor:isDarkMode?dark55: '#d7e0f1ff' }]}>
                                 <Text style={styles.categoryText}>{category.name}</Text>
                                 {/* <Text style={styles.categoryEmoji}>{category.icon}</Text> */}
                                 <Image source={category?.icon}
@@ -233,23 +234,13 @@ export default function HomeScreen({ navigation }) {
         );
     };
 
-    return (
-        <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {renderCategories()}
-                {renderTodaysChoice()}
-                {renderTopPicks()}
-            </ScrollView>
-        </SafeAreaView>
-    );
-}
+      const {isDarkMode} = useSelector(state => state.theme)
 
 
-const styles = StyleSheet.create({
+    const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F9FAFB',
+        backgroundColor:isDarkMode?darkMode25: '#F9FAFB',
     },
 
     // Header Styles
@@ -344,7 +335,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        color: '#1F2937',
+        color:isDarkMode?white: '#1F2937',
         marginBottom: 16,
     },
     sectionHeader: {
@@ -384,7 +375,7 @@ const styles = StyleSheet.create({
     },
     categoryText: {
         fontSize: 13,
-        color: 'black',
+        color:isDarkMode?white: 'black',
         // textAlign: 'center',
         lineHeight: 16,
         fontFamily: FONTS_FAMILY.Poppins_SemiBold
@@ -443,7 +434,7 @@ const styles = StyleSheet.create({
     },
     productCard: {
         width: '48%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor:isDarkMode?dark33:  '#FFFFFF',
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
@@ -458,9 +449,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    productCard1: {
+
+      productCard1: {
         width: '100%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor:isDarkMode?dark33: '#FFFFFF',
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
@@ -475,9 +467,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // justifyContent: 'space-between'
     },
+  
     productImageContainer: {
         height: 96,
-        backgroundColor: '#F9FAFB',
+        backgroundColor:  '#F9FAFB',
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -497,14 +490,14 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     discountText: {
-        color: 'white',
+        color:isDarkMode?white: 'white',
         fontSize: 10,
         fontWeight: '600',
     },
     productName: {
         fontSize: 14,
         fontFamily: FONTS_FAMILY.Poppins_Medium,
-        color: '#1F2937',
+        color:isDarkMode?white: '#1F2937',
         marginBottom: 4,
     },
     ratingContainer: {
@@ -514,7 +507,7 @@ const styles = StyleSheet.create({
     },
     ratingText: {
         fontSize: 12,
-        color: '#6B7280',
+        color:isDarkMode?white: '#6B7280',
         marginLeft: 4,
     },
     priceContainer: {
@@ -525,7 +518,7 @@ const styles = StyleSheet.create({
     currentPrice: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#1F2937',
+        color:isDarkMode?white: '#1F2937',
     },
     originalPrice: {
         fontSize: 12,
@@ -546,3 +539,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {renderHeader()}
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {renderCategories()}
+                {renderTodaysChoice()}
+                {renderTopPicks()}
+            </ScrollView>
+        </SafeAreaView>
+    );
+}
+
+

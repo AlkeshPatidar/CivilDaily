@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import {ScrollView, StatusBar, TouchableOpacity, View} from 'react-native'
 import CustomText from '../../components/TextComponent'
-import color, {App_Primary_color} from '../../common/Colors/colors'
+import color, {App_Primary_color, dark33, darkMode25} from '../../common/Colors/colors'
 import Row from '../../components/wrapper/row'
 import {
   BackArrow,
   BackIcon,
   BackMsg,
+  BackWhite,
   Divider,
   EyeIcon,
   LoginLogo,
@@ -20,7 +21,7 @@ import {ToastMsg} from '../../utils/helperFunctions'
 import useLoader from '../../utils/LoaderHook'
 import urls from '../../config/urls'
 import {apiPost, getItem, setItem} from '../../utils/Apis'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {setUser} from '../../redux/reducer/user'
 import OTPInput from '../../components/OtpInput'
 
@@ -86,11 +87,13 @@ const OtpScreen = ({navigation}) => {
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
           style={{padding: 5}}>
-            <BackIcon/>
+           {isDarkMode? <BackWhite/>: <BackIcon/>}
         </TouchableOpacity>
       </View>
     )
   }
+
+     const { isDarkMode } = useSelector(state => state.theme)
 
   const renderContent = () => {
     return (
@@ -98,12 +101,13 @@ const OtpScreen = ({navigation}) => {
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 20,
+
       }}>
         <CustomText
           style={{
             fontSize: 28,
             fontWeight: '600',
-            color: '#000',
+            // color: '#000',
             marginBottom: 8,
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
           }}>
@@ -113,7 +117,7 @@ const OtpScreen = ({navigation}) => {
         <CustomText
           style={{
             fontSize: 16,
-            color: '#666',
+            // color: '#666',
             lineHeight: 24,
             marginBottom: 40,
             fontFamily: FONTS_FAMILY.Poppins_Regular,
@@ -139,13 +143,16 @@ const OtpScreen = ({navigation}) => {
               borderRadius: 8,
               textAlign: 'center',
               fontSize: 20,
+              // color:'white',
               fontFamily: FONTS_FAMILY.Poppins_Medium,
-              backgroundColor: '#F2F2F3',
+              backgroundColor:isDarkMode? dark33: '#F2F2F3',
+              
             }}
             focusedStyle={{
               borderColor: '#4A90E2',
               borderWidth: 2,
             }}
+            
           />
         </View>
 
@@ -177,15 +184,15 @@ const OtpScreen = ({navigation}) => {
           <CustomText
             style={{
               fontSize: 12,
-              color: '#666',
+              color:isDarkMode?'white': '#666',
               textAlign: 'center',
               lineHeight: 18,
               fontFamily: FONTS_FAMILY.Poppins_Regular,
             }}>
             By clicking, I accept the{' '}
-            <CustomText style={{color: 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Terms and Conditions</CustomText>
+            <CustomText style={{color:isDarkMode? 'white': 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Terms and Conditions</CustomText>
             {' '}&{' '}
-            <CustomText style={{color: 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Privacy Policy</CustomText>
+            <CustomText style={{color:isDarkMode?'white': 'black', fontSize:12, fontFamily:FONTS_FAMILY.Poppins_Medium}}>Privacy Policy</CustomText>
           </CustomText>
         </View>
 
@@ -197,12 +204,12 @@ const OtpScreen = ({navigation}) => {
   return (
     <View
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: isDarkMode? darkMode25: '#ffffff',
         flex: 1,
       }}>
       <StatusBar
-        barStyle='dark-content'
-        backgroundColor="#ffffff"
+        barStyle={isDarkMode?'light-content': 'dark-content'}
+        backgroundColor={isDarkMode? darkMode25: "#ffffff"}
       />
       {renderHeader()}
       {renderContent()}

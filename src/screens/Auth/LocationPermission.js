@@ -5,7 +5,8 @@ import { FONTS_FAMILY } from '../../assets/Fonts'
 import CustomButton from '../../components/Button'
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 import { BackIcon, LocationBanner } from '../../assets/SVGs'
-import { App_Primary_color } from '../../common/Colors/colors'
+import { App_Primary_color, dark33, darkMode25, white } from '../../common/Colors/colors'
+import { useSelector } from 'react-redux'
 
 const LocationPermissionScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -78,6 +79,7 @@ const LocationPermissionScreen = ({ navigation }) => {
     }
 
 
+    const { isDarkMode } = useSelector(state => state.theme)
 
     const renderContent = () => {
         return (
@@ -85,6 +87,7 @@ const LocationPermissionScreen = ({ navigation }) => {
                 flex: 1,
                 paddingHorizontal: 20,
                 alignItems: 'center',
+                backgroundColor: isDarkMode? dark33:'white'
             }}>
                 <View style={{
                     marginBottom:100
@@ -116,7 +119,7 @@ const LocationPermissionScreen = ({ navigation }) => {
                 {/* Set Manually Button */}
                 <TouchableOpacity
                     style={{
-                        backgroundColor: '#F5F5F5',
+                        backgroundColor:isDarkMode? darkMode25:  '#F5F5F5',
                         borderRadius: 25,
                         height: 50,
                         width: '100%',
@@ -126,7 +129,7 @@ const LocationPermissionScreen = ({ navigation }) => {
                     onPress={skipLocation}>
                     <CustomText
                         style={{
-                            color: '#333',
+                            color:isDarkMode?white: '#333',
                             fontSize: 16,
                             fontWeight: '600',
                             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
@@ -141,12 +144,12 @@ const LocationPermissionScreen = ({ navigation }) => {
     return (
         <View
             style={{
-                backgroundColor: '#ffffff',
+                backgroundColor:isDarkMode? dark33: '#ffffff',
                 flex: 1,
             }}>
             <StatusBar
-                barStyle='dark-content'
-                backgroundColor="#ffffff"
+                barStyle={isDarkMode? 'light-content' :'dark-content'}
+                backgroundColor={isDarkMode?dark33: "#ffffff"}
             />
             {renderHeader()}
             {renderContent()}

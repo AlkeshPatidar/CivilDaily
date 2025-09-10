@@ -193,7 +193,7 @@
 //           <CustomText style={styles.forgotPasswordText}>
 //             Forgot your password ?
 //           </CustomText>
-            
+
 //           </TouchableOpacity>
 //         </View>
 //       </View>
@@ -363,7 +363,8 @@ import {
   Image,
 } from 'react-native';
 import { FONTS_FAMILY } from '../../assets/Fonts';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
+import { useSelector } from 'react-redux';
 
 // Country data with flags (you'll need to add flag images or use a library like react-native-country-picker-modal)
 const countries = [
@@ -378,7 +379,7 @@ const countries = [
   // Add more countries as needed
 ];
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showCountryPicker, setShowCountryPicker] = useState(false);
@@ -389,7 +390,7 @@ const Login = ({navigation}) => {
   };
 
   const renderCountryItem = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.countryItem}
       onPress={() => handleCountrySelect(item)}
     >
@@ -399,18 +400,168 @@ const Login = ({navigation}) => {
     </TouchableOpacity>
   );
 
+  const { isDarkMode } = useSelector(state => state.theme)
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : '#ffffff',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingTop: 50,
+      paddingBottom: 20,
+    },
+    backButton: {
+      padding: 5,
+    },
+    backArrow: {
+      fontSize: 24,
+      color: '#333',
+    },
+    content: {
+      flex: 1,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      marginTop: 150
+    },
+    title: {
+      fontSize: 20,
+      fontFamily: FONTS_FAMILY.Poppins_Bold,
+      color: isDarkMode ? white : '#000',
+      marginBottom: 8,
+    },
+    subtitle: {
+      fontSize: 13,
+      fontFamily: FONTS_FAMILY.Poppins_Regular,
+      color: isDarkMode ? 'white' : '#666',
+      lineHeight: 24,
+      marginBottom: 40,
+    },
+    inputLabel: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : '#666',
+      marginBottom: 12,
+      fontWeight: '500',
+    },
+    phoneInputContainer: {
+      flexDirection: 'row',
+      borderColor: '#ddd',
+      borderRadius: 8,
+      backgroundColor: isDarkMode ? dark33 : '#fff',
+      marginBottom: 40,
+      height: 50,
+      gap: 10,
+
+    },
+    countrySelector: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 5,
+      borderRightColor: '#ddd',
+      minWidth: 100,
+      backgroundColor: isDarkMode ? dark55 : '#F2F2F3',
+      borderRadius: 8
+    },
+    countryFlag: {
+      fontSize: 20,
+      marginRight: 8,
+    },
+    dialCode: {
+      fontSize: 15,
+      color: isDarkMode ? white : '#333',
+      marginRight: 8,
+      fontFamily: FONTS_FAMILY.Poppins_Regular
+    },
+    dropdownArrow: {
+      fontSize: 10,
+      color: '#666',
+    },
+    phoneInput: {
+      flex: 1,
+      paddingHorizontal: 20,
+      fontSize: 15,
+      color: isDarkMode ? white : '#333',
+      backgroundColor: isDarkMode ? dark55 : '#F2F2F3',
+      borderRadius: 8,
+      fontFamily: FONTS_FAMILY.Poppins_Regular
+
+
+    },
+    continueButton: {
+      backgroundColor: App_Primary_color,
+      borderRadius: 25,
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 20,
+      position: 'absolute',
+      bottom: 40,
+      width: '90%',
+      alignSelf: 'center'
+    },
+    continueButtonText: {
+      color: '#ffffff',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    // Modal styles
+    modalContainer: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: '#eee',
+    },
+    modalCloseButton: {
+      padding: 5,
+    },
+    modalCloseText: {
+      fontSize: 16,
+      color: '#4A90E2',
+      fontWeight: '600',
+    },
+    countryList: {
+      flex: 1,
+    },
+    countryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: '#f0f0f0',
+    },
+    countryName: {
+      flex: 1,
+      fontSize: 16,
+      color: '#333',
+      marginLeft: 12,
+    },
+    countryCode: {
+      fontSize: 16,
+      color: '#666',
+    },
+  });
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      
+      <StatusBar barStyle={isDarkMode ? 'light-content' : "dark-content"} backgroundColor={isDarkMode ? darkMode25 : "#ffffff"} />
+
       {/* Header */}
-    
+
 
       {/* Content */}
       <View style={styles.content}>
         <Text style={styles.title}>Get started</Text>
         <Text style={styles.subtitle}>
-        You can log in or make an account if you’re new
+          You can log in or make an account if you’re new
         </Text>
 
         <Text style={styles.inputLabel}>Enter your phone number</Text>
@@ -418,7 +569,7 @@ const Login = ({navigation}) => {
         {/* Phone Input Container */}
         <View style={styles.phoneInputContainer}>
           {/* Country Selector */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.countrySelector}
             onPress={() => setShowCountryPicker(true)}
           >
@@ -440,7 +591,7 @@ const Login = ({navigation}) => {
 
         {/* Continue Button */}
         <TouchableOpacity style={styles.continueButton}
-        onPress={()=>navigation.navigate('Otpscreen')}>
+          onPress={() => navigation.navigate('Otpscreen')}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </View>
@@ -453,14 +604,14 @@ const Login = ({navigation}) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => setShowCountryPicker(false)}
             >
               <Text style={styles.modalCloseText}>Done</Text>
             </TouchableOpacity>
           </View>
-          
+
           <FlatList
             data={countries}
             renderItem={renderCountryItem}
@@ -473,153 +624,6 @@ const Login = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-  },
-  backButton: {
-    padding: 5,
-  },
-  backArrow: {
-    fontSize: 24,
-    color: '#333',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    marginTop:150
-  },
-  title: {
-    fontSize: 20,
-  fontFamily:FONTS_FAMILY.Poppins_Bold,
-    color: '#000',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 13,
-  fontFamily:FONTS_FAMILY.Poppins_Regular,
-    color: '#666',
-    lineHeight: 24,
-    marginBottom: 40,
-  },
-  inputLabel: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 12,
-    fontWeight: '500',
-  },
-  phoneInputContainer: {
-    flexDirection: 'row',
-    borderColor: '#ddd',
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    marginBottom: 40,
-    height: 50,
-    gap:10,
 
-  },
-  countrySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 5,
-    borderRightColor: '#ddd',
-    minWidth: 100,
-    backgroundColor:'#F2F2F3',
-    borderRadius:8
-  },
-  countryFlag: {
-    fontSize: 20,
-    marginRight: 8,
-  },
-  dialCode: {
-    fontSize: 15,
-    color: '#333',
-    marginRight: 8,
-    fontFamily:FONTS_FAMILY.Poppins_Regular
-  },
-  dropdownArrow: {
-    fontSize: 10,
-    color: '#666',
-  },
-  phoneInput: {
-    flex: 1,
-    paddingHorizontal: 20,
-    fontSize: 15,
-    color: '#333',
-    backgroundColor:'#F2F2F3',
-    borderRadius:8,
-    fontFamily:FONTS_FAMILY.Poppins_Regular
-
-    
-  },
-  continueButton: {
-    backgroundColor: App_Primary_color,
-    borderRadius: 25,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    position:'absolute',
-    bottom:40,
-    width:'90%',
-    alignSelf:'center'
-  },
-  continueButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  // Modal styles
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  modalCloseButton: {
-    padding: 5,
-  },
-  modalCloseText: {
-    fontSize: 16,
-    color: '#4A90E2',
-    fontWeight: '600',
-  },
-  countryList: {
-    flex: 1,
-  },
-  countryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  countryName: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333',
-    marginLeft: 12,
-  },
-  countryCode: {
-    fontSize: 16,
-    color: '#666',
-  },
-});
 
 export default Login;

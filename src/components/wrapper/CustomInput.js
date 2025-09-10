@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { verticalScale } from 'react-native-size-matters';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomText from '../TextComponent';
-import color, { white } from '../../common/Colors/colors';
+import color, { dark33, white } from '../../common/Colors/colors';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
@@ -20,7 +20,7 @@ const CustomInputField = ({ icon,isPassword,keyboardType,secureTextEntry, placeh
     borderColor: 'rgba(218, 218, 218, 1)',
     borderRadius: 8,
     paddingHorizontal: 10,
-    backgroundColor: '#F2F2F3',
+    backgroundColor:isDarkMode?dark33: '#F2F2F3',
     width: '100%',
     height: verticalScale(44),
     gap: 10,

@@ -3,6 +3,9 @@ const color={
     App_Primary_color:'#4A6CC5',
     darkOfPrimary:'#8f565f',
     darkMode25:'#252525',
+    dark33:'#333',
+    dark55:'#555',
+    
     black:"#000",
 
     white:"#fff",

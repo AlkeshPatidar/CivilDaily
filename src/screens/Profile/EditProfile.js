@@ -375,11 +375,12 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark55, darkMode25 } from '../../common/Colors/colors';
 import { BackWhite, ForwordChev } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomInputField from '../../components/wrapper/CustomInput';
 import CustomButton from '../../components/Button';
+import { useSelector } from 'react-redux';
 
 const EditProfile = ({navigation}) => {
   const menuItems = [
@@ -403,97 +404,12 @@ const EditProfile = ({navigation}) => {
     },
   ];
 
-  const renderMenuItem = (item) => (
-    <TouchableOpacity
-      key={item.title}
-      style={styles.menuItem}
-      onPress={item.onPress}
-    >
-      <View style={styles.menuItemLeft}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconText}>{item.icon}</Text>
-        </View>
-        <Text style={styles.menuItemText}>{item.title}</Text>
-      </View>
-      {/* <Text style={styles.chevron}>›</Text> */}
-      <ForwordChev />
-    </TouchableOpacity>
-  );
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
-
-      {/* Header */}
-      <LinearGradient
-        colors={[App_Primary_color, App_Primary_color]}
-        style={styles.header}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton}
-          onPress={()=>navigation.goBack()}
-          >
-            {/* <Text style={styles.backArrow}>‹</Text> */}
-            <BackWhite />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit Profile</Text>
-          <View style={styles.headerRight} />
-        </View>
-
-        {/* Profile Card */}
-      
-      </LinearGradient>
-
-        <View style={styles.profileCard}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-            }}
-            style={styles.profileImage}
-          />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>John Doe</Text>
-            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
-          </View>
-        
-        </View>
-
-      {/* Menu Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-       <CustomInputField
-       label={'Name'}
-       placeholder={'Enter Name'}
-       />
-
-        <CustomInputField
-       label={'Email'}
-       placeholder={'Enter Email'}
-
-       />
-
-         <CustomInputField
-       label={'Number'}
-       placeholder={'Enter Number'}
-
-       />
-
-      </ScrollView>
-      <CustomButton
-      title={'Save'}
-      style={{
-        position:'absolute',
-        bottom:20,
-        width:'90%'
-      }}
-      />
-    </SafeAreaView>
-  );
-};
+    const { isDarkMode } = useSelector(state => state.theme);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor:isDarkMode?darkMode25:  '#F8F9FA',
   },
   header: {
     paddingTop: 10,
@@ -526,7 +442,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   profileCard: {
-    backgroundColor: '#9AB0EA',
+    backgroundColor:isDarkMode?dark55: '#9AB0EA',
     borderRadius: 10,
     padding: 20,
     flexDirection: 'row',
@@ -565,7 +481,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    // backgroundColor: 'white',
+    backgroundColor:isDarkMode?darkMode25: 'white',
     // marginTop: -15,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -646,5 +562,80 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+
+ 
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+
+      {/* Header */}
+      <LinearGradient
+        colors={[App_Primary_color, App_Primary_color]}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity style={styles.backButton}
+          onPress={()=>navigation.goBack()}
+          >
+            {/* <Text style={styles.backArrow}>‹</Text> */}
+            <BackWhite />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Edit Profile</Text>
+          <View style={styles.headerRight} />
+        </View>
+
+        {/* Profile Card */}
+      
+      </LinearGradient>
+
+        <View style={styles.profileCard}>
+          <Image
+            source={{
+              uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+            }}
+            style={styles.profileImage}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
+          </View>
+        
+        </View>
+
+      {/* Menu Content */}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+       <CustomInputField
+       label={'Name'}
+       placeholder={'Enter Name'}
+       />
+
+        <CustomInputField
+       label={'Email'}
+       placeholder={'Enter Email'}
+
+       />
+
+         <CustomInputField
+       label={'Number'}
+       placeholder={'Enter Number'}
+
+       />
+
+      </ScrollView>
+      <CustomButton
+      title={'Save'}
+      style={{
+        position:'absolute',
+        bottom:20,
+        width:'90%'
+      }}
+      />
+    </SafeAreaView>
+  );
+};
+
+
 
 export default EditProfile;

@@ -375,9 +375,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
-import { App_Primary_color } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
 import { BackWhite, ForwordChev } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
+import { useSelector } from 'react-redux';
 
 const ProfilePage = ({navigation}) => {
   const menuItems = [
@@ -401,6 +402,9 @@ const ProfilePage = ({navigation}) => {
     },
   ];
 
+  const { isDarkMode } = useSelector(state => state.theme);
+
+
   const renderMenuItem = (item) => (
     <TouchableOpacity
       key={item.title}
@@ -418,73 +422,10 @@ const ProfilePage = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
-
-      {/* Header */}
-      <LinearGradient
-        colors={[App_Primary_color, App_Primary_color]}
-        style={styles.header}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton}>
-            {/* <Text style={styles.backArrow}>‹</Text> */}
-            <BackWhite />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>My Profile</Text>
-          <View style={styles.headerRight} />
-        </View>
-
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-            }}
-            style={styles.profileImage}
-          />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>John Doe</Text>
-            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton}
-          onPress={()=>navigation.navigate('EditProfile')}
-          >
-            <Text style={styles.editIcon}>✏️</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-
-      {/* Menu Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {menuItems.map((section) => (
-          <View key={section.section} style={styles.section}>
-            <Text style={styles.sectionTitle}>{section.section}</Text>
-            <View style={styles.menuContainer}>
-              {section.items.map(renderMenuItem)}
-            </View>
-          </View>
-        ))}
-
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <View style={styles.menuItemLeft}>
-            <View style={styles.iconContainer}>
-              <Text style={styles.logoutIcon}>⚪</Text>
-            </View>
-            <Text style={styles.logoutText}>Log Out</Text>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor:'#F8F9FA',
   },
   header: {
     paddingTop: 10,
@@ -554,7 +495,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: isDarkMode? darkMode25:  'white',
     marginTop: -15,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -566,12 +507,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#1A1A1A',
+    color:isDarkMode?white: '#1A1A1A',
     marginBottom: 15,
     paddingHorizontal: 20,
   },
   menuContainer: {
-    backgroundColor: '#F8F9FA',
+    backgroundColor:isDarkMode? dark33:'#F8F9FA',
     marginHorizontal: 20,
     borderRadius: 12,
     overflow: 'hidden',
@@ -585,7 +526,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
-    backgroundColor: '#F8F8F8'
+    backgroundColor:isDarkMode? dark33: '#F8F8F8'
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -596,17 +537,18 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F8F9FA',
+    backgroundColor:isDarkMode?dark55: '#F8F9FA',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
   },
   iconText: {
     fontSize: 16,
+
   },
   menuItemText: {
     fontSize: 14,
-    color: '#1A1A1A',
+    color:isDarkMode?'white': '#1A1A1A',
     fontFamily: FONTS_FAMILY.Poppins_Medium
   },
   chevron: {
@@ -632,5 +574,70 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+
+      {/* Header */}
+      <LinearGradient
+        colors={[App_Primary_color, App_Primary_color]}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity style={styles.backButton}>
+            {/* <Text style={styles.backArrow}>‹</Text> */}
+            <BackWhite />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>My Profile</Text>
+          <View style={styles.headerRight} />
+        </View>
+
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
+          <Image
+            source={{
+              uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+            }}
+            style={styles.profileImage}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
+          </View>
+          <TouchableOpacity style={styles.editButton}
+          onPress={()=>navigation.navigate('EditProfile')}
+          >
+            <Text style={styles.editIcon}>✏️</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+
+      {/* Menu Content */}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {menuItems.map((section) => (
+          <View key={section.section} style={styles.section}>
+            <Text style={styles.sectionTitle}>{section.section}</Text>
+            <View style={styles.menuContainer}>
+              {section.items.map(renderMenuItem)}
+            </View>
+          </View>
+        ))}
+
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton}>
+          <View style={styles.menuItemLeft}>
+            <View style={styles.iconContainer}>
+              <Text style={styles.logoutIcon}>⚪</Text>
+            </View>
+            <Text style={styles.logoutText}>Log Out</Text>
+          </View>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+
 
 export default ProfilePage;
