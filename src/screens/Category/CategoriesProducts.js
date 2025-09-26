@@ -456,7 +456,7 @@
 // });
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -481,14 +481,39 @@ import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import CustomText from '../../components/TextComponent';
 import { SearchBar } from 'react-native-screens';
 import { useSelector } from 'react-redux';
+import useLoader from '../../utils/LoaderHook';
+import { apiGet } from '../../utils/Apis';
+import urls from '../../config/urls';
 
 const { width, height } = Dimensions.get('window');
 
-export default function CategoryProducts({ navigation }) {
+export default function CategoryProducts({ navigation, route }) {
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [priceRange, setPriceRange] = useState({ min: 200, max: 3748 });
     const [selectedRating, setSelectedRating] = useState(null);
     const [isVeganFriendly, setIsVeganFriendly] = useState(true);
+
+    const { showLoader, hideLoader } = useLoader()
+
+    const [allProducts, setAllProducts] = useState([])
+
+    useEffect(() => {
+        getProducts()
+    }, [])
+
+    const getProducts = async () => {
+        try {
+            showLoader()
+            const res = await apiGet(`${urls.getAllProducts}?categoryId=${route?.params?.categoryId}&subCategoryId=${route?.params?.subcategoryId}`)
+            setAllProducts(res?.data)
+            hideLoader()
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            hideLoader()
+        }
+    };
+
+
 
     // Filter Modal Component
     const renderFilterModal = () => (
@@ -716,10 +741,10 @@ export default function CategoryProducts({ navigation }) {
         return (
             <View style={styles.sectionContainer}>
                 <View style={styles.productsGrid}>
-                    {todaysChoices.map((item, index) => (
+                    {allProducts?.map((item, index) => (
                         <View key={index} style={styles.productCard}>
                             <View style={{ width: 115 }}>
-                                <Image source={item?.image} style={{
+                                <Image source={{ uri: item?.images[0] }} style={{
                                     height: 87, width: 100
                                 }} />
                                 <Text style={styles.productName}>{item.name}</Text>
@@ -728,7 +753,9 @@ export default function CategoryProducts({ navigation }) {
                                 position: 'absolute',
                                 bottom: 0,
                                 right: 0
-                            }}>
+                            }}
+                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                            >
                                 <AddButton />
                             </TouchableOpacity>
                         </View>

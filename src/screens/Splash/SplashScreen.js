@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -10,60 +10,49 @@ import {
   StatusBar,
   ImageBackground,
 } from 'react-native'
-import IMG, {Logo} from '../../assets/Images'
-import {App_Primary_color} from '../../common/Colors/colors'
-import {apiGet, getItem} from '../../utils/Apis'
-import {useLoginCheck} from '../../utils/Context'
+import IMG, { Logo } from '../../assets/Images'
+import { App_Primary_color } from '../../common/Colors/colors'
+import { apiGet, getItem } from '../../utils/Apis'
+import { useLoginCheck } from '../../utils/Context'
 import urls from '../../config/urls'
-import {useDispatch} from 'react-redux'
-import {setUser} from '../../redux/reducer/user'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../redux/reducer/user'
 import { initializeTheme } from "../../redux/actions/themeActions";
 
 
-const {width} = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
-const SplashScreen = ({navigation}) => {
-  const {loggedInby, setloggedInby} = useLoginCheck()
+const SplashScreen = ({ navigation }) => {
+  const { loggedInby, setloggedInby } = useLoginCheck()
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // roleCheck()
-        initializeTheme();
+    loginCheck()
+    initializeTheme();
 
-    setTimeout(()=>{
-      navigation.navigate('Onboarding')
-    },3000)
+    // setTimeout(() => {
+    //   navigation.navigate('Onboarding')
+    // }, 3000)
 
   }, [])
 
-  const roleCheck = async () => {
-    const UserType = await getItem('UserType')
+  const loginCheck = async () => {
     const token = await getItem('token')
-    console.log('UserType at SPlas', UserType)
+    console.log('UserTypeToken at SPlas', token)
     if (token) {
-      if (UserType == 'Influencers') {
-        setloggedInby('Influencers')
-        getUserProfile(urls.getInfluencerProfile, 'Influencers')
-      } else {
-        setloggedInby('Brands')
-        getUserProfile(urls.getBrandProfile, 'Brands')
-      }
+      getUserProfile(urls.getSelf)
     } else {
-      navigation.replace('Splash1')
+      navigation.replace('Onboarding')
     }
   }
 
-  const getUserProfile = async (endPoint, role) => {
+  const getUserProfile = async (endPoint) => {
     try {
       setLoading(true)
       const response = await apiGet(endPoint)
       dispatch(setUser(JSON.stringify(response?.data)))
-      if (role == 'Influencers') {
-        navigation.replace('InfluenceTab')
-      } else {
-        navigation.replace('TabBrand')
-      }
+      navigation.replace('Tab')
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -71,8 +60,7 @@ const SplashScreen = ({navigation}) => {
   }
 
   return (
-    <ImageBackground source={IMG.SplashScreen}style={{flex:1}}>
-
+    <ImageBackground source={IMG.SplashScreen} style={{ flex: 1 }}>
     </ImageBackground>
   )
 }

@@ -26,6 +26,9 @@ import MyOrdersPage from '../../screens/Orders/Orders';
 import OrderDetailsPage from '../../screens/Orders/OrderDetials';
 import OrderTrackingScreen from '../../screens/Orders/TrackOrder';
 import CategoryProducts from '../../screens/Category/CategoriesProducts';
+import Signup from '../../screens/Auth/Signup';
+import ForgotPassword from '../../screens/Auth/ForgetPassword';
+import AddAddressScreen from '../../screens/Profile/AddAdress';
 
 
 
@@ -50,6 +53,11 @@ const StackNavigation = () => {
         <Stack.Screen name={'Onboarding'} component={Splash1} />
         {/* <Stack.Screen name={'OnboardingScreen'} component={OnboardingScreen} /> */}
         <Stack.Screen name={'Login'} component={Login} />
+        <Stack.Screen name={'Signup'} component={Signup} />
+        <Stack.Screen name={'ForgotPassword'} component={ForgotPassword} />
+
+        
+
         <Stack.Screen name={'Otpscreen'} component={OtpScreen} />
         <Stack.Screen name={'LocationPermissionScreen'} component={LocationPermissionScreen} />
         <Stack.Screen name={'Home'} component={HomeScreen} />
@@ -68,6 +76,8 @@ const StackNavigation = () => {
         <Stack.Screen name={'OrderDetailsPage'} component={OrderDetailsPage} />
         <Stack.Screen name={'OrderTrackingScreen'} component={OrderTrackingScreen} />
         <Stack.Screen name={'CategoryProducts'} component={CategoryProducts} />
+        <Stack.Screen name={'AddAddressScreen'} component={AddAddressScreen} />
+
 
 
 

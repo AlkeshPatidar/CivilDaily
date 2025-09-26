@@ -1,359 +1,451 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
   View,
+  Text,
+  TouchableOpacity,
   StyleSheet,
-} from 'react-native'
-import CustomText from '../../components/TextComponent'
-import color, { App_Primary_color, darkMode25, white } from '../../common/Colors/colors'
-import Row from '../../components/wrapper/row'
-import {
-  BackArrow,
-  BackMsg,
-  Divider,
-  EyeIcon,
-  LoginLogo,
-} from '../../assets/SVGs'
-import { FONTS_FAMILY } from '../../assets/Fonts'
-import CustomInputField from '../../components/wrapper/CustomInput'
-import CustomButton from '../../components/Button'
-import {
-  inValidEmail,
-  inValidPassword,
-} from '../../utils/CheckValidation'
-import { ToastMsg } from '../../utils/helperFunctions'
-import useLoader from '../../utils/LoaderHook'
-import urls from '../../config/urls'
-import { apiPost, apiPut, getItem } from '../../utils/Apis'
-import { useLoginCheck } from '../../utils/Context'
-import { useSelector } from 'react-redux'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import AntDesign from 'react-native-vector-icons/AntDesign'
+  StatusBar,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { FONTS_FAMILY } from '../../assets/Fonts';
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
+import { useSelector } from 'react-redux';
+import CustomInputField from '../../components/wrapper/CustomInput';
+import useLoader from '../../utils/LoaderHook';
+import { inValidEmail, inValidPassword } from '../../utils/CheckValidation';
+import { ToastMsg } from '../../utils/helperFunctions';
+import urls from '../../config/urls';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { apiPost } from '../../utils/Apis';
+import { OtpInput } from 'react-native-otp-entry';
+import CustomText from '../../components/TextComponent';
 
 const ForgotPassword = ({ navigation }) => {
-  const [email, setEmail] = useState('')
-  const [oldPassword, setOldPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [activeTab, setActiveTab] = useState('Influencers')
-  const { showLoader, hideLoader } = useLoader()
-  const { loggedInby, setloggedInby } = useLoginCheck()
+  const [step, setStep] = useState(1); // 1: Email, 2: OTP + Password
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [timer, setTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+  const { showLoader, hideLoader } = useLoader();
+  const { isDarkMode } = useSelector(state => state.theme);
 
-  const { isDarkMode } = useSelector(state => state.theme)
+  // Timer for resend OTP
+  useEffect(() => {
+    let interval = null;
+    if (step === 2 && timer > 0 && !canResend) {
+      interval = setInterval(() => {
+        setTimer(timer => timer - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      setCanResend(true);
+    }
+    return () => clearInterval(interval);
+  }, [timer, canResend, step]);
 
-
-  const onSubmit = async () => {
-    const emailError = inValidEmail(email)
+  const onSendOTP = async () => {
+    const emailError = inValidEmail(email);
     if (emailError) {
-      ToastMsg(emailError)
-      return
-    }
-
-    const oldPasswordError = inValidPassword(oldPassword)
-    if (oldPasswordError) {
-      ToastMsg(`Old Password: ${oldPasswordError}`)
-      return
-    }
-
-    const newPasswordError = inValidPassword(newPassword)
-    if (newPasswordError) {
-      ToastMsg(`New Password: ${newPasswordError}`)
-      return
-    }
-
-    if (oldPassword === newPassword) {
-      ToastMsg('New password must be different from old password')
-      return
+      ToastMsg(emailError);
+      return;
     }
 
     try {
-      // Determine the URL based on active tab
-      const url = activeTab === 'Influencers'
-        ? urls.InfluencerForgotPassword
-        : urls.brandForgotPassword
-
-      showLoader()
-
-      const data = {
-        Email: email,
-        OldPassword: oldPassword,
-        NewPassword: newPassword
+      showLoader();
+      const data = { email: email };
+      const response = await apiPost('/api/user/forgot/otpsend', data);
+      
+      if (response?.statusCode === 200) {
+        ToastMsg('OTP sent successfully');
+        setStep(2);
+        setTimer(60);
+        setCanResend(false);
+      } else {
+        ToastMsg(response?.message || 'Failed to send OTP');
       }
+      hideLoader();
+    } catch (error) {
+      hideLoader();
+      ToastMsg(error?.message || 'Network Error');
+    }
+  };
 
-      console.log(data, 'daatatata');
+  const onResendOTP = async () => {
+    try {
+      showLoader();
+      const data = { email: email };
+      const response = await apiPost('/api/user/forgot/otpsend', data);
+      
+      if (response?.statusCode === 200) {
+        ToastMsg('OTP resent successfully');
+        setTimer(60);
+        setCanResend(false);
+        setOtp('');
+      } else {
+        ToastMsg(response?.message || 'Failed to resend OTP');
+      }
+      hideLoader();
+    } catch (error) {
+      hideLoader();
+      ToastMsg(error?.message || 'Network Error');
+    }
+  };
 
+  const onVerifyAndReset = async () => {
+    if (!otp || otp.length !== 4) {
+      ToastMsg('Please enter valid 4-digit OTP');
+      return;
+    }
 
-      const response = await apiPut(url, data)
+    const passwordError = inValidPassword(newPassword);
+    if (passwordError) {
+      ToastMsg(passwordError);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      ToastMsg('Passwords do not match');
+      return;
+    }
+
+    try {
+      showLoader();
+      const data = { 
+        email: email, 
+        password: newPassword,
+        otp: parseInt(otp)
+      };
+      const response = await apiPost('/api/user/forgot/otpverify', data);
+      console.log('OTP Verify Response:', response);
 
       if (response?.statusCode === 200) {
-        ToastMsg(response?.message || 'Password updated successfully')
-        hideLoader()
-        // Navigate back to login screen
-        navigation.navigate('Login')
+        ToastMsg(response?.message || 'Password reset successfully');
+        navigation.navigate('Login');
       } else {
-        hideLoader()
-        ToastMsg(response?.message || 'Failed to update password')
+        ToastMsg(response?.message || 'Failed to reset password');
       }
+      hideLoader();
     } catch (error) {
-      hideLoader()
+      hideLoader();
       if (error?.message) {
-        ToastMsg(error?.message)
+        ToastMsg(error?.message);
+        console.log('OTP Verify Error:', error);
       } else {
-        ToastMsg('Network Error')
+        ToastMsg('Network Error');
       }
     }
-  }
+  };
 
-  useEffect(() => {
-    role()
-  }, [activeTab])
-
-  const role = async () => {
-    if (activeTab === 'Influencers') {
-      setloggedInby('Influencers')
-    } else {
-      setloggedInby('Brands')
-    }
-  }
-
-  const renderHeader = () => {
-    return (
-      <Row style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          {/* <BackMsg /> */}
-          <Ionicons name='chevron-back' size={30} color={isDarkMode ? white : black} />
-
-        </TouchableOpacity>
-        <CustomText style={styles.headerText}>Reset Password</CustomText>
-      </Row>
-    )
-  }
-
-  const renderTabs = () => {
-    return (
-      <Row style={styles.tabsContainer}>
-        <TouchableOpacity
-          onPress={() => setActiveTab('Influencers')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                activeTab === 'Influencers' ? App_Primary_color : 'transparent',
-            },
-          ]}>
-          <CustomText
-            style={[
-              styles.tabText,
-              {
-                color:
-                  activeTab === 'Influencers' ? 'white' : App_Primary_color,
-              },
-            ]}>
-            Influencers
-          </CustomText>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => setActiveTab('Brands')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                activeTab === 'Brands' ? App_Primary_color : 'transparent',
-            },
-          ]}>
-          <CustomText
-            style={[
-              styles.tabText,
-              {
-                color: activeTab === 'Brands' ? 'white' : App_Primary_color,
-              },
-            ]}>
-            Brands
-          </CustomText>
-        </TouchableOpacity>
-      </Row>
-    )
-  }
-
-  const renderInputItems = () => {
-    return (
-      <View style={styles.logoInputContainer}>
-        <View style={styles.inputContainer}>
-          <CustomInputField
-            placeholder={'Email'}
-            onChangeText={setEmail}
-            label={'Email'}
-            value={email}
-            keyboardType={'email-address'}
-            autoCapitalize={'none'}
-          />
-
-          <CustomInputField
-            placeholder={'Current Password'}
-            icon={<AntDesign name={'eye'} color={isDarkMode ? white : black} size={20} />}
-            onChangeText={setOldPassword}
-            secureTextEntry={true}
-            label={'Current Password'}
-            value={oldPassword}
-            isPassword
-          />
-
-          <CustomInputField
-            placeholder={'New Password'}
-            icon={<AntDesign name={'eye'} color={isDarkMode ? white : black} size={20} />}
-            onChangeText={setNewPassword}
-            secureTextEntry={true}
-            label={'New Password'}
-            value={newPassword}
-            isPassword
-          />
-
-          <CustomText style={styles.infoText}>
-            Please enter your email and current password to set a new password.
-          </CustomText>
-        </View>
-      </View>
-    )
-  }
-
-  const renderWhiteBgItems = () => {
-    return (
-      <ScrollView style={styles.scrollViewContainer}>
-        {renderInputItems()}
-        {renderButton()}
-      </ScrollView>
-    )
-  }
-
-  const renderButton = () => {
-    return (
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          style={styles.resetButton}
-          title={'Reset Password'}
-          onPress={onSubmit}
-        />
-
-        <Row style={styles.backToLoginRow}>
-          <CustomText style={styles.backToLoginText}>
-            Remember your password?{' '}
-          </CustomText>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <CustomText style={styles.backToLoginLink}>Back to Login</CustomText>
-          </TouchableOpacity>
-        </Row>
-      </View>
-    )
-  }
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: isDarkMode ? darkMode25 : 'white',
       flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : '#ffffff',
     },
-    headerRow: {
-      marginTop: 50,
-      marginHorizontal: 20,
-      gap: 75,
-    },
-    headerText: {
-      color: isDarkMode ? 'white' : 'black',
-      fontFamily: FONTS_FAMILY.Poppins_Medium,
-      fontSize: 20,
-    },
-    tabsContainer: {
-      marginHorizontal: 20,
-      marginTop: 20,
-      gap: 10,
+    header: {
+      flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#D43C3114',
-      justifyContent: 'center',
+      paddingHorizontal: 20,
+      paddingTop: 50,
+      paddingBottom: 20,
+    },
+    backButton: {
       padding: 5,
-      borderRadius: 12,
-      alignSelf: 'center',
     },
-    tabButton: {
-      paddingHorizontal: 40,
-      paddingVertical: 8,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: App_Primary_color,
-    },
-    tabText: {
-      fontFamily: FONTS_FAMILY.Poppins_Medium,
-      fontSize: 14,
-    },
-    logoInputContainer: {
-      alignItems: 'center',
-      marginTop: 0,
-      gap: 20,
-    },
-    inputContainer: {
-      gap: 25,
-    },
-    infoText: {
-      textAlign: 'center',
-      color: 'rgba(202, 202, 202, 1)',
-      fontFamily: FONTS_FAMILY.Poppins_Medium,
-      fontSize: 12,
-      marginTop: 10,
-      lineHeight: 18,
+    backArrow: {
+      fontSize: 24,
+      color: isDarkMode ? white : '#333',
     },
     scrollViewContainer: {
+      flexGrow: 1,
+    },
+    content: {
       flex: 1,
-      backgroundColor: isDarkMode ? darkMode25 : 'white',
-      marginTop: 30,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
       paddingHorizontal: 20,
-      paddingVertical: 20,
+      paddingTop: 20,
+      marginTop: 100,
+      paddingBottom: 100,
     },
-    buttonContainer: {
-      alignItems: 'center',
+    title: {
+      fontSize: 24,
+      fontFamily: FONTS_FAMILY.Poppins_Bold,
+      color: isDarkMode ? white : '#000',
+      marginBottom: 8,
     },
-    resetButton: {
-      marginTop: 40,
+    subtitle: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_Regular,
+      color: isDarkMode ? 'white' : '#666',
+      lineHeight: 22,
+      marginBottom: 40,
     },
-    backToLoginRow: {
-      gap: 10,
-      marginTop: 30,
-    },
-    backToLoginText: {
-      fontSize: 12,
-      fontFamily: FONTS_FAMILY.Poppins_Medium,
-    },
-    backToLoginLink: {
-      fontSize: 12,
-      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    emailText: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
       color: App_Primary_color,
     },
-    bottomIndicator: {
-      height: 5,
-      width: 134,
-      backgroundColor: 'rgba(202, 202, 202, 1)',
-      alignSelf: 'center',
-      position: 'absolute',
-      bottom: 8,
-      borderRadius: 8,
+    inputContainer: {
+      gap: 15,
+      marginBottom: 30,
     },
-  })
+    otpContainer: {
+      marginBottom: 20,
+    },
+    otpLabel: {
+      fontSize: 16,
+      color: isDarkMode ? 'white' : '#666',
+      marginBottom: 15,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+    },
+    otpInput: {
+      marginBottom: 20,
+    },
+    resendContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 30,
+    },
+    resendText: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_Regular,
+      color: isDarkMode ? 'white' : '#666',
+    },
+    resendButton: {
+      marginLeft: 5,
+    },
+    resendButtonText: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+      color: canResend ? App_Primary_color : (isDarkMode ? '#666' : '#999'),
+    },
+    timerText: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_Medium,
+      color: App_Primary_color,
+      marginLeft: 5,
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: isDarkMode ? darkMode25 : '#ffffff',
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      paddingBottom: 70,
+    },
+    continueButton: {
+      backgroundColor: App_Primary_color,
+      borderRadius: 25,
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    continueButtonText: {
+      color: '#ffffff',
+      fontSize: 16,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+    },
+    loginRedirect: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      bottom: 20
+    },
+    loginText: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_Regular,
+      color: isDarkMode ? 'white' : '#666',
+    },
+    loginLink: {
+      fontSize: 14,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+      color: App_Primary_color,
+      marginLeft: 4,
+    },
+  });
+
+  const renderStep1 = () => (
+    <>
+      <Text style={styles.title}>Forgot Password</Text>
+      <Text style={styles.subtitle}>
+        Enter your email address to receive a verification code
+      </Text>
+
+      <View style={styles.inputContainer}>
+        <CustomInputField
+          label={'Email'}
+          placeholder={'Enter your email address'}
+          onChangeText={setEmail}
+          value={email}
+        />
+      </View>
+    </>
+  );
+
+  const renderStep2 = () => (
+    <>
+      <Text style={styles.title}>Verify OTP</Text>
+      <Text style={styles.subtitle}>
+        We have sent a verification code to{'\n'}
+        <Text style={styles.emailText}>{email}</Text>
+      </Text>
+
+      {/* OTP Input */}
+      <View style={styles.otpContainer}>
+        <Text style={styles.otpLabel}>Enter OTP</Text>
+        <OtpInput
+          numberOfDigits={4}
+          focusColor={App_Primary_color}
+          focusStickBlinkingDuration={500}
+          onTextChange={(text) => setOtp(text)}
+          onFilled={(text) => setOtp(text)}
+          textInputProps={{
+            accessibilityLabel: "One-Time Password",
+          }}
+          theme={{
+            containerStyle: styles.otpInput,
+            pinCodeContainerStyle: {
+              width: 60,
+              height: 60,
+              borderRadius: 12,
+              backgroundColor: isDarkMode ? dark55 : '#F2F2F3',
+              borderColor: isDarkMode ? dark33 : '#ddd',
+              borderWidth: 1,
+            },
+            pinCodeTextStyle: {
+              fontSize: 18,
+              fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+              color: isDarkMode ? white : '#333',
+            },
+            focusStickStyle: {
+              backgroundColor: App_Primary_color,
+            },
+            focusedPinCodeContainerStyle: {
+              borderColor: App_Primary_color,
+              borderWidth: 2,
+            },
+          }}
+        />
+      </View>
+
+      {/* Resend OTP */}
+      <View style={styles.resendContainer}>
+        <Text style={styles.resendText}>Didn't receive the code?</Text>
+        <TouchableOpacity
+          style={styles.resendButton}
+          onPress={onResendOTP}
+          disabled={!canResend}
+        >
+          <Text style={styles.resendButtonText}>
+            {canResend ? 'Resend' : 'Resend in'}
+          </Text>
+        </TouchableOpacity>
+        {!canResend && (
+          <Text style={styles.timerText}>{formatTime(timer)}</Text>
+        )}
+      </View>
+
+      {/* Password Fields */}
+      <View style={styles.inputContainer}>
+        <CustomInputField
+          label={'New Password'}
+          placeholder={'Enter new password'}
+          icon={<AntDesign name={'eye'} color={isDarkMode ? white : 'black'} size={20} />}
+          onChangeText={setNewPassword}
+          value={newPassword}
+          secureTextEntry={true}
+          isPassword
+        />
+
+        <CustomInputField
+          label={'Confirm Password'}
+          placeholder={'Confirm new password'}
+          icon={<AntDesign name={'eye'} color={isDarkMode ? white : 'black'} size={20} />}
+          onChangeText={setConfirmPassword}
+          value={confirmPassword}
+          secureTextEntry={true}
+          isPassword
+        />
+      </View>
+    </>
+  );
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        translucent={true}
-        backgroundColor='transparent'
-        barStyle={isDarkMode ? white : 'dark-content'}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <StatusBar 
+        barStyle={isDarkMode ? 'light-content' : "dark-content"} 
+        backgroundColor={isDarkMode ? darkMode25 : "#ffffff"} 
       />
-      {renderHeader()}
-      {renderTabs()}
-      {renderWhiteBgItems()}
-    </View>
-  )
-}
 
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            if (step === 2) {
+              setStep(1);
+              setOtp('');
+              setNewPassword('');
+              setConfirmPassword('');
+              setTimer(60);
+              setCanResend(false);
+            } else {
+              navigation.goBack();
+            }
+          }}
+        >
+          <Ionicons 
+            name="arrow-back" 
+            style={styles.backArrow}
+          />
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContainer}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Content */}
+        <View style={styles.content}>
+          {step === 1 ? renderStep1() : renderStep2()}
+        </View>
+      </ScrollView>
 
-export default ForgotPassword
+      {/* Button - Fixed at bottom */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.continueButton}
+          onPress={step === 1 ? onSendOTP : onVerifyAndReset}
+        >
+          <Text style={styles.continueButtonText}>
+            {step === 1 ? 'Send OTP' : 'Reset Password'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.loginRedirect}>
+        <Text style={styles.loginText}>Remember your password?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginLink}>Sign in</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  );
+};
+
+export default ForgotPassword;

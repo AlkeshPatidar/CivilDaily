@@ -379,16 +379,28 @@ import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../comm
 import { BackWhite, ForwordChev } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import { useSelector } from 'react-redux';
+import { clearAsyncStorage } from '../../utils/Apis';
 
-const ProfilePage = ({navigation}) => {
+const ProfilePage = ({ navigation }) => {
+
+    let selector = useSelector(state => state?.user?.userData);
+      if (Object.keys(selector).length != 0) {
+          selector = JSON.parse(selector);
+      }
+
+  const onLogout = async () => {
+    await clearAsyncStorage()
+    navigation.replace('Login')
+  }
+
   const menuItems = [
     {
       section: 'General',
       items: [
-        { icon: '📍', title: 'Address Detail', onPress: () => {navigation.navigate('AddressDetailsPage') } },
+        { icon: '📍', title: 'Address Detail', onPress: () => { navigation.navigate('AddressDetailsPage') } },
         { icon: '📦', title: 'Pickup Option', onPress: () => { } },
-        { icon: '🧾', title: 'My Orders', onPress: () => {navigation.navigate('MyOrdersPage') } },
-        { icon: 'ℹ️', title: 'Appearance', onPress: () => {navigation.navigate('AppearancePage') } },
+        { icon: '🧾', title: 'My Orders', onPress: () => { navigation.navigate('MyOrdersPage') } },
+        { icon: 'ℹ️', title: 'Appearance', onPress: () => { navigation.navigate('AppearancePage') } },
         { icon: '🔒', title: 'Change Password', onPress: () => { } },
       ],
     },
@@ -396,8 +408,8 @@ const ProfilePage = ({navigation}) => {
       section: 'Support',
       items: [
         { icon: '💬', title: 'Need Help? Lets Chat', onPress: () => { } },
-        { icon: '🔒', title: 'Privacy Policy', onPress: () => { navigation.navigate('PrivacyPolicy')} },
-        { icon: '📄', title: 'Terms of Service', onPress: () => {navigation.navigate('TermsAndcondition') } },
+        { icon: '🔒', title: 'Privacy Policy', onPress: () => { navigation.navigate('PrivacyPolicy') } },
+        { icon: '📄', title: 'Terms of Service', onPress: () => { navigation.navigate('TermsAndcondition') } },
       ],
     },
   ];
@@ -423,157 +435,158 @@ const ProfilePage = ({navigation}) => {
   );
 
   const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:'#F8F9FA',
-  },
-  header: {
-    paddingTop: 10,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backArrow: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: '300',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  headerRight: {
-    width: 40,
-  },
-  profileCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 15,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  profileEmail: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14,
-  },
-  editButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editIcon: {
-    color: 'white',
-    fontSize: 18,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: isDarkMode? darkMode25:  'white',
-    marginTop: -15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 30,
-  },
-  section: {
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color:isDarkMode?white: '#1A1A1A',
-    marginBottom: 15,
-    paddingHorizontal: 20,
-  },
-  menuContainer: {
-    backgroundColor:isDarkMode? dark33:'#F8F9FA',
-    marginHorizontal: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    backgroundColor:isDarkMode? dark33: '#F8F8F8'
-  },
-  menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor:isDarkMode?dark55: '#F8F9FA',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  iconText: {
-    fontSize: 16,
+    container: {
+      flex: 1,
+      backgroundColor: '#F8F9FA',
+    },
+    header: {
+      paddingTop: 10,
+      paddingBottom: 30,
+      paddingHorizontal: 20,
+    },
+    headerContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 30,
+    },
+    backButton: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    backArrow: {
+      color: 'white',
+      fontSize: 24,
+      fontWeight: '300',
+    },
+    headerTitle: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    headerRight: {
+      width: 40,
+    },
+    profileCard: {
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      borderRadius: 16,
+      padding: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    profileImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      marginRight: 15,
+    },
+    profileInfo: {
+      flex: 1,
+    },
+    profileName: {
+      color: 'white',
+      fontSize: 20,
+      fontWeight: '600',
+      marginBottom: 4,
+    },
+    profileEmail: {
+      color: 'rgba(255, 255, 255, 0.8)',
+      fontSize: 14,
+    },
+    editButton: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    editIcon: {
+      color: 'white',
+      fontSize: 18,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : 'white',
+      marginTop: -15,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      paddingTop: 30,
+    },
+    section: {
+      marginBottom: 30,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+      color: isDarkMode ? white : '#1A1A1A',
+      marginBottom: 15,
+      paddingHorizontal: 20,
+    },
+    menuContainer: {
+      backgroundColor: isDarkMode ? dark33 : '#F8F9FA',
+      marginHorizontal: 20,
+      borderRadius: 12,
+      overflow: 'hidden',
+    },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 6,
+      paddingHorizontal: 20,
+      backgroundColor: 'white',
+      borderBottomWidth: 1,
+      borderBottomColor: '#CCCCCC',
+      backgroundColor: isDarkMode ? dark33 : '#F8F8F8'
+    },
+    menuItemLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    iconContainer: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: isDarkMode ? dark55 : '#F8F9FA',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 15,
+    },
+    iconText: {
+      fontSize: 16,
 
-  },
-  menuItemText: {
-    fontSize: 14,
-    color:isDarkMode?'white': '#1A1A1A',
-    fontFamily: FONTS_FAMILY.Poppins_Medium
-  },
-  chevron: {
-    fontSize: 20,
-    color: '#C7C7CC',
-    fontWeight: '300',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 40,
-    marginTop: 10,
-    marginBottom: 30,
-  },
-  logoutIcon: {
-    color: '#FF3B30',
-    fontSize: 18,
-  },
-  logoutText: {
-    fontSize: 16,
-    color: '#FF3B30',
-    fontWeight: '500',
-  },
-});
+    },
+    menuItemText: {
+      fontSize: 14,
+      color: isDarkMode ? 'white' : '#1A1A1A',
+      fontFamily: FONTS_FAMILY.Poppins_Medium
+    },
+    chevron: {
+      fontSize: 20,
+      color: '#C7C7CC',
+      fontWeight: '300',
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 40,
+      marginTop: -20,
+      marginBottom: 120,
+      backgroundColor: isDarkMode ? dark33 : '#F8F8F8'
+    },
+    logoutIcon: {
+      color: '#FF3B30',
+      fontSize: 18,
+    },
+    logoutText: {
+      fontSize: 16,
+      color: '#FF3B30',
+      fontWeight: '500',
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -602,11 +615,11 @@ const ProfilePage = ({navigation}) => {
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>John Doe</Text>
-            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
+            <Text style={styles.profileName}>{selector?.name}</Text>
+            <Text style={styles.profileEmail}>{selector?.email}</Text>
           </View>
           <TouchableOpacity style={styles.editButton}
-          onPress={()=>navigation.navigate('EditProfile')}
+            onPress={() => navigation.navigate('EditProfile')}
           >
             <Text style={styles.editIcon}>✏️</Text>
           </TouchableOpacity>
@@ -614,6 +627,7 @@ const ProfilePage = ({navigation}) => {
       </LinearGradient>
 
       {/* Menu Content */}
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {menuItems.map((section) => (
           <View key={section.section} style={styles.section}>
@@ -623,9 +637,10 @@ const ProfilePage = ({navigation}) => {
             </View>
           </View>
         ))}
-
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton}
+          onPress={() => onLogout()}
+        >
           <View style={styles.menuItemLeft}>
             <View style={styles.iconContainer}>
               <Text style={styles.logoutIcon}>⚪</Text>
@@ -633,6 +648,7 @@ const ProfilePage = ({navigation}) => {
             <Text style={styles.logoutText}>Log Out</Text>
           </View>
         </TouchableOpacity>
+
       </ScrollView>
     </SafeAreaView>
   );

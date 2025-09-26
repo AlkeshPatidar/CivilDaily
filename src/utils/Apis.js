@@ -4,7 +4,7 @@ import { showError } from './helperFunctions';
 import RNRestart from 'react-native-restart';
 import { Alert } from 'react-native';
 
-export const BASE_URL = 'https://influencer-brands-backend.vercel.app';
+export const BASE_URL = 'https://rr-store-backend.vercel.app';
 
 
 export async function getHeaders() {

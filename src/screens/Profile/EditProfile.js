@@ -1,369 +1,4 @@
-// import React from 'react'
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   SafeAreaView,
-//   StatusBar,
-//   TouchableOpacity,
-//   Image,
-//   ScrollView,
-// } from 'react-native'
-// import {Back, BackArrow, EditIcon, ForwordChev} from '../../assets/SVGs'
-// import {FONTS_FAMILY} from '../../assets/Fonts'
-// import IMG from '../../assets/Images'
-// import {App_Primary_color, darkMode25, darkOfPrimary, white} from '../../common/Colors/colors'
-// import {clearAsyncStorage} from '../../utils/Apis'
-// import {showError} from '../../utils/helperFunctions'
-// import {useSelector} from 'react-redux'
-// import {setEnabled} from 'react-native/Libraries/Performance/Systrace'
-// import Ionicons from 'react-native-vector-icons/Ionicons'
-
-// const ProfileScreen = ({navigation}) => {
-//     const {isDarkMode} = useSelector(state => state.theme)
-
-//   const menuItems = [
-//     {icon: '💳', title: 'Bank Account', onPress: () => {}},
-//     // {icon: '📄', title: 'All Attendees', onPress: () => {navigation.navigate('AtedessReq')}},
-//     {icon: '📋', title: 'Delivery Details', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
-//     {icon: '📊', title: 'Linkes Social Midea', onPress: () => {}},
-//     {icon: '🔔', title: 'Notification Settings', onPress: () => {}},
-//     // {icon: '🌐', title: 'Language Settings', onPress: () => {}},
-//     // {icon: '📄', title: 'Disclaimer', onPress: () => {}},
-//     // {icon: '❌', title: 'Cancellation', onPress: () => {}},
-//     {icon: '🔒', title: 'Terms & Condition', onPress: () => {navigation.navigate('TermsAndConditionsScreen')}},
-//     {icon: '🔒', title: 'Privacy Policy', onPress: () => {navigation.navigate('PrivacyPolicyScreen')}},
-//     {icon: '❓', title: 'Support', onPress: () => {navigation.navigate('Support')}},
-//     {icon: '⚙️', title: 'Settings', onPress: () => {navigation.navigate('Settings')}},
-
-//     {icon: 'ℹ️', title: 'About', onPress: () => {navigation.navigate('About')}},
-//   ]
-
-//   let selector = useSelector(state => state?.user?.userData)
-//   if (Object.keys(selector).length != 0) {
-//     selector = JSON.parse(selector)
-//   }
-
-//   console.log(selector, 'Selector')
-
-//   const onLogout = async () => {
-//     try {
-//       await clearAsyncStorage()
-//       navigation?.replace('Splash1')
-//     } catch (error) {
-//       showError('Error while logging out')
-//     }
-//   }
-
-//   const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor:isDarkMode?darkMode25: 'white',
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     paddingHorizontal: 20,
-//     paddingVertical: 15,
-//     backgroundColor: App_Primary_color,
-//     // marginTop: 30,
-//   },
-//   backButton: {
-//     width: 30,
-//     height: 30,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   backArrow: {
-//     color: 'white',
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//   },
-//   headerTitle: {
-//     color: 'white',
-//     fontSize: 18,
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//   },
-//   settingsButton: {
-//     width: 30,
-//     height: 30,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   settingsIcon: {
-//     fontSize: 20,
-//   },
-//   scrollView: {
-//     flex: 1,
-//   },
-//   profileSection: {
-//     flexDirection: 'row',
-//     paddingHorizontal: 20,
-//     paddingBottom: 20,
-//     backgroundColor: App_Primary_color,
-//     alignItems: 'center',
-//   },
-//   profileImage: {
-//     width: 60,
-//     height: 60,
-//     borderRadius: 40,
-//     backgroundColor: '#ddd',
-//   },
-//   profileInfo: {
-//     marginLeft: 15,
-//     flex: 1,
-//   },
-//   profileName: {
-//     color: 'white',
-//     fontSize: 18,
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//     // marginBottom: 5,
-//   },
-//   profileEmail: {
-//     color: 'white',
-//     fontSize: 14,
-//     opacity: 0.9,
-//     marginBottom: 10,
-//   },
-//   editButton: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     gap: 8,
-//   },
-//   editIcon: {
-//     // marginRight: 20,
-//     // fontSize: 14,
-//   },
-//   editText: {
-//     color: 'white',
-//     fontSize: 14,
-//     textDecorationLine: 'underline',
-//   },
-//   balanceCard: {
-//     backgroundColor: 'white',
-//     marginHorizontal: 20,
-//     marginTop: -10,
-//     borderRadius: 15,
-//     padding: 20,
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//     marginBottom: 20,
-//   },
-//   balanceHeader: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     marginBottom: 15,
-//   },
-//   dollarIcon: {
-//     width: 30,
-//     height: 30,
-//     borderRadius: 15,
-//     backgroundColor: '#FFD700',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   dollarText: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//     fontSize: 16,
-//   },
-//   viewHistoryButton: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   viewHistoryText: {
-//     color: '#E85A4F',
-//     fontSize: 12,
-//     marginRight: 5,
-//     fontFamily: FONTS_FAMILY.Poppins_Regular,
-//   },
-//   viewHistoryArrow: {
-//     color: '#E85A4F',
-//     fontSize: 16,
-//   },
-//   balanceAmount: {
-//     fontSize: 32,
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//     color: '#333',
-//     // marginBottom: 5,
-//     alignSelf: 'center',
-//   },
-//   balanceEquivalent: {
-//     fontSize: 14,
-//     color: '#666',
-//     alignSelf: 'center',
-//     fontFamily: FONTS_FAMILY.Poppins_Medium,
-//   },
-//   menuContainer: {
-//       backgroundColor:isDarkMode?darkMode25: 'white',
-//     marginHorizontal: 0,
-//     // borderTopLeftRadius: 20,
-//     // borderTopRightRadius: 20,
-//     paddingTop: 10,
-//     flex: 1,
-//   },
-//   menuItem: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     paddingHorizontal: 20,
-//     paddingVertical: 14,
-//     borderBottomWidth: 0.5,
-//     borderBottomColor:isDarkMode?'gray': '#f0f0f0',
-//   },
-//   menuLeft: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     flex: 1,
-//   },
-//   menuIcon: {
-//     fontSize: 12,
-//     marginRight: 12,
-//     width: 25,
-//   },
-//   menuTitle: {
-//     fontSize: 14,
-//     color:isDarkMode?white: '#333',
-//     fontFamily: FONTS_FAMILY.Poppins_Regular,
-//   },
-//   menuArrow: {
-//     fontSize: 18,
-//     color: '#ccc',
-//   },
-//   logoutButton: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     backgroundColor:isDarkMode?'#777': '#EDEFF2',
-//     paddingVertical: 12,
-//     borderRadius: 8,
-//     // paddingHorizontal:60,
-//     marginTop: 10,
-//     width: '90%',
-//     alignSelf: 'center',
-//   },
-//   logoutIcon: {
-//     fontSize: 22,
-//     marginRight: 10,
-//     color: darkOfPrimary,
-//     bottom:2
-//   },
-//   logoutText: {
-//     fontSize: 16,
-//     color: App_Primary_color,
-//     fontWeight: '500',
-//   },
-//   bottomIndicator: {
-//     width: 150,
-//     height: 60,
-//     // backgroundColor: '#333',
-//     alignSelf: 'center',
-//     borderRadius: 2,
-//     marginTop: 20,
-//     marginBottom: 10,
-//   },
-// })
-
-//   return (
-//     <View style={styles.container}>
-//       <StatusBar
-//         barStyle='light-content'
-//         backgroundColor={App_Primary_color}
-//         translucent={false}
-//       />
-//       {/* Header */}
-//       <View style={styles.header}>
-//         <TouchableOpacity
-//         onPress={()=>navigation.goBack()}
-//         >
-//         <BackArrow />
-
-//         </TouchableOpacity>
-//         <Text style={styles.headerTitle}>My Profile</Text>
-//         <TouchableOpacity style={styles.settingsButton}>
-//           <Text style={styles.settingsIcon}>☀️</Text>
-//         </TouchableOpacity>
-//       </View>
-
-//       <ScrollView
-//         style={styles.scrollView}
-//         showsVerticalScrollIndicator={false}>
-//         {/* Profile Section */}
-//         <View style={styles.profileSection}>
-//           <Image source={selector?.Image?{uri:selector?.Image}:IMG.AvatorImage} style={styles.profileImage} />
-//           <View style={styles.profileInfo}>
-//             <Text style={styles.profileName}>
-//               {selector?.FirstName}
-//               {selector?.LastName}
-//             </Text>
-//             <Text style={styles.profileEmail}>{selector?.Email}</Text>
-//             <TouchableOpacity style={styles.editButton}
-//             onPress={() => navigation.navigate('EditInfluencerProfileScreen')}>
-//               <EditIcon />
-//               <Text style={styles.editText}>Edit Profile</Text>
-//             </TouchableOpacity>
-//           </View>
-//         </View>
-
-//         {/* <View style={styles.balanceCard}>
-//           <View style={styles.balanceHeader}>
-//             <View style={styles.dollarIcon}>
-//               <Text style={styles.dollarText}>$</Text>
-//             </View>
-//             <TouchableOpacity style={styles.viewHistoryButton}>
-//               <Text style={styles.viewHistoryText}>View History</Text>
-//               <ForwordChev />
-//             </TouchableOpacity>
-//           </View>
-//           <Text style={styles.balanceAmount}>500.000</Text>
-//           <Text style={styles.balanceEquivalent}>Equivalent to Rp 500.000</Text>
-//         </View> */}
-
-//         {/* Menu Items */}
-//         <View style={styles.menuContainer}>
-//           {menuItems.map((item, index) => (
-//             <TouchableOpacity
-//               key={index}
-//               style={styles.menuItem}
-//               onPress={item.onPress}>
-//               <View style={styles.menuLeft}>
-//                 <Text style={styles.menuIcon}>{item.icon}</Text>
-//                 <Text style={styles.menuTitle}>{item.title}</Text>
-//               </View>
-//               {/* <Text style={styles.menuArrow}>›</Text> */}
-//               <Ionicons name='chevron-forward' color={isDarkMode?'white':'black'} size={20} />
-//             </TouchableOpacity>
-//           ))}
-//         </View>
-
-//         {/* Log Out Button */}
-//         <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-//           <Text style={styles.logoutIcon}>⟲</Text>
-//           <Text style={styles.logoutText}>Log Out</Text>
-//         </TouchableOpacity>
-
-//         {/* Bottom Indicator */}
-//         <View style={styles.bottomIndicator} />
-//       </ScrollView>
-//     </View>
-//   )
-// }
-
-
-
-// export default ProfileScreen
-
-
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -373,6 +8,8 @@ import {
   StyleSheet,
   StatusBar,
   SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { App_Primary_color, dark55, darkMode25 } from '../../common/Colors/colors';
@@ -380,262 +17,275 @@ import { BackWhite, ForwordChev } from '../../assets/SVGs';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import CustomInputField from '../../components/wrapper/CustomInput';
 import CustomButton from '../../components/Button';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import useLoader from '../../utils/LoaderHook';
+import { ToastMsg } from '../../utils/helperFunctions';
+import { inValidEmail, inValidNum } from '../../utils/CheckValidation';
+import { apiGet, apiPut, getItem } from '../../utils/Apis';
+import urls from '../../config/urls';
+import { setUser } from '../../redux/reducer/user';
 
-const EditProfile = ({navigation}) => {
-  const menuItems = [
-    {
-      section: 'General',
-      items: [
-        { icon: '📍', title: 'Address Detail', onPress: () => { } },
-        { icon: '📦', title: 'Pickup Option', onPress: () => { } },
-        { icon: '🧾', title: 'My Orders', onPress: () => { } },
-        { icon: 'ℹ️', title: 'Appearance', onPress: () => { } },
-        { icon: '🔒', title: 'Change Password', onPress: () => { } },
-      ],
+const EditProfile = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { showLoader, hideLoader } = useLoader();
+
+  // Get user data from selector
+  let selector = useSelector(state => state?.user?.userData);
+  if (Object.keys(selector).length != 0) {
+    selector = JSON.parse(selector);
+  }
+
+  // Form states - initialize with user data
+  const [name, setName] = useState(selector?.name || '');
+  const [email, setEmail] = useState(selector?.email || '');
+  const [phone, setPhone] = useState(selector?.mobile?.toString() || '');
+
+  const { isDarkMode } = useSelector(state => state.theme);
+
+  const onUpdateProfile = async () => {
+    const token = await getItem('token')
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      "name": name,
+      "email": email,
+      "phone": phone
+    });
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+
+    showLoader()
+    fetch("https://rr-store-backend.vercel.app/api/user/update-self", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log('result::', result);
+
+        getUserProfile(urls.getSelf)
+
+        ToastMsg('User Updated Successfully')
+        hideLoader()
+      }
+      )
+      .catch((error) => {
+        console.error(error)
+        hideLoader()
+      });
+  };
+
+  const getUserProfile = async (endPoint) => {
+    try {
+      showLoader()
+      const response = await apiGet(endPoint)
+      dispatch(setUser(JSON.stringify(response?.data)))
+      navigation?.goBack()
+
+      hideLoader()
+    } catch (error) {
+      hideLoader()
+    }
+  }
+
+
+  // Call this function before API call to debug
+  // debugApiConfiguration();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : '#F8F9FA',
     },
-    {
-      section: 'Support',
-      items: [
-        { icon: '💬', title: 'Need Help? Lets Chat', onPress: () => { } },
-        { icon: '🔒', title: 'Privacy Policy', onPress: () => { navigation.navigate('PrivacyPolicy')} },
-        { icon: '📄', title: 'Terms of Service', onPress: () => {navigation.navigate('TermsAndcondition') } },
-      ],
+    header: {
+      paddingTop: 10,
+      paddingBottom: 0,
+      paddingHorizontal: 20,
     },
-  ];
-
-    const { isDarkMode } = useSelector(state => state.theme);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:isDarkMode?darkMode25:  '#F8F9FA',
-  },
-  header: {
-    paddingTop: 10,
-    paddingBottom: 0,
-    paddingHorizontal: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backArrow: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: '300',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  headerRight: {
-    width: 40,
-  },
-  profileCard: {
-    backgroundColor:isDarkMode?dark55: '#9AB0EA',
-    borderRadius: 10,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical:10,
-    marginHorizontal:20
-  },
-  profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 15,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  profileEmail: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14,
-  },
-  editButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editIcon: {
-    color: 'white',
-    fontSize: 18,
-  },
-  content: {
-    flex: 1,
-    backgroundColor:isDarkMode?darkMode25: 'white',
-    // marginTop: -15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 30,
-    marginHorizontal:20,
-
-    
-  },
-  section: {
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-    color: '#1A1A1A',
-    marginBottom: 15,
-    paddingHorizontal: 20,
-  },
-  menuContainer: {
-    backgroundColor: '#F8F9FA',
-    marginHorizontal: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    backgroundColor: '#F8F8F8'
-  },
-  menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F8F9FA',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  iconText: {
-    fontSize: 16,
-  },
-  menuItemText: {
-    fontSize: 14,
-    color: '#1A1A1A',
-    fontFamily: FONTS_FAMILY.Poppins_Medium
-  },
-  chevron: {
-    fontSize: 20,
-    color: '#C7C7CC',
-    fontWeight: '300',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 40,
-    marginTop: 10,
-    marginBottom: 30,
-  },
-  logoutIcon: {
-    color: '#FF3B30',
-    fontSize: 18,
-  },
-  logoutText: {
-    fontSize: 16,
-    color: '#FF3B30',
-    fontWeight: '500',
-  },
-});
-
-
- 
+    headerContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 20,
+    },
+    backButton: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    backArrow: {
+      color: 'white',
+      fontSize: 24,
+      fontWeight: '300',
+    },
+    headerTitle: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    headerRight: {
+      width: 40,
+    },
+    profileCard: {
+      backgroundColor: isDarkMode ? dark55 : '#9AB0EA',
+      borderRadius: 10,
+      padding: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+      marginHorizontal: 20
+    },
+    profileImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      marginRight: 15,
+    },
+    profileInfo: {
+      flex: 1,
+    },
+    profileName: {
+      color: 'white',
+      fontSize: 20,
+      fontWeight: '600',
+      marginBottom: 4,
+    },
+    profileEmail: {
+      color: 'rgba(255, 255, 255, 0.8)',
+      fontSize: 14,
+    },
+    editButton: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    editIcon: {
+      color: 'white',
+      fontSize: 18,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: isDarkMode ? darkMode25 : 'white',
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      paddingTop: 30,
+      marginHorizontal: 20,
+      paddingHorizontal: 20,
+      paddingBottom: 100, // Add padding for button space
+    },
+    section: {
+      marginBottom: 30,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+      color: '#1A1A1A',
+      marginBottom: 15,
+      paddingHorizontal: 20,
+    },
+    inputContainer: {
+      gap: 15,
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: isDarkMode ? darkMode25 : '#F8F9FA',
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      paddingBottom: 40,
+    },
+  });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
 
-      {/* Header */}
-      <LinearGradient
-        colors={[App_Primary_color, App_Primary_color]}
-        style={styles.header}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton}
-          onPress={()=>navigation.goBack()}
-          >
-            {/* <Text style={styles.backArrow}>‹</Text> */}
-            <BackWhite />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit Profile</Text>
-          <View style={styles.headerRight} />
-        </View>
+        {/* Header */}
+        <LinearGradient
+          colors={[App_Primary_color, App_Primary_color]}
+          style={styles.header}
+        >
+          <View style={styles.headerContent}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <BackWhite />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Edit Profile</Text>
+            <View style={styles.headerRight} />
+          </View>
+        </LinearGradient>
 
         {/* Profile Card */}
-      
-      </LinearGradient>
-
         <View style={styles.profileCard}>
           <Image
             source={{
-              uri: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+              uri: selector?.profileImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
             }}
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>John Doe</Text>
-            <Text style={styles.profileEmail}>johndoe@fakemail.com</Text>
+            <Text style={styles.profileName}>{selector?.name || 'User Name'}</Text>
+            <Text style={styles.profileEmail}>{selector?.email || 'user@example.com'}</Text>
           </View>
-        
         </View>
 
-      {/* Menu Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-       <CustomInputField
-       label={'Name'}
-       placeholder={'Enter Name'}
-       />
+        {/* Form Content */}
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.inputContainer}>
+            <CustomInputField
+              label={'Name'}
+              placeholder={'Enter Name'}
+              value={name}
+              onChangeText={setName}
+            />
 
-        <CustomInputField
-       label={'Email'}
-       placeholder={'Enter Email'}
+            <CustomInputField
+              label={'Email'}
+              placeholder={'Enter Email'}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
 
-       />
+            <CustomInputField
+              label={'Phone Number'}
+              placeholder={'Enter Phone Number'}
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              maxLength={10}
+            />
+          </View>
+        </ScrollView>
 
-         <CustomInputField
-       label={'Number'}
-       placeholder={'Enter Number'}
-
-       />
-
-      </ScrollView>
-      <CustomButton
-      title={'Save'}
-      style={{
-        position:'absolute',
-        bottom:20,
-        width:'90%'
-      }}
-      />
-    </SafeAreaView>
+        {/* Save Button - Fixed at bottom */}
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            title={'Save'}
+            onPress={onUpdateProfile}
+          />
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
-
-
 
 export default EditProfile;
