@@ -761,21 +761,21 @@ const CartScreen = ({ navigation }) => {
     const fetchCurrentAndPrevious = async () => {
         try {
             showLoader()
-            
+
             // Determine the order type based on active tab
             const orderType = activeTab === 'Current Order' ? 'current' : 'previous';
-            
+
             const res = await apiGet(`/api/order/my?orderType=${orderType}`)
             console.log('Orders Response:', res?.data);
-            
+
             if (activeTab === 'Current Order') {
                 setCurrentOrders(res?.data || []);
-                    hideLoader()
+                hideLoader()
             } else if (activeTab === 'Previous Order') {
                 setPreviousOrders(res?.data || []);
-                    hideLoader()
+                hideLoader()
             }
-            
+
             hideLoader()
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -902,33 +902,34 @@ const CartScreen = ({ navigation }) => {
                                         </Text>
                                     )}
                                 </View>
-                                <SpaceBetweenRow style={{ gap: 80 }}>
+                                <SpaceBetweenRow style={{ gap: 0 }}>
                                     <Text style={styles.stockText}>
                                         Stock: {item.productId.stock}
                                     </Text>
                                     <TouchableOpacity
                                         onPress={() => deleteCartCarta(item?.productId?._id)}
-                                        style={{ left: 30 }}
+                                        style={{ left: 0 }}
                                     >
                                         <AntDesign name='delete' color='red' size={20} />
                                     </TouchableOpacity>
                                 </SpaceBetweenRow>
+                                <View style={styles.quantityContainer}>
+                                    <TouchableOpacity
+                                        style={styles.quantityButton}
+                                        onPress={() => updateQuantity(item._id, item.quantity - 1, item.productId.stock)}
+                                    >
+                                        <Text style={styles.quantityButtonText}>−</Text>
+                                    </TouchableOpacity>
+                                    <Text style={styles.quantityText}>{item.quantity}</Text>
+                                    <TouchableOpacity
+                                        style={styles.quantityButton}
+                                        onPress={() => updateQuantity(item._id, item.quantity + 1, item.productId.stock)}
+                                    >
+                                        <Text style={styles.quantityButtonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                            <View style={styles.quantityContainer}>
-                                <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => updateQuantity(item._id, item.quantity - 1, item.productId.stock)}
-                                >
-                                    <Text style={styles.quantityButtonText}>−</Text>
-                                </TouchableOpacity>
-                                <Text style={styles.quantityText}>{item.quantity}</Text>
-                                <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => updateQuantity(item._id, item.quantity + 1, item.productId.stock)}
-                                >
-                                    <Text style={styles.quantityButtonText}>+</Text>
-                                </TouchableOpacity>
-                            </View>
+
                         </View>
                     ))}
                 </View>
@@ -947,12 +948,12 @@ const CartScreen = ({ navigation }) => {
     const renderOrderCard = (order, isCurrentOrder = true) => {
         const statusColor = getStatusColor(order.orderStatus);
         const orderDate = new Date(order.createdAt).toLocaleDateString();
-        
+
         return (
             <View key={order._id} style={styles.orderCard}>
                 <View style={styles.orderHeader}>
-                    <Image 
-                        source={{ uri: order.items[0]?.productId?.images?.[0] || 'default' }} 
+                    <Image
+                        source={{ uri: order.items[0]?.productId?.images?.[0] || 'default' }}
                         style={styles.orderImage}
                         defaultSource={IMG.Potato}
                     />
@@ -1206,6 +1207,7 @@ const CartScreen = ({ navigation }) => {
         quantityContainer: {
             flexDirection: 'row',
             alignItems: 'center',
+            marginTop: 10
         },
         quantityButton: {
             backgroundColor: App_Primary_color,
@@ -1429,7 +1431,7 @@ const CartScreen = ({ navigation }) => {
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 {renderContent()}
-                <View style={{height:100}}/>
+                <View style={{ height: 100 }} />
             </ScrollView>
 
             {/* Checkout Button - Only show for My Cart tab with items */}

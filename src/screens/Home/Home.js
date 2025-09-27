@@ -22,6 +22,8 @@ import { apiGet } from '../../utils/Apis';
 import urls from '../../config/urls';
 import useLoader from '../../utils/LoaderHook';
 
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+
 export default function HomeScreen({ navigation }) {
     // Header Component
 
@@ -32,12 +34,15 @@ export default function HomeScreen({ navigation }) {
     const { showLoader, hideLoader } = useLoader()
     const [categories, setCategories] = useState([])
     const [allProducts, setAllProducts] = useState([])
+    const [banners, setBanners] = useState([])
+
 
 
     // console.log('Selector at home',selector);
     useEffect(() => {
         getCategories()
         getAllProduct()
+        getAllBanners()
     }, [])
 
     const getCategories = async () => {
@@ -46,6 +51,22 @@ export default function HomeScreen({ navigation }) {
             const res = await apiGet(urls?.getCategory)
             // console.log(res?.data);
             setCategories(res?.data)
+            hideLoader()
+
+
+        } catch (error) {
+            hideLoader()
+        }
+    }
+
+    // "https://rr-store-backend.vercel.app/api/banner/all
+
+     const getAllBanners = async () => {
+        try {
+            showLoader()
+            const res = await apiGet(urls?.getAllBanners)
+            console.log(res?.data);
+            setBanners(res?.data)
             hideLoader()
 
 
@@ -68,50 +89,125 @@ export default function HomeScreen({ navigation }) {
         }
     }
 
-    const renderHeader = () => (
-        <View style={styles.headerContainer}>
-            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+    // const renderHeader = () => (
+    //     <View style={styles.headerContainer}>
+    //         <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
 
-            <View style={styles.topBar}>
-                <View style={styles.leftHeader}>
-                    <Text style={styles.avatarText}>Deliver to</Text>
-                    <Row>
-                        <Text style={{ ...styles.avatarText, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Jakarta, Indonesia</Text>
-                        <TouchableOpacity>
-                            <DownChev />
-                        </TouchableOpacity>
-                    </Row>
-                </View>
+    //         <View style={styles.topBar}>
+    //             <View style={styles.leftHeader}>
+    //                 <Text style={styles.avatarText}>Deliver to</Text>
+    //                 <Row>
+    //                     <Text style={{ ...styles.avatarText, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Jakarta, Indonesia</Text>
+    //                     <TouchableOpacity>
+    //                         <DownChev />
+    //                     </TouchableOpacity>
+    //                 </Row>
+    //             </View>
 
-                <View style={styles.rightHeader}>
-                    <TouchableOpacity style={styles.iconButton}
-                        onPress={() => navigation.navigate('CartScreen')}
-                    >
-                        <Ionicons name="cart-outline" size={20} color="white" />
+    //             <View style={styles.rightHeader}>
+    //                 <TouchableOpacity style={styles.iconButton}
+    //                     onPress={() => navigation.navigate('CartScreen')}
+    //                 >
+    //                     <Ionicons name="cart-outline" size={20} color="white" />
+    //                 </TouchableOpacity>
+    //                 <TouchableOpacity style={styles.iconButton}>
+    //                     <Ionicons name="notifications-outline" size={20} color="white" />
+    //                 </TouchableOpacity>
+    //             </View>
+    //         </View>
+
+
+
+    //         <View style={styles.searchContainer}>
+    //             <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
+    //             <TextInput
+    //                 placeholder="Search for products..."
+    //                 placeholderTextColor="white"
+    //                 style={styles.searchInput}
+    //             />
+    //         </View>
+    //         <Image
+    //             source={IMG.HomeBanner}
+    //             style={{ height: 160, width: 320, zIndex: 1000, alignSelf: 'center', marginTop: 10 }}
+    //             resizeMode='contain'
+    //         />
+    //     </View>
+    // );
+
+
+const renderHeader = () => (
+    <View style={styles.headerContainer}>
+        <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+
+        <View style={styles.topBar}>
+            <View style={styles.leftHeader}>
+                <Text style={styles.avatarText}>Deliver to</Text>
+                <Row>
+                    <Text style={{ ...styles.avatarText, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Jakarta, Indonesia</Text>
+                    <TouchableOpacity>
+                        <DownChev />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <Ionicons name="notifications-outline" size={20} color="white" />
-                    </TouchableOpacity>
-                </View>
+                </Row>
             </View>
 
-
-
-            <View style={styles.searchContainer}>
-                <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
-                <TextInput
-                    placeholder="Search for products..."
-                    placeholderTextColor="white"
-                    style={styles.searchInput}
-                />
+            <View style={styles.rightHeader}>
+                <TouchableOpacity style={styles.iconButton}
+                    onPress={() => navigation.navigate('CartScreen')}
+                >
+                    <Ionicons name="cart-outline" size={20} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconButton}>
+                    <Ionicons name="notifications-outline" size={20} color="white" />
+                </TouchableOpacity>
             </View>
-            <Image
-                source={IMG.HomeBanner}
-                style={{ height: 160, width: 320, zIndex: 1000, alignSelf: 'center', marginTop: 10 }}
-                resizeMode='contain'
+        </View>
+
+        <View style={styles.searchContainer}>
+            <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
+            <TextInput
+                placeholder="Search for products..."
+                placeholderTextColor="white"
+                style={styles.searchInput}
             />
         </View>
-    );
+        
+        <View style={{ 
+            height: 160, 
+            width: 320, 
+            zIndex: 1000, 
+            alignSelf: 'center', 
+            marginTop: 10,
+            borderRadius: 8,
+            overflow: 'hidden'
+        }}>
+            <Carousel
+                data={[IMG.HomeBanner,IMG.HomeBanner,IMG.HomeBanner]}
+                renderItem={({ item }) => (
+                    <Image
+                        source={item}
+                        style={{ 
+                            height: 160, 
+                            width: 320,
+                            borderRadius: 8
+                        }}
+                        resizeMode='contain'
+                    />
+                )}
+                sliderWidth={320}
+                itemWidth={320}
+                autoplay={true}
+                autoplayDelay={500}
+                autoplayInterval={3000}
+                loop={true}
+                enableMomentum={false}
+                lockScrollWhileSnapping={true}
+                inactiveSlideScale={1}
+                inactiveSlideOpacity={1}
+            />
+        </View>
+    </View>
+);
+
 
     // Categories Component
     const renderCategories = () => {
@@ -140,12 +236,16 @@ export default function HomeScreen({ navigation }) {
 
                         <TouchableOpacity key={index} style={styles.categoryItem}>
                             <View style={[styles.categoryIcon, { backgroundColor: isDarkMode ? dark55 : '#d7e0f1ff' }]}>
+                                <Image source={{ uri: category?.image }}
+                                    style={{
+                                        height: 60, width: 90,
+                                        alignSelf: 'center',
+                                        borderRadius: 7
+                                    }}
+                                    // resizeMode='contain'
+                                />
                                 <Text style={styles.categoryText}>{category.name}</Text>
                                 {/* <Text style={styles.categoryEmoji}>{category.icon}</Text> */}
-                                <Image source={{ uri: category?.image }}
-                                    style={{ height: 60, width: 70, alignSelf: 'flex-end' }}
-                                    resizeMode='contain'
-                                />
                             </View>
                         </TouchableOpacity>
 
@@ -192,7 +292,8 @@ export default function HomeScreen({ navigation }) {
                             {/* {console.log('++++++++++++', item)
                             } */}
                             <Image source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} style={{
-                                height: 68, width: 80
+                                height: 68, width: 80,
+                                borderRadius:8
                             }} />
                             <View style={{ marginLeft: 20 }}>
                                 <Text style={styles.productName}>{item.name}</Text>
@@ -254,6 +355,10 @@ export default function HomeScreen({ navigation }) {
                 <ScrollView horizontal contentContainerStyle={styles.productsGrid}>
                     {allProducts?.map((item, index) => (
                         <View key={index} style={styles.productCard}>
+                              <Image source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} style={{
+                                height: 68, width: 70,
+                                borderRadius: 8
+                            }} />
                             <View>
                                 <Text style={styles.productName}>{'Egg Pasta'}</Text>
                                 <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>${item?.price}</Text>
@@ -268,12 +373,9 @@ export default function HomeScreen({ navigation }) {
                                 </View>
 
                             </View>
-                            <Image source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} style={{
-                                height: 68, width: 70,
-                                borderRadius: 20
-                            }} />
+                          
                             <TouchableOpacity
-                                style={{ position: 'absolute', right: 10, bottom: 10 }}
+                                style={{alignSelf:'flex-end'}}
                                 onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                             >
                                 <AddButton />
@@ -412,6 +514,7 @@ export default function HomeScreen({ navigation }) {
         categoryItem: {
             // alignItems: 'center',
             // flex: 1,
+            alignItems:'center'
         },
         categoryIcon: {
             width: 100,
@@ -420,8 +523,10 @@ export default function HomeScreen({ navigation }) {
             // justifyContent: 'center',
             // alignItems: 'center',
             // marginBottom: 8,
-            paddingTop: 8,
-            paddingLeft: 8,
+            paddingTop: 7,
+            // paddingLeft: 8,
+            gap:10,
+            alignItems:'center'
         },
         categoryEmoji: {
             fontSize: 28,
@@ -486,10 +591,13 @@ export default function HomeScreen({ navigation }) {
             gap: 20
         },
         productCard: {
-            width: 180,
+            // width: 180,
             backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
             borderRadius: 16,
-            padding: 16,
+            // padding: 16,
+            paddingVertical:10,
+            paddingHorizontal:10,
+            // paddingRight:30,
             marginBottom: 16,
             shadowColor: '#000',
             shadowOffset: {
@@ -500,7 +608,8 @@ export default function HomeScreen({ navigation }) {
             shadowRadius: 2,
             // elevation: 1,
             flexDirection: 'row',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            gap:10
         },
 
         productCard1: {

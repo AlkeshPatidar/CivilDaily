@@ -659,17 +659,18 @@ export default function Category({ navigation }) {
                                 subcategoryName: item.name 
                             })}
                         >
-                            <View style={{ width: 115 }}>
+                            {/* <View style={{ width: 115 }}> */}
                                 <Image 
                                     source={{ uri: item.image }} 
                                     style={{
                                         height: 87, 
-                                        width: 100
+                                        width: 100,
+                                        borderRadius:10
                                     }} 
                                     defaultSource={IMG.sprite}
                                 />
                                 <Text style={styles.productName}>{item.name}</Text>
-                            </View>
+                            {/* </View> */}
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -790,8 +791,8 @@ export default function Category({ navigation }) {
             backgroundColor: isDarkMode ? dark33 : '#F2F2F3',
             maxWidth: '50%',
             borderRadius: 16,
-            padding: 20,
-            paddingHorizontal: 20,
+            padding: 10,
+            // paddingHorizontal: 20,
             marginBottom: 16,
             shadowColor: '#000',
             shadowOffset: {
@@ -808,7 +809,8 @@ export default function Category({ navigation }) {
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Medium,
             color: isDarkMode ? 'white' : '#1F2937',
-            alignSelf: 'center'
+            alignSelf: 'center',
+            marginTop:5
         },
 
         // Empty State

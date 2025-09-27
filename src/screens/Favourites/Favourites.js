@@ -117,22 +117,36 @@ export default function Favourite({ navigation }) {
 
                             </View>
 
-                            <TouchableOpacity
-                                onPress={() => deleteFromWishList(item?.productId?._id)}
-                                style={{ position: 'absolute', right: 15, top: 10, elevation: 1 }}
-                            >
-                                <AntDesign name='delete'
-                                    color='red'
-                                    size={26}
-                                />
-                            </TouchableOpacity>
+                            <Row style={{
+                                // marginTop:40
+                                alignSelf:'flex-end',
+                                gap:10,
+                                top:10
+                            }}>
+                                <TouchableOpacity
+                                    onPress={() => deleteFromWishList(item?.productId?._id)}
+                                    style={{
+                                        // position: 'absolute', right: 15, top: 10, elevation: 1,
+                                        backgroundColor: 'white',
+                                        padding: 5,
+                                        borderRadius: 100
+                                    }}
+                                >
+                                    <AntDesign name='delete'
+                                        color={App_Primary_color}
+                                        size={22}
+                                    />
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
-                                onPress={() => navigation.navigate('ProductDetail', { productId: item?.productId?._id })}
-                            >
-                                <AddButton />
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    // style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
+                                    onPress={() => navigation.navigate('ProductDetail', { productId: item?.productId?._id })}
+                                >
+                                    <AddButton />
+                                </TouchableOpacity>
+                            </Row>
+
+
 
 
                         </TouchableOpacity>
