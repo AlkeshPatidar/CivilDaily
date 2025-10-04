@@ -61,36 +61,45 @@ const AddressDetailsPage = ({ navigation }) => {
   };
 
   const renderAddressCard = (addressData) => (
-    <View key={addressData.type} style={styles.addressCard}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.addressType}>{addressData.type}</Text>
-        <Row style={{
-          gap: 17
-        }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AddAddressScreen', { address: addressData })}
-          >
-            <EditIcon />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => onDelete(addressData?._id)}
-          >
-            <AntDesign
-              name={'delete'}
-              size={15}
-              color={App_Primary_color}
-            />
-          </TouchableOpacity>
+    <View>
+      <Row style={{
+        gap: 17,
+        position: 'absolute',
+        right: 10,
+        zIndex: 10000,
+        marginTop: 10
 
-        </Row>
-      </View>
-      {/* <View style={{height:1, width:'100%', backgroundColor:'#CCCCCC', marginVertical:8}}/> */}
+      }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddAddressScreen', { address: addressData })}
+        >
+          <EditIcon />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => onDelete(addressData?._id)}
+        >
+          <AntDesign
+            name={'delete'}
+            size={15}
+            color={App_Primary_color}
+          />
+        </TouchableOpacity>
 
-      <View style={styles.addressContent}>
-        <Text style={styles.nameText}>{addressData.addressLine1}</Text>
-        <Text style={styles.phoneText}>{addressData.addressLine2}{addressData?.city}{addressData?.state},{addressData?.country}</Text>
-        <Text style={styles.addressText}>{addressData.postalCode}</Text>
+      </Row>
+      <View key={addressData.type} style={styles.addressCard}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.addressType}>{addressData.type}</Text>
+
+        </View>
+        {/* <View style={{height:1, width:'100%', backgroundColor:'#CCCCCC', marginVertical:8}}/> */}
+
+        <View style={styles.addressContent}>
+          <Text style={styles.nameText}>{addressData.addressLine1}</Text>
+          <Text style={styles.phoneText}>{addressData.addressLine2}{addressData?.city}{addressData?.state},{addressData?.country}</Text>
+          <Text style={styles.addressText}>{addressData.postalCode}</Text>
+        </View>
       </View>
+
     </View>
   );
 
@@ -156,6 +165,7 @@ const AddressDetailsPage = ({ navigation }) => {
       shadowOpacity: 0.05,
       shadowRadius: 3,
       elevation: 2,
+      height: 110
     },
     cardHeader: {
       flexDirection: 'row',
@@ -167,22 +177,24 @@ const AddressDetailsPage = ({ navigation }) => {
       borderBottomColor: '#F8F8F8',
     },
     addressType: {
-      fontSize: 16,
+      // fontSize: 16,
       fontFamily: FONTS_FAMILY.Poppins_SemiBold,
       color: isDarkMode ? white : '#1A1A1A',
     },
     editButton: {
-      width: 32,
-      height: 32,
+      // width: 32,
+      // height: 32,
       justifyContent: 'center',
       alignItems: 'center',
+      // position:'absolute'
     },
     editIcon: {
       fontSize: 16,
       color: '#5B6BC7',
     },
     addressContent: {
-      gap: 8,
+      // gap: 8,
+      top: -22
     },
     nameText: {
       fontSize: 16,
@@ -237,7 +249,7 @@ const AddressDetailsPage = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#5B6BC7" />
+      <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
 
       {/* Header */}
       <LinearGradient

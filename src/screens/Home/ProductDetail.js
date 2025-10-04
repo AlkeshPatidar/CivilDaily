@@ -499,6 +499,7 @@ import useLoader from '../../utils/LoaderHook';
 import { ToastMsg } from '../../utils/helperFunctions';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ProductDetailSkeletonLoader from '../../components/Skeleton/ProductDetailSkeletonLoader';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const SLIDER_WIDTH = screenWidth;
@@ -509,6 +510,7 @@ const ProductDetail = ({ navigation, route }) => {
   const [quantity, setQuantity] = useState(1);
   const [product, setproduct] = useState([]);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { showLoader, hideLoader } = useLoader();
 
   // Get user data for authentication
@@ -517,14 +519,13 @@ const ProductDetail = ({ navigation, route }) => {
     selector = JSON.parse(selector);
   }
 
-  const [fav, setFav] = useState([])
-
+  const { isDarkMode } = useSelector(state => state.theme);
+  const [fav, setFav] = useState([]);
   const carouselRef = useRef(null);
 
   useEffect(() => {
-    productDetail()
-    getAllFav()
-  }, [])
+    initializeData();
+  }, []);
 
   useEffect(() => {
     // Check if current product is in wishlist
@@ -537,29 +538,34 @@ const ProductDetail = ({ navigation, route }) => {
     }
   }, [fav, route?.params?.productId]);
 
+  const initializeData = async () => {
+    setIsLoading(true);
+    await Promise.all([
+      productDetail(),
+      getAllFav()
+    ]);
+    setIsLoading(false);
+  };
+
   const getAllFav = async () => {
     try {
-      showLoader()
-      const res = await apiGet(urls?.getAllFav)
-      console.log(res?.data);
-      setFav(res?.data)
-      hideLoader()
+      const res = await apiGet(urls?.getAllFav);
+      setFav(res?.data || []);
     } catch (error) {
-      hideLoader()
+      console.log('Error fetching favorites:', error);
+      setFav([]);
     }
-  }
+  };
 
   const productDetail = async () => {
     try {
-      showLoader()
-      const res = await apiGet(`${urls?.getProductDetail}/${route?.params?.productId}`)
-      console.log(res?.data);
-      setproduct(res?.data)
-      hideLoader()
+      const res = await apiGet(`${urls?.getProductDetail}/${route?.params?.productId}`);
+      setproduct(res?.data || {});
     } catch (error) {
-      hideLoader()
+      console.log('Error fetching product:', error);
+      setproduct({});
     }
-  }
+  };
 
   const toggleWishlist = async () => {
     try {
@@ -632,9 +638,6 @@ const ProductDetail = ({ navigation, route }) => {
         quantity: quantity
       };
 
-      console.log('Add to Cart Request:', data);
-
-      // Get token for authentication
       const token = selector?.token || selector?.accessToken;
 
       const response = await apiPost(urls?.addToCart || '/api/cart/add', data, {
@@ -649,9 +652,8 @@ const ProductDetail = ({ navigation, route }) => {
 
       if (response?.statusCode === 200 || response?.status === 200 || response?.success) {
         ToastMsg(response?.message || response?.data?.message || 'Product added to cart successfully');
-        // Reset quantity after successful addition
         setQuantity(1);
-        navigation.navigate('CartScreen')
+        navigation.navigate('CartScreen');
       } else {
         ToastMsg(response?.message || response?.data?.message || 'Failed to add product to cart');
       }
@@ -669,13 +671,6 @@ const ProductDetail = ({ navigation, route }) => {
       }
     }
   };
-
-  // Sample images for the carousel
-  const carouselItems = [
-    { id: 1, image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&h=300&fit=crop' },
-    { id: 2, image: 'https://images.unsplash.com/photo-1552127673-8bb5e9eff1b7?w=400&h=300&fit=crop' },
-    { id: 3, image: 'https://images.unsplash.com/photo-1582515073490-39981397c445?w=400&h=300&fit=crop' },
-  ];
 
   const renderCarouselItem = ({ item }) => (
     <View style={styles.carouselItem}>
@@ -696,8 +691,6 @@ const ProductDetail = ({ navigation, route }) => {
       setQuantity(quantity - 1);
     }
   };
-
-  const { isDarkMode } = useSelector(state => state.theme)
 
   const styles = StyleSheet.create({
     container: {
@@ -722,10 +715,7 @@ const ProductDetail = ({ navigation, route }) => {
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 3,
@@ -737,10 +727,7 @@ const ProductDetail = ({ navigation, route }) => {
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 3,
@@ -917,13 +904,18 @@ const ProductDetail = ({ navigation, route }) => {
   const canDecreaseQuantity = quantity > 1;
   const canIncreaseQuantity = quantity < product?.stock;
 
+  if (isLoading) {
+    return <ProductDetailSkeletonLoader isDarkMode={isDarkMode} />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : "dark-content"} backgroundColor={isDarkMode ? darkMode25 : "white"} />
 
       {/* Header with back button and wishlist */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}
+        <TouchableOpacity 
+          style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <BackIcon />
@@ -946,7 +938,7 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={styles.carouselContainer}>
           <Carousel
             ref={carouselRef}
-            data={product?.images}
+            data={product?.images || []}
             renderItem={renderCarouselItem}
             sliderWidth={SLIDER_WIDTH}
             itemWidth={ITEM_WIDTH}
@@ -960,7 +952,7 @@ const ProductDetail = ({ navigation, route }) => {
 
           {/* Pagination dots */}
           <Pagination
-            dotsLength={product?.images?.length || carouselItems.length}
+            dotsLength={product?.images?.length || 3}
             activeDotIndex={activeSlide}
             containerStyle={styles.paginationContainer}
             dotStyle={styles.paginationDot}
@@ -974,16 +966,6 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={styles.productInfo}>
           <SpaceBetweenRow>
             <Text style={styles.productTitle}>{product?.name}</Text>
-            {/* <TouchableOpacity 
-              style={styles.wishlistIconContainer}
-              onPress={toggleWishlist}
-            >
-              <Icon 
-                name={isInWishlist ? "favorite" : "favorite-border"} 
-                size={24} 
-                color={isInWishlist ? "#FF6B6B" : (isDarkMode ? "#888" : "#666")} 
-              />
-            </TouchableOpacity> */}
           </SpaceBetweenRow>
 
           <Text style={styles.productPrice}>₹{product?.price}</Text>
@@ -1059,7 +1041,7 @@ const ProductDetail = ({ navigation, route }) => {
             styles.buyNowButton,
             isOutOfStock && styles.buyNowButtonDisabled
           ]}
-          onPress={() =>addToCart()}
+          onPress={() => addToCart()}
           disabled={isOutOfStock}
         >
           <Text style={styles.buyNowText}>

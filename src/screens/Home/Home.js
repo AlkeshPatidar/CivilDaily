@@ -9,6 +9,7 @@ import {
     StatusBar,
     SafeAreaView,
     Image,
+    RefreshControl,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
@@ -21,12 +22,12 @@ import { useSelector } from 'react-redux';
 import { apiGet } from '../../utils/Apis';
 import urls from '../../config/urls';
 import useLoader from '../../utils/LoaderHook';
-
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import LinearGradient from 'react-native-linear-gradient';
+import HomeScreenSkeletonLoader from '../../components/Skeleton/HomeSkeletonLoader';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function HomeScreen({ navigation }) {
-    // Header Component
-
     let selector = useSelector(state => state?.user?.userData);
     if (Object.keys(selector).length != 0) {
         selector = JSON.parse(selector);
@@ -35,612 +36,520 @@ export default function HomeScreen({ navigation }) {
     const [categories, setCategories] = useState([])
     const [allProducts, setAllProducts] = useState([])
     const [banners, setBanners] = useState([])
+    const [activeSlide, setActiveSlide] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
+    const { isDarkMode } = useSelector(state => state.theme);
+    const isFocused=useIsFocused()
 
-
-    // console.log('Selector at home',selector);
     useEffect(() => {
-        getCategories()
-        getAllProduct()
-        getAllBanners()
-    }, [])
+        initializeData()
+    }, [isFocused])
+
+    const initializeData = async () => {
+        setIsLoading(true)
+        await Promise.all([
+            getCategories(),
+            getAllProduct(),
+            getAllBanners()
+        ])
+        setIsLoading(false)
+    }
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await Promise.all([
+            getCategories(),
+            getAllProduct(),
+            getAllBanners()
+        ])
+        setRefreshing(false);
+    };
 
     const getCategories = async () => {
         try {
-            showLoader()
             const res = await apiGet(urls?.getCategory)
-            // console.log(res?.data);
-            setCategories(res?.data)
-            hideLoader()
-
-
+            setCategories(res?.data || [])
         } catch (error) {
-            hideLoader()
+            console.log('Error fetching categories:', error)
         }
     }
 
-    // "https://rr-store-backend.vercel.app/api/banner/all
-
-     const getAllBanners = async () => {
+    const getAllBanners = async () => {
         try {
-            showLoader()
             const res = await apiGet(urls?.getAllBanners)
             console.log(res?.data);
-            setBanners(res?.data)
-            hideLoader()
-
-
+            setBanners(res?.data || [])
         } catch (error) {
-            hideLoader()
+            console.log('Error fetching banners:', error)
         }
     }
 
     const getAllProduct = async () => {
         try {
-            showLoader()
             const res = await apiGet(urls?.getAllProducts)
-            // console.log(res?.data);
-            setAllProducts(res?.data)
-            hideLoader()
-
-
+            setAllProducts(res?.data || [])
         } catch (error) {
-            hideLoader()
+            console.log('Error fetching products:', error)
         }
     }
 
-    // const renderHeader = () => (
-    //     <View style={styles.headerContainer}>
-    //         <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+    const renderHeader = () => (
+        <View style={styles.headerContainer}>
+            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
 
-    //         <View style={styles.topBar}>
-    //             <View style={styles.leftHeader}>
-    //                 <Text style={styles.avatarText}>Deliver to</Text>
-    //                 <Row>
-    //                     <Text style={{ ...styles.avatarText, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Jakarta, Indonesia</Text>
-    //                     <TouchableOpacity>
-    //                         <DownChev />
-    //                     </TouchableOpacity>
-    //                 </Row>
-    //             </View>
+            <View style={styles.topBar}>
+                <View style={styles.leftHeader}>
+                    <Text style={styles.deliverText}>Deliver to</Text>
+                    <Row style={{ alignItems: 'center' }}>
+                        <Ionicons name="location" size={16} color="white" style={{ marginRight: 4 }} />
+                        <Text style={styles.locationText}>Jakarta, Indonesia</Text>
+                        <TouchableOpacity style={{ marginLeft: 4 }}>
+                            <DownChev />
+                        </TouchableOpacity>
+                    </Row>
+                </View>
 
-    //             <View style={styles.rightHeader}>
-    //                 <TouchableOpacity style={styles.iconButton}
-    //                     onPress={() => navigation.navigate('CartScreen')}
-    //                 >
-    //                     <Ionicons name="cart-outline" size={20} color="white" />
-    //                 </TouchableOpacity>
-    //                 <TouchableOpacity style={styles.iconButton}>
-    //                     <Ionicons name="notifications-outline" size={20} color="white" />
-    //                 </TouchableOpacity>
-    //             </View>
-    //         </View>
-
-
-
-    //         <View style={styles.searchContainer}>
-    //             <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
-    //             <TextInput
-    //                 placeholder="Search for products..."
-    //                 placeholderTextColor="white"
-    //                 style={styles.searchInput}
-    //             />
-    //         </View>
-    //         <Image
-    //             source={IMG.HomeBanner}
-    //             style={{ height: 160, width: 320, zIndex: 1000, alignSelf: 'center', marginTop: 10 }}
-    //             resizeMode='contain'
-    //         />
-    //     </View>
-    // );
-
-
-const renderHeader = () => (
-    <View style={styles.headerContainer}>
-        <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
-
-        <View style={styles.topBar}>
-            <View style={styles.leftHeader}>
-                <Text style={styles.avatarText}>Deliver to</Text>
-                <Row>
-                    <Text style={{ ...styles.avatarText, fontFamily: FONTS_FAMILY.Poppins_Medium }}>Jakarta, Indonesia</Text>
-                    <TouchableOpacity>
-                        <DownChev />
+                <View style={styles.rightHeader}>
+                    <TouchableOpacity 
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('CartScreen')}
+                    >
+                        <Ionicons name="cart-outline" size={22} color="white" />
                     </TouchableOpacity>
-                </Row>
+                    <TouchableOpacity style={styles.iconButton}>
+                        <Ionicons name="notifications-outline" size={22} color="white" />
+                        <View style={[styles.badge, styles.notificationDot]} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
-            <View style={styles.rightHeader}>
-                <TouchableOpacity style={styles.iconButton}
-                    onPress={() => navigation.navigate('CartScreen')}
-                >
-                    <Ionicons name="cart-outline" size={20} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
-                    <Ionicons name="notifications-outline" size={20} color="white" />
+            <View style={styles.searchContainer}>
+                <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
+                <TextInput
+                    placeholder="Search for products..."
+                    placeholderTextColor="#9CA3AF"
+                    style={styles.searchInput}
+                />
+                <TouchableOpacity style={styles.filterButton}>
+                    <Ionicons name="options-outline" size={20} color={App_Primary_color} />
                 </TouchableOpacity>
             </View>
         </View>
+    );
 
-        <View style={styles.searchContainer}>
-            <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
-            <TextInput
-                placeholder="Search for products..."
-                placeholderTextColor="white"
-                style={styles.searchInput}
+    const renderBannerSection = () => (
+        <View style={styles.bannerSection}>
+            <View style={styles.carouselContainer}>
+                <Carousel
+                    data={[IMG.HomeBanner, IMG.HomeBanner, IMG.HomeBanner]}
+                    renderItem={({ item }) => (
+                        <View style={styles.bannerCard}>
+                            {/* {console.log('+++++++++++++++>>>', item)
+                            } */}
+                            <Image
+                                source={ item}
+                                style={styles.bannerImage}
+                                resizeMode='contain'
+                            />
+                        </View>
+                    )}
+                    sliderWidth={320}
+                    itemWidth={320}
+                    autoplay={true}
+                    autoplayDelay={500}
+                    autoplayInterval={3000}
+                    loop={true}
+                    onSnapToItem={(index) => setActiveSlide(index)}
+                    enableMomentum={false}
+                    lockScrollWhileSnapping={true}
+                    inactiveSlideScale={0.92}
+                    inactiveSlideOpacity={0.7}
+                />
+            </View>
+            <Pagination
+                dotsLength={banners.length > 0 ? banners.length : 3}
+                activeDotIndex={activeSlide}
+                containerStyle={styles.paginationContainer}
+                dotStyle={styles.paginationDot}
+                inactiveDotStyle={styles.paginationDotInactive}
+                inactiveDotOpacity={0.4}
+                inactiveDotScale={0.8}
             />
         </View>
-        
-        <View style={{ 
-            height: 160, 
-            width: 320, 
-            zIndex: 1000, 
-            alignSelf: 'center', 
-            marginTop: 10,
-            borderRadius: 8,
-            overflow: 'hidden'
-        }}>
-            <Carousel
-                data={[IMG.HomeBanner,IMG.HomeBanner,IMG.HomeBanner]}
-                renderItem={({ item }) => (
-                    <Image
-                        source={item}
-                        style={{ 
-                            height: 160, 
-                            width: 320,
-                            borderRadius: 8
-                        }}
-                        resizeMode='contain'
-                    />
-                )}
-                sliderWidth={320}
-                itemWidth={320}
-                autoplay={true}
-                autoplayDelay={500}
-                autoplayInterval={3000}
-                loop={true}
-                enableMomentum={false}
-                lockScrollWhileSnapping={true}
-                inactiveSlideScale={1}
-                inactiveSlideOpacity={1}
-            />
-        </View>
-    </View>
-);
+    );
 
-
-    // Categories Component
     const renderCategories = () => {
-        // const categories = [
-        //     { name: 'Meat & \n Fish', icon: IMG.Meat, },
-        //     { name: 'Fruits & \n Vegetables', icon: IMG.fruit, },
-        //     { name: 'Dairy', icon: IMG.dairy, },
-        //     { name: 'Snacks', icon: IMG.snacks, }
-        // ];
-
         return (
-            <View style={{
-                ...styles.sectionContainer,
-                marginTop: 70
-            }}>
-                <SpaceBetweenRow>
-                    <Text style={styles.sectionTitle}>Categories</Text>
-                    <Text style={{ ...styles.sectionTitle, fontSize: 16, color: '#777777', fontFamily: FONTS_FAMILY.Poppins_Regular }}>View All</Text>
-
-
+            <View style={styles.sectionContainer}>
+                <SpaceBetweenRow style={{ marginBottom: 10 }}>
+                    <View>
+                        <Text style={styles.sectionTitle}>Shop by Category</Text>
+                        <View style={styles.titleUnderline} />
+                    </View>
+                    <TouchableOpacity>
+                        <Text style={styles.viewAllText}>View All →</Text>
+                    </TouchableOpacity>
                 </SpaceBetweenRow>
-                <ScrollView contentContainerStyle={styles.categoriesGrid}
-                    horizontal
+                
+                <ScrollView 
+                    horizontal 
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.categoriesGrid}
                 >
                     {categories.map((category, index) => (
-
-                        <TouchableOpacity key={index} style={styles.categoryItem}>
-                            <View style={[styles.categoryIcon, { backgroundColor: isDarkMode ? dark55 : '#d7e0f1ff' }]}>
-                                <Image source={{ uri: category?.image }}
-                                    style={{
-                                        height: 60, width: 90,
-                                        alignSelf: 'center',
-                                        borderRadius: 7
-                                    }}
-                                    // resizeMode='contain'
-                                />
-                                <Text style={styles.categoryText}>{category.name}</Text>
-                                {/* <Text style={styles.categoryEmoji}>{category.icon}</Text> */}
-                            </View>
-                        </TouchableOpacity>
-
-                    ))}
-                </ScrollView>
-            </View>
-        );
-    };
-
-    // Top Picks Component
-    const renderTopPicks = () => {
-        const todaysChoices = [
-            {
-                name: "Fresh Potato",
-                image: IMG.Potato,
-                quantity: '1 kg',
-
-                price: "$1.50",
-                originalPrice: "$3.99",
-            },
-            {
-                name: "Egg Pasta",
-                image: IMG.eggPasta,
-                quantity: '40 gr',
-                price: "$1.50",
-                originalPrice: "$3.99",
-            },
-
-        ];
-
-        return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Top Pics For Vegetables</Text>
-
-                </View>
-
-                <View style={{}}>
-                    {allProducts.map((item, index) => (
-                        <TouchableOpacity key={index} style={styles.productCard1}
-                            // onPress={() => navigation.navigate('ProductDetail',{productId:item?._id})}
-                            activeOpacity={0.9}
+                        <TouchableOpacity 
+                            key={index} 
+                            style={[
+                                styles.categoryCard,
+                                { backgroundColor: isDarkMode ? dark55 : '#FFFFFF' }
+                            ]}
+                            activeOpacity={0.8}
                         >
-                            {/* {console.log('++++++++++++', item)
-                            } */}
-                            <Image source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} style={{
-                                height: 68, width: 80,
-                                borderRadius:8
-                            }} />
-                            <View style={{ marginLeft: 20 }}>
-                                <Text style={styles.productName}>{item.name}</Text>
-                                <View style={styles.priceContainer}>
-                                    <Row style={{ gap: 10 }}>
-                                        <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>{item.stock}</Text>
-                                        <Text style={styles.currentPrice}>${item.price}</Text>
-                                        <Text style={styles.originalPrice}>${item.discountPrice}</Text>
-                                    </Row>
-
-                                </View>
-
+                            <View style={styles.categoryImageContainer}>
+                                <Image 
+                                    source={{ uri: category?.image }}
+                                    style={styles.categoryImage}
+                                />
                             </View>
-
-                            <TouchableOpacity
-                                style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
-                                onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-
-                            >
-                                <AddButton />
-                            </TouchableOpacity>
-
-
+                            <Text style={styles.categoryName} numberOfLines={2}>
+                                {category.name}
+                            </Text>
                         </TouchableOpacity>
-                    ))}
-                </View>
-            </View>
-        );
-    };
-
-    // Today's Choice Component
-    const renderTodaysChoice = () => {
-        const todaysChoices = [
-            {
-                name: "Sprite Can",
-                image: IMG.sprite,
-                quantity: '100ml',
-
-                price: "$1.50",
-                originalPrice: "$3.99",
-            },
-            {
-                name: "Egg Pasta",
-                image: IMG.eggPasta,
-                quantity: '40 gr',
-                price: "$1.50",
-                originalPrice: "$3.99",
-            },
-
-        ];
-
-        return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Today's Choice</Text>
-
-                </View>
-
-                <ScrollView horizontal contentContainerStyle={styles.productsGrid}>
-                    {allProducts?.map((item, index) => (
-                        <View key={index} style={styles.productCard}>
-                              <Image source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} style={{
-                                height: 68, width: 70,
-                                borderRadius: 8
-                            }} />
-                            <View>
-                                <Text style={styles.productName}>{'Egg Pasta'}</Text>
-                                <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>${item?.price}</Text>
-                                <View style={styles.priceContainer}>
-                                    <Row style={{ gap: 5 }}>
-                                        <Text style={styles.currentPrice}>${item?.price}</Text>
-                                        <Text style={styles.originalPrice}>${item?.discountPrice}</Text>
-                                    </Row>
-                                    {/* <TouchableOpacity style={styles.addButton}>
-                                    <Text style={styles.addButtonText}>+</Text>
-                                </TouchableOpacity> */}
-                                </View>
-
-                            </View>
-                          
-                            <TouchableOpacity
-                                style={{alignSelf:'flex-end'}}
-                                onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                            >
-                                <AddButton />
-                            </TouchableOpacity>
-
-
-                        </View>
                     ))}
                 </ScrollView>
             </View>
         );
     };
 
-    const { isDarkMode } = useSelector(state => state.theme)
+    const renderTodaysChoice = () => {
+        return (
+            <View style={styles.sectionContainer}>
+                <SpaceBetweenRow style={{ marginBottom: 16 }}>
+                    <View>
+                        <Text style={styles.sectionTitle}>Today's Special</Text>
+                        <View style={styles.titleUnderline} />
+                    </View>
+                    <TouchableOpacity>
+                        <Text style={styles.viewAllText}>See All →</Text>
+                    </TouchableOpacity>
+                </SpaceBetweenRow>
 
+                <ScrollView 
+                    horizontal 
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalProductsGrid}
+                >
+                    {allProducts?.slice(0, 6).map((item, index) => (
+                        <TouchableOpacity 
+                            key={index} 
+                            style={[
+                                styles.horizontalProductCard,
+                                { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
+                            ]}
+                            activeOpacity={0.9}
+                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                        >
+                            <View style={styles.productImageWrapper}>
+                                <Image 
+                                    source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} 
+                                    style={styles.horizontalProductImage}
+                                />
+                                {item?.discountPrice && (
+                                    <View style={styles.discountBadge}>
+                                        <Text style={styles.discountBadgeText}>
+                                            {Math.round(((item.price - item.discountPrice) / item.price) * 100)}% OFF
+                                        </Text>
+                                    </View>
+                                )}
+                            </View>
+                            
+                            <View style={styles.horizontalProductInfo}>
+                                <SpaceBetweenRow>
+                                    <Text style={styles.horizontalProductName} numberOfLines={2}>
+                                        {item.name}
+                                    </Text>
+                                    <Text style={styles.stockText}>Stock: {item.stock}</Text>
+                                </SpaceBetweenRow>
+                                
+                                <View style={styles.horizontalPriceRow}>
+                                    <View>
+                                        <Text style={styles.currentPrice}>Rs {item.price}</Text>
+                                        {item?.discountPrice && (
+                                            <Text style={styles.originalPrice}>Rs {item.discountPrice}</Text>
+                                        )}
+                                    </View>
+                                    <TouchableOpacity style={styles.addToCartButton}>
+                                        <Ionicons name="add" size={18} color="white" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+        );
+    };
+
+    const renderTopPicks = () => {
+        return (
+            <View style={styles.sectionContainer}>
+                <SpaceBetweenRow style={{ marginBottom: 16 }}>
+                    <View>
+                        <Text style={styles.sectionTitle}>Top Picks For You</Text>
+                        <View style={styles.titleUnderline} />
+                    </View>
+                </SpaceBetweenRow>
+
+                <View>
+                    {allProducts.map((item, index) => (
+                        <TouchableOpacity 
+                            key={index} 
+                            style={[
+                                styles.listProductCard,
+                                { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
+                            ]}
+                            activeOpacity={0.9}
+                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                        >
+                            <View style={styles.listProductImageContainer}>
+                                <Image 
+                                    source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta} 
+                                    style={styles.listProductImage}
+                                />
+                            </View>
+                            
+                            <View style={styles.listProductInfo}>
+                                <Text style={styles.listProductName} numberOfLines={2}>
+                                    {item.name}
+                                </Text>
+                                <Text style={styles.stockText}>Stock: {item.stock}</Text>
+                                
+                                <View style={styles.listPriceRow}>
+                                    <Text style={styles.currentPrice}>Rs {item.price}</Text>
+                                    {item?.discountPrice && (
+                                        <Text style={styles.originalPrice}>Rs {item.discountPrice}</Text>
+                                    )}
+                                </View>
+                            </View>
+
+                            <TouchableOpacity style={styles.listAddButton}>
+                                <AddButton />
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+        );
+    };
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
+            backgroundColor: isDarkMode ? darkMode25 : '#F3F4F6',
         },
-
-        // Header Styles
         headerContainer: {
             backgroundColor: App_Primary_color,
-            paddingHorizontal: 16,
+            paddingHorizontal: 20,
             paddingTop: 16,
             paddingBottom: 24,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            height: 200,
-            zIndex: 10000000
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+            elevation: 8,
         },
         topBar: {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: 16,
+            marginBottom: 20,
         },
         leftHeader: {
-            // flexDirection: 'row',
-            // alignItems: 'center',
+            flex: 1,
         },
-        avatarContainer: {
-            width: 32,
-            height: 32,
-            backgroundColor: 'white',
-            borderRadius: 16,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: 8,
-        },
-        avatarText: {
-            color: 'white',
+        deliverText: {
+            color: 'rgba(255, 255, 255, 0.8)',
             fontFamily: FONTS_FAMILY.Poppins_Regular,
-            fontSize: 14,
+            fontSize: 12,
+            marginBottom: 2,
         },
-        timeText: {
+        locationText: {
             color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            fontSize: 15,
         },
         rightHeader: {
             flexDirection: 'row',
+            gap: 12,
         },
         iconButton: {
-            marginLeft: 16,
-            backgroundColor: '#6C87CF',
-            padding: 5,
-            borderRadius: 100
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            padding: 8,
+            borderRadius: 12,
+            position: 'relative',
         },
-        titleContainer: {
-            marginBottom: 16,
+        badge: {
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            backgroundColor: '#EF4444',
+            borderRadius: 10,
+            minWidth: 18,
+            height: 18,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 4,
         },
-        mainTitle: {
+        badgeText: {
             color: 'white',
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 4,
+            fontSize: 10,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
         },
-        subtitle: {
-            color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
+        notificationDot: {
+            minWidth: 8,
+            height: 8,
+            top: 2,
+            right: 2,
         },
         searchContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#3658B0',
-            borderRadius: 100,
+            backgroundColor: 'white',
+            borderRadius: 16,
             paddingHorizontal: 16,
-            height: 40,
+            height: 50,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 4,
+            elevation: 3,
         },
         searchIcon: {
             marginRight: 12,
         },
         searchInput: {
             flex: 1,
-            fontSize: 13,
-            color: 'white',
-            fontFamily: FONTS_FAMILY.Poppins_Regular
+            fontSize: 14,
+            color: '#1F2937',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
         },
-
-        // Section Styles
+        filterButton: {
+            padding: 6,
+        },
+        bannerSection: {
+            marginTop: 20,
+        },
+        carouselContainer: {
+            alignItems: 'center',
+        },
+        bannerCard: {
+            overflow: 'hidden',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+        },
+        bannerImage: {
+            height: 140,
+            width: '100%',
+            borderRadius: 20,
+        },
+        paginationContainer: {
+            paddingVertical: 12,
+        },
+        paginationDot: {
+            width: 24,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: App_Primary_color,
+        },
+        paginationDotInactive: {
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+        },
         sectionContainer: {
-            // backgroundColor: 'white',
-            paddingHorizontal: 16,
-            paddingVertical: 15,
-            // marginBottom: 8,
-            zIndex: -100000,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
         },
         sectionTitle: {
-            fontSize: 16,
+            fontSize: 18,
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             color: isDarkMode ? white : '#1F2937',
-            marginBottom: 16,
         },
-        sectionHeader: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            // marginBottom: 16,
+        titleUnderline: {
+            width: 40,
+            height: 3,
+            backgroundColor: App_Primary_color,
+            borderRadius: 2,
+            marginTop: 4,
         },
-        seeAllText: {
-            color: '#3B82F6',
+        viewAllText: {
+            color: App_Primary_color,
             fontSize: 14,
-            fontWeight: '500',
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
         },
-
-        // Categories Styles
         categoriesGrid: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 10
+            gap: 12,
+            paddingRight: 20,
         },
-        categoryItem: {
-            // alignItems: 'center',
-            // flex: 1,
-            alignItems:'center'
+        categoryCard: {
+            width: 110,
+            borderRadius: 16,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 4,
+            elevation: 3,
+            marginBottom: 10,
         },
-        categoryIcon: {
+        categoryImageContainer: {
             width: 100,
-            height: 100,
-            borderRadius: 16,
-            // justifyContent: 'center',
-            // alignItems: 'center',
-            // marginBottom: 8,
-            paddingTop: 7,
-            // paddingLeft: 8,
-            gap:10,
-            alignItems:'center'
-        },
-        categoryEmoji: {
-            fontSize: 28,
-        },
-        categoryText: {
-            fontSize: 13,
-            color: isDarkMode ? white : 'black',
-            // textAlign: 'center',
-            lineHeight: 16,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold
-        },
-
-        // Promo Card Styles
-        promoCard: {
-            backgroundColor: '#F97316',
-            borderRadius: 16,
-            padding: 24,
-            overflow: 'hidden',
-        },
-        promoContent: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        },
-        promoTextContainer: {
-            flex: 1,
-        },
-        promoTitle: {
-            color: 'white',
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginBottom: 8,
-        },
-        promoSubtitle: {
-            color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
-            marginBottom: 16,
-        },
-        shopNowButton: {
-            backgroundColor: 'white',
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-            borderRadius: 20,
-            alignSelf: 'flex-start',
-        },
-        shopNowText: {
-            color: '#F97316',
-            fontSize: 14,
-            fontWeight: '600',
-        },
-        promoEmoji: {
-            fontSize: 64,
-            opacity: 0.2,
-        },
-
-        // Products Grid Styles
-        productsGrid: {
-            flexDirection: 'row',
-            // flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            gap: 20
-        },
-        productCard: {
-            // width: 180,
-            backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
-            borderRadius: 16,
-            // padding: 16,
-            paddingVertical:10,
-            paddingHorizontal:10,
-            // paddingRight:30,
-            marginBottom: 16,
-            shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            // elevation: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap:10
-        },
-
-        productCard1: {
-            width: '100%',
-            backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
-            borderRadius: 16,
-            padding: 16,
-            marginBottom: 16,
-            shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            // elevation: 1,
-            flexDirection: 'row',
-            // justifyContent: 'space-between'
-        },
-
-        productImageContainer: {
-            height: 96,
-            backgroundColor: '#F9FAFB',
+            height: 80,
             borderRadius: 12,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 12,
+            overflow: 'hidden',
+            marginBottom: 8,
+            marginTop: 8,
+        },
+        categoryImage: {
+            width: '100%',
+            height: '100%',
+        },
+        categoryName: {
+            fontSize: 12,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? white : '#374151',
+            textAlign: 'center',
+            lineHeight: 16,
+            marginBottom: 4,
+        },
+        horizontalProductsGrid: {
+            gap: 16,
+            paddingRight: 20,
+        },
+        horizontalProductCard: {
+            width: 160,
+            borderRadius: 16,
+            overflow: 'hidden',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 4,
+            elevation: 3,
+            marginBottom: 10,
+        },
+        productImageWrapper: {
             position: 'relative',
         },
-        productImage: {
-            fontSize: 32,
+        horizontalProductImage: {
+            width: '100%',
+            height: 140,
+            backgroundColor: '#F3F4F6',
         },
         discountBadge: {
             position: 'absolute',
@@ -649,70 +558,127 @@ const renderHeader = () => (
             backgroundColor: '#EF4444',
             paddingHorizontal: 8,
             paddingVertical: 4,
-            borderRadius: 12,
+            borderRadius: 8,
         },
-        discountText: {
-            color: isDarkMode ? white : 'white',
+        discountBadgeText: {
+            color: 'white',
             fontSize: 10,
-            fontWeight: '600',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
         },
-        productName: {
+        horizontalProductInfo: {
+            padding: 12,
+        },
+        horizontalProductName: {
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Medium,
             color: isDarkMode ? white : '#1F2937',
-            marginBottom: 4,
         },
-        ratingContainer: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 8,
+        stockText: {
+            fontSize: 11,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: '#9CA3AF',
         },
-        ratingText: {
-            fontSize: 12,
-            color: isDarkMode ? white : '#6B7280',
-            marginLeft: 4,
-        },
-        priceContainer: {
+        horizontalPriceRow: {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
         },
         currentPrice: {
             fontSize: 16,
-            fontWeight: 'bold',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             color: isDarkMode ? white : '#1F2937',
         },
         originalPrice: {
             fontSize: 12,
             color: '#9CA3AF',
             textDecorationLine: 'line-through',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
         },
-        addButton: {
+        addToCartButton: {
+            backgroundColor: App_Primary_color,
             width: 32,
             height: 32,
-            backgroundColor: '#3B82F6',
-            borderRadius: 16,
+            borderRadius: 10,
             justifyContent: 'center',
             alignItems: 'center',
         },
-        addButtonText: {
-            color: 'white',
-            fontSize: 18,
-            fontWeight: 'bold',
+        listProductCard: {
+            flexDirection: 'row',
+            borderRadius: 16,
+            padding: 12,
+            marginBottom: 12,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 4,
+            elevation: 2,
+        },
+        listProductImageContainer: {
+            width: 90,
+            height: 90,
+            borderRadius: 12,
+            overflow: 'hidden',
+            backgroundColor: '#F3F4F6',
+        },
+        listProductImage: {
+            width: '100%',
+            height: '100%',
+        },
+        listProductInfo: {
+            flex: 1,
+            marginLeft: 12,
+            justifyContent: 'center',
+        },
+        listProductName: {
+            fontSize: 15,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? white : '#1F2937',
+            marginBottom: 2,
+        },
+        ratingText: {
+            fontSize: 12,
+            color: '#6B7280',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            marginLeft: 4,
+        },
+        listPriceRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+            marginTop: 6,
+        },
+        listAddButton: {
+            alignSelf: 'center',
         },
     });
 
+    // Main return with conditional rendering
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {renderCategories()}
-                {renderTodaysChoice()}
-                {renderTopPicks()}
-                <View style={{ height: 150 }} />
-            </ScrollView>
+            {isLoading ? (
+                <HomeScreenSkeletonLoader isDarkMode={isDarkMode} />
+            ) : (
+                <>
+                    {renderHeader()}
+                    <ScrollView 
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={[App_Primary_color]}
+                                tintColor={App_Primary_color}
+                            />
+                        }
+                    >
+                        {renderBannerSection()}
+                        {categories.length > 0 && renderCategories()}
+                        {allProducts.length > 0 && renderTodaysChoice()}
+                        {allProducts.length > 0 && renderTopPicks()}
+                        <View style={{ height: 100 }} />
+                    </ScrollView>
+                </>
+            )}
         </SafeAreaView>
     );
 }
-
-

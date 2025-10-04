@@ -715,7 +715,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert, ToastAndroid } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert } from 'react-native';
 import IMG from '../../assets/Images';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
@@ -725,73 +725,78 @@ import useLoader from '../../utils/LoaderHook';
 import { apiDelete, apiGet } from '../../utils/Apis';
 import urls from '../../config/urls';
 import Row from '../../components/wrapper/row';
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import { useIsFocused } from '@react-navigation/native';
+import CartScreenSkeletonLoader from '../../components/Skeleton/CartScreenSkeletonLoader';
+
 
 const CartScreen = ({ navigation }) => {
     const [activeTab, setActiveTab] = useState('My Cart');
     const [cartData, setCartData] = useState(null);
     const [currentOrders, setCurrentOrders] = useState([]);
     const [previousOrders, setPreviousOrders] = useState([]);
-    const { showLoader, hideLoader } = useLoader()
+    const [isLoading, setIsLoading] = useState(true);
+    const { showLoader, hideLoader } = useLoader();
 
-    const isFocused = useIsFocused()
+    const isFocused = useIsFocused();
+    const { isDarkMode } = useSelector(state => state.theme);
 
     useEffect(() => {
-        if (activeTab === 'My Cart') {
-            fetchCartData();
-        } else {
-            fetchCurrentAndPrevious();
+        if (isFocused) {
+            loadData();
         }
     }, [isFocused, activeTab]);
 
+    const loadData = async () => {
+        setIsLoading(true);
+        if (activeTab === 'My Cart') {
+            await fetchCartData();
+        } else {
+            await fetchCurrentAndPrevious();
+        }
+        setIsLoading(false);
+    };
+
     const fetchCartData = async () => {
         try {
-            showLoader()
-            const res = await apiGet(urls?.getCartData)
-            setCartData(res?.data)
-            hideLoader()
+            const res = await apiGet(urls?.getCartData);
+            setCartData(res?.data || null);
         } catch (error) {
             console.error('Error fetching cart data:', error);
-            hideLoader()
+            setCartData(null);
         }
     };
 
     const fetchCurrentAndPrevious = async () => {
         try {
-            showLoader()
-
-            // Determine the order type based on active tab
             const orderType = activeTab === 'Current Order' ? 'current' : 'previous';
-
-            const res = await apiGet(`/api/order/my?orderType=${orderType}`)
-            console.log('Orders Response:', res?.data);
-
+            const res = await apiGet(`/api/order/my?orderType=${orderType}`);
+            
             if (activeTab === 'Current Order') {
                 setCurrentOrders(res?.data || []);
-                hideLoader()
             } else if (activeTab === 'Previous Order') {
                 setPreviousOrders(res?.data || []);
-                hideLoader()
             }
-
-            hideLoader()
         } catch (error) {
             console.error('Error fetching orders:', error);
-            hideLoader()
+            if (activeTab === 'Current Order') {
+                setCurrentOrders([]);
+            } else {
+                setPreviousOrders([]);
+            }
         }
     };
 
     const deleteCartCarta = async (id) => {
         try {
-            showLoader()
-            const res = await apiDelete(`${urls?.deleteCartData}/${id}`)
-            fetchCartData()
-            hideLoader()
+            showLoader();
+            const res = await apiDelete(`${urls?.deleteCartData}/${id}`);
+            await fetchCartData();
+            hideLoader();
         } catch (error) {
             console.error('Error deleting cart item:', error);
-            hideLoader()
+            hideLoader();
         }
     };
 
@@ -929,7 +934,6 @@ const CartScreen = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-
                         </View>
                     ))}
                 </View>
@@ -988,7 +992,6 @@ const CartScreen = ({ navigation }) => {
                     )}
                 </View>
 
-                {/* Order Items Summary */}
                 <View style={styles.orderItemsContainer}>
                     <Text style={styles.orderItemsTitle}>Items:</Text>
                     {order.items.map((item, index) => (
@@ -1046,8 +1049,6 @@ const CartScreen = ({ navigation }) => {
         }
     };
 
-    const { isDarkMode } = useSelector(state => state.theme);
-
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -1064,9 +1065,6 @@ const CartScreen = ({ navigation }) => {
         backButton: {
             width: 30,
             bottom: 9
-        },
-        backIcon: {
-            color: 'white',
         },
         headerTitle: {
             color: 'white',
@@ -1110,10 +1108,7 @@ const CartScreen = ({ navigation }) => {
             padding: 20,
             marginBottom: 20,
             shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
+            shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.05,
             shadowRadius: 3,
             borderWidth: 1,
@@ -1241,17 +1236,13 @@ const CartScreen = ({ navigation }) => {
             fontFamily: FONTS_FAMILY.Poppins_Medium,
             color: isDarkMode ? 'white' : '#333',
         },
-        // Order Card Styles
         orderCard: {
             backgroundColor: isDarkMode ? dark33 : 'white',
             borderRadius: 12,
             padding: 16,
             marginBottom: 16,
             shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
+            shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.05,
             shadowRadius: 3,
             borderWidth: 1,
@@ -1291,7 +1282,7 @@ const CartScreen = ({ navigation }) => {
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: 8,
-            paddingVertical: 4,
+            paddingVertical: 0,
             borderRadius: 12,
             borderWidth: 1,
             height: 24,
@@ -1358,7 +1349,6 @@ const CartScreen = ({ navigation }) => {
             color: isDarkMode ? '#ccc' : '#666',
             marginBottom: 2,
         },
-        // Empty state
         emptyContainer: {
             flex: 1,
             justifyContent: 'center',
@@ -1398,7 +1388,8 @@ const CartScreen = ({ navigation }) => {
 
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton}
+                <TouchableOpacity 
+                    style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
                     <BackWhite />
@@ -1429,20 +1420,28 @@ const CartScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-                {renderContent()}
-                <View style={{ height: 100 }} />
-            </ScrollView>
+            {/* Content with Skeleton Loader */}
+            {isLoading ? (
+                <CartScreenSkeletonLoader isDarkMode={isDarkMode} activeTab={activeTab} />
+            ) : (
+                <>
+                    <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                        {renderContent()}
+                        <View style={{ height: 100 }} />
+                    </ScrollView>
 
-            {/* Checkout Button - Only show for My Cart tab with items */}
-            {activeTab === 'My Cart' && hasCartItems && (
-                <View style={styles.checkoutContainer}>
-                    <TouchableOpacity style={styles.checkoutButton}
-                        onPress={() => navigation.navigate('CheckoutSummary', { cartData: cartData })}
-                    >
-                        <Text style={styles.checkoutText}>Checkout</Text>
-                    </TouchableOpacity>
-                </View>
+                    {/* Checkout Button - Only show for My Cart tab with items */}
+                    {activeTab === 'My Cart' && hasCartItems && (
+                        <View style={styles.checkoutContainer}>
+                            <TouchableOpacity 
+                                style={styles.checkoutButton}
+                                onPress={() => navigation.navigate('CheckoutSummary', { cartData: cartData })}
+                            >
+                                <Text style={styles.checkoutText}>Checkout</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </>
             )}
         </View>
     );

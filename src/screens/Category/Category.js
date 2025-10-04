@@ -506,6 +506,8 @@ import { useSelector } from 'react-redux';
 import useLoader from '../../utils/LoaderHook';
 import { apiGet } from '../../utils/Apis';
 import urls from '../../config/urls';
+import CategoryScreenSkeletonLoader from '../../components/Skeleton/CategorySkeletonLoader';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Category({ navigation }) {
     const { showLoader, hideLoader } = useLoader()
@@ -513,11 +515,14 @@ export default function Category({ navigation }) {
     const [subCategories, setSubCategories] = useState([])
     const [selectedCategoryId, setSelectedCategoryId] = useState(null)
     const [filteredSubCategories, setFilteredSubCategories] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    const { isDarkMode } = useSelector(state => state.theme)
+    const isFocused=useIsFocused()
 
     useEffect(() => {
-        getCategories();
-        getSubCategories();
-    }, []);
+        initializeData()
+    }, [isFocused])
 
     useEffect(() => {
         if (selectedCategoryId) {
@@ -530,33 +535,35 @@ export default function Category({ navigation }) {
         }
     }, [selectedCategoryId, subCategories]);
 
+    const initializeData = async () => {
+        setIsLoading(true)
+        await Promise.all([
+            getCategories(),
+            getSubCategories()
+        ])
+        setIsLoading(false)
+    }
+
     const getCategories = async () => {
         try {
-            showLoader()
             const res = await apiGet(urls?.getCategory)
-            setCategories(res?.data)
+            setCategories(res?.data || [])
             
             // Auto-select first category if available
             if (res?.data && res?.data.length > 0) {
                 setSelectedCategoryId(res.data[0]._id);
             }
-            
-            hideLoader()
         } catch (error) {
             console.error('Error fetching categories:', error);
-            hideLoader()
         }
     };
 
     const getSubCategories = async () => {
         try {
-            showLoader()
             const res = await apiGet(urls?.getSubCategories)
-            setSubCategories(res?.data)
-            hideLoader()
+            setSubCategories(res?.data || [])
         } catch (error) {
             console.error('Error fetching subcategories:', error);
-            hideLoader()
         }
     };
 
@@ -630,10 +637,10 @@ export default function Category({ navigation }) {
         );
     };
 
-    // Subcategories Component (using your original card design)
+    // Subcategories Component
     const renderSubCategories = () => {
         if (!selectedCategoryId) {
-            return null; // Don't show anything if no category selected
+            return null;
         }
 
         if (filteredSubCategories.length === 0) {
@@ -643,8 +650,6 @@ export default function Category({ navigation }) {
                 </View>
             );
         }
-
-        const selectedCategory = categories.find(cat => cat._id === selectedCategoryId);
 
         return (
             <View style={styles.sectionContainer}>
@@ -659,18 +664,16 @@ export default function Category({ navigation }) {
                                 subcategoryName: item.name 
                             })}
                         >
-                            {/* <View style={{ width: 115 }}> */}
-                                <Image 
-                                    source={{ uri: item.image }} 
-                                    style={{
-                                        height: 87, 
-                                        width: 100,
-                                        borderRadius:10
-                                    }} 
-                                    defaultSource={IMG.sprite}
-                                />
-                                <Text style={styles.productName}>{item.name}</Text>
-                            {/* </View> */}
+                            <Image 
+                                source={{ uri: item.image }} 
+                                style={{
+                                    height: 87, 
+                                    width: 100,
+                                    borderRadius: 10
+                                }} 
+                                defaultSource={IMG.sprite}
+                            />
+                            <Text style={styles.productName}>{item.name}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -678,15 +681,11 @@ export default function Category({ navigation }) {
         );
     };
 
-    const { isDarkMode } = useSelector(state => state.theme)
-
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
         },
-
-        // Header Styles
         headerContainer: {
             backgroundColor: App_Primary_color,
             paddingHorizontal: 16,
@@ -702,10 +701,7 @@ export default function Category({ navigation }) {
             alignItems: 'center',
             marginBottom: 16,
         },
-        leftHeader: {
-            // flexDirection: 'row',
-            // alignItems: 'center',
-        },
+        leftHeader: {},
         avatarText: {
             color: 'white',
             fontFamily: FONTS_FAMILY.Poppins_Bold,
@@ -720,8 +716,6 @@ export default function Category({ navigation }) {
             padding: 8,
             borderRadius: 100
         },
-
-        // Section Styles
         sectionContainer: {
             paddingHorizontal: 16,
             paddingVertical: 15,
@@ -744,8 +738,6 @@ export default function Category({ navigation }) {
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Medium,
         },
-
-        // Categories Styles
         categoriesGrid: {
             flexDirection: 'row',
             gap: 12,
@@ -754,11 +746,8 @@ export default function Category({ navigation }) {
         categoryItem: {
             marginRight: 8,
         },
-        selectedCategoryItem: {
-            // Additional styling if needed
-        },
+        selectedCategoryItem: {},
         categoryIcon: {
-            // paddingHorizontal: 20,
             paddingVertical: 5,
             borderRadius: 25,
             borderWidth: 1.5,
@@ -780,8 +769,6 @@ export default function Category({ navigation }) {
         selectedCategoryText: {
             color: 'white',
         },
-
-        // Products Grid Styles (your original design)
         productsGrid: {
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -792,7 +779,6 @@ export default function Category({ navigation }) {
             maxWidth: '50%',
             borderRadius: 16,
             padding: 10,
-            // paddingHorizontal: 20,
             marginBottom: 16,
             shadowColor: '#000',
             shadowOffset: {
@@ -810,10 +796,8 @@ export default function Category({ navigation }) {
             fontFamily: FONTS_FAMILY.Poppins_Medium,
             color: isDarkMode ? 'white' : '#1F2937',
             alignSelf: 'center',
-            marginTop:5
+            marginTop: 5
         },
-
-        // Empty State
         emptyText: {
             fontSize: 16,
             color: isDarkMode ? '#ccc' : '#6B7280',
@@ -822,13 +806,20 @@ export default function Category({ navigation }) {
         },
     });
 
+    // Main return with conditional rendering
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {renderCategories()}
-                {renderSubCategories()}
-            </ScrollView>
+            {isLoading ? (
+                <CategoryScreenSkeletonLoader isDarkMode={isDarkMode} />
+            ) : (
+                <>
+                    {renderHeader()}
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        {categories.length > 0 && renderCategories()}
+                        {renderSubCategories()}
+                    </ScrollView>
+                </>
+            )}
         </SafeAreaView>
     );
 }

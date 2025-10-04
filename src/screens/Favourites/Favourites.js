@@ -24,6 +24,8 @@ import { apiDelete, apiGet } from '../../utils/Apis';
 import urls from '../../config/urls';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useIsFocused } from '@react-navigation/native';
+import { positionStyle } from 'react-native-flash-message';
+import FavouriteScreenSkeletonLoader from '../../components/Skeleton/FavoriteSkeletonLoader';
 
 
 export default function Favourite({ navigation }) {
@@ -31,6 +33,7 @@ export default function Favourite({ navigation }) {
     const [fav, setFav] = useState([])
     const { showLoader, hideLoader } = useLoader()
     const isFocused = useIsFocused()
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         getAllFav()
@@ -38,27 +41,27 @@ export default function Favourite({ navigation }) {
 
     const deleteFromWishList = async (id) => {
         try {
-            showLoader()
+            setIsLoading(true)
             const res = await apiDelete(`/api/wishlist/remove/${id}`)
             getAllFav()
-            hideLoader()
+            setIsLoading(false)
         } catch (error) {
             console.log('+++++++++++++=');
-            hideLoader()
+            setIsLoading(false)
         }
     }
 
     const getAllFav = async () => {
         try {
-            showLoader()
+            setIsLoading(true)
             const res = await apiGet(urls?.getAllFav)
             // console.log('++++++++++++++',JSON.stringify(res?.data));
             setFav(res?.data)
-            hideLoader()
+            setIsLoading(false)
 
 
         } catch (error) {
-            hideLoader()
+            setIsLoading(false)
         }
     }
     // Header Component
@@ -97,31 +100,42 @@ export default function Favourite({ navigation }) {
 
                 <View style={{}}>
                     {fav.map((item, index) => (
-                        <TouchableOpacity key={index} style={styles.productCard1}
-                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                        >
-                            <Image source={item?.productId?.images ? { uri: item?.productId?.images[0] } : IMG.Potato} style={{
-                                height: 68, width: 80,
-                                borderRadius: 10
-                            }} />
-                            <View style={{ marginLeft: 20 }}>
-                                <Text style={styles.productName}>{item?.productId?.name}</Text>
-                                <View style={styles.priceContainer}>
-                                    <Row style={{ gap: 10 }}>
-                                        <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>{item.productId?.stock}</Text>
-                                        <Text style={styles.currentPrice}>${item.productId?.price}</Text>
-                                        <Text style={styles.originalPrice}>E{item.productId?.discountPrice}</Text>
-                                    </Row>
+                        <View>
+
+                            <TouchableOpacity key={index} style={styles.productCard1}
+                                onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                            >
+                                <Image source={item?.productId?.images ? { uri: item?.productId?.images[0] } : IMG.Potato} style={{
+                                    height: 68, width: 80,
+                                    borderRadius: 10
+                                }} />
+                                <View style={{ marginLeft: 20 }}>
+                                    <Text style={styles.productName}>{item?.productId?.name}</Text>
+                                    <View style={styles.priceContainer}>
+                                        <Row style={{ gap: 10 }}>
+                                            <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>Stock {item.productId?.stock}</Text>
+                                            <Text style={styles.currentPrice}>Rs{item.productId?.price}</Text>
+                                            <Text style={styles.originalPrice}>Rs {item.productId?.discountPrice}</Text>
+                                        </Row>
+
+                                    </View>
 
                                 </View>
 
-                            </View>
 
+
+
+
+
+                            </TouchableOpacity>
                             <Row style={{
                                 // marginTop:40
-                                alignSelf:'flex-end',
-                                gap:10,
-                                top:10
+                                alignSelf: 'flex-end',
+                                gap: 10,
+                                top: 5,
+                                position: 'absolute',
+                                right: 5,
+                                zIndex: 10000
                             }}>
                                 <TouchableOpacity
                                     onPress={() => deleteFromWishList(item?.productId?._id)}
@@ -145,11 +159,7 @@ export default function Favourite({ navigation }) {
                                     <AddButton />
                                 </TouchableOpacity>
                             </Row>
-
-
-
-
-                        </TouchableOpacity>
+                        </View>
                     ))}
                 </View>
             </View>
@@ -253,6 +263,7 @@ export default function Favourite({ navigation }) {
             paddingVertical: 15,
             // marginBottom: 8,
             zIndex: -100000,
+            // elevation:3
         },
         sectionTitle: {
             fontSize: 16,
@@ -384,7 +395,7 @@ export default function Favourite({ navigation }) {
             },
             shadowOpacity: 0.05,
             shadowRadius: 2,
-            // elevation: 1,
+            elevation: 3,
             flexDirection: 'row',
             // justifyContent: 'space-between'
         },
@@ -462,10 +473,16 @@ export default function Favourite({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {renderTopPicks()}
-            </ScrollView>
+            {isLoading ? (
+                <FavouriteScreenSkeletonLoader isDarkMode={isDarkMode} />
+            ) : (
+                <>
+                    {renderHeader()}
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        {renderTopPicks()}
+                    </ScrollView>
+                </>
+            )}
         </SafeAreaView>
     );
 }

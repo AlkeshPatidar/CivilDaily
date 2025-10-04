@@ -86,7 +86,12 @@ function TabNavigation() {
                
               </View>
             ) : (
-              <View>
+              <View
+               style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
                 <Image
                   source={IMG.deActiveHome}
                   style={{
