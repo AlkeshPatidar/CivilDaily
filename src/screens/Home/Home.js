@@ -142,7 +142,7 @@ export default function HomeScreen({ navigation }) {
         selector = JSON.parse(selector);
     }
 
-    console.log('Selector:::::', selector);
+    // console.log('Selector:::::', selector);
     
     const { showLoader, hideLoader } = useLoader()
     const [categories, setCategories] = useState([])
@@ -205,7 +205,7 @@ export default function HomeScreen({ navigation }) {
     const getAllBanners = async () => {
         try {
             const res = await apiGet(urls?.getAllBanners)
-            console.log(res?.data);
+            console.log(res?.data,'Banners::::::::::::::::::');
             setBanners(res?.data || [])
         } catch (error) {
             console.log('Error fetching banners:', error)
@@ -268,9 +268,7 @@ export default function HomeScreen({ navigation }) {
                     placeholderTextColor="#9CA3AF"
                     style={styles.searchInput}
                 />
-                <TouchableOpacity style={styles.filterButton}>
-                    <Ionicons name="options-outline" size={20} color={App_Primary_color} />
-                </TouchableOpacity>
+             
             </Animated.View>
         </Animated.View>
     );
@@ -279,14 +277,14 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.bannerSection}>
             <View style={styles.carouselContainer}>
                 <Carousel
-                    data={[IMG.HomeBanner, IMG.HomeBanner, IMG.HomeBanner]}
+                    data={banners}
                     renderItem={({ item }) => (
                         <AnimatedCard delay={100}>
                             <View style={styles.bannerCard}>
                                 <Image
-                                    source={item}
+                                    source={{uri:item?.image}}
                                     style={styles.bannerImage}
-                                    resizeMode='contain'
+                                    // resizeMode='contain'
                                 />
                             </View>
                         </AnimatedCard>

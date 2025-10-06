@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -16,104 +16,99 @@ import { FONTS_FAMILY } from '../../assets/Fonts';
 import Row from '../../components/wrapper/row';
 import { BackWhite } from '../../assets/SVGs';
 import CustomText from '../../components/TextComponent';
+import { apiGet, apiPost } from '../../utils/Apis';
+import urls from '../../config/urls';
 
 export default function Notifications({ navigation }) {
     const { isDarkMode } = useSelector(state => state.theme);
-    const [notifications, setNotifications] = useState([
-        {
-            id: 1,
-            type: 'order',
-            title: 'Order Delivered',
-            message: 'Your order #12345 has been delivered successfully',
-            time: '2 min ago',
-            read: false,
-            icon: 'check-circle',
-            iconColor: '#10B981',
-        },
-        {
-            id: 2,
-            type: 'order',
-            title: 'Order Shipped',
-            message: 'Your order #12344 is on the way',
-            time: '1 hour ago',
-            read: false,
-            icon: 'local-shipping',
-            iconColor: '#3B82F6',
-        },
-        {
-            id: 3,
-            type: 'payment',
-            title: 'Payment Successful',
-            message: 'Payment of ₹1,250 received for order #12343',
-            time: '3 hours ago',
-            read: true,
-            icon: 'payments',
-            iconColor: '#10B981',
-        },
-        {
-            id: 4,
-            type: 'order',
-            title: 'Order Confirmed',
-            message: 'Your order #12342 has been confirmed',
-            time: 'Yesterday',
-            read: true,
-            icon: 'assignment-turned-in',
-            iconColor: '#8B5CF6',
-        },
-        {
-            id: 5,
-            type: 'promo',
-            title: 'Special Offer!',
-            message: 'Get 20% off on your next order. Use code: SAVE20',
-            time: 'Yesterday',
-            read: true,
-            icon: 'local-offer',
-            iconColor: '#F59E0B',
-        },
-        {
-            id: 6,
-            type: 'order',
-            title: 'Order Cancelled',
-            message: 'Your order #12341 has been cancelled',
-            time: '2 days ago',
-            read: true,
-            icon: 'cancel',
-            iconColor: '#EF4444',
-        },
-        {
-            id: 7,
-            type: 'payment',
-            title: 'Payment Pending',
-            message: 'Payment of ₹850 is pending for order #12340',
-            time: '3 days ago',
-            read: true,
-            icon: 'schedule',
-            iconColor: '#F59E0B',
-        },
-        {
-            id: 8,
-            type: 'order',
-            title: 'Order Processing',
-            message: 'Your order #12339 is being prepared',
-            time: '4 days ago',
-            read: true,
-            icon: 'hourglass-empty',
-            iconColor: '#6366F1',
-        },
-    ]);
+    const [notifications, setNotifications] = useState([]);
 
-    const markAsRead = (id) => {
-        setNotifications(prev =>
-            prev.map(notif =>
-                notif.id === id ? { ...notif, read: true } : notif
-            )
-        );
+    useEffect(() => {
+        getNotifications();
+    }, []);
+
+    const getNotifications = async () => {
+        try {
+            const res = await apiGet(urls?.getNotifictations);
+            if (res?.data) {
+                const formattedData = res.data.map(item => ({
+                    id: item._id,
+                    type: item.type || 'order',
+                    title: item.title,
+                    message: item.message,
+                    time: getTimeAgo(item.createdAt),
+                    read: item.isRead,
+                    icon: getIconByType(item.type),
+                    iconColor: getIconColorByType(item.type),
+                }));
+                setNotifications(formattedData);
+            }
+        } catch (error) {
+            console.log('Error fetching notifications:', error);
+        }
     };
 
-    const markAllAsRead = () => {
-        setNotifications(prev =>
-            prev.map(notif => ({ ...notif, read: true }))
-        );
+    const getTimeAgo = (dateString) => {
+        const now = new Date();
+        const createdDate = new Date(dateString);
+        const diffInMs = now - createdDate;
+        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+        if (diffInMinutes < 60) {
+            return `${diffInMinutes} min ago`;
+        } else if (diffInHours < 24) {
+            return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+        } else if (diffInDays === 1) {
+            return 'Yesterday';
+        } else {
+            return `${diffInDays} days ago`;
+        }
+    };
+
+    const getIconByType = (type) => {
+        const iconMap = {
+            order: 'check-circle',
+            payment: 'payments',
+            promo: 'local-offer',
+            shipping: 'local-shipping',
+        };
+        return iconMap[type] || 'notifications';
+    };
+
+    const getIconColorByType = (type) => {
+        const colorMap = {
+            order: '#10B981',
+            payment: '#3B82F6',
+            promo: '#F59E0B',
+            shipping: '#8B5CF6',
+        };
+        return colorMap[type] || '#6366F1';
+    };
+
+    const markAsRead = async (id) => {
+        try {
+            await apiPost(`/api/notification/read/${id}`);
+            setNotifications(prev =>
+                prev.map(notif =>
+                    notif.id === id ? { ...notif, read: true } : notif
+                )
+            );
+        } catch (error) {
+            console.log('Error marking notification as read:', error);
+        }
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            await apiPost('/api/notification/read-all');
+            setNotifications(prev =>
+                prev.map(notif => ({ ...notif, read: true }))
+            );
+        } catch (error) {
+            console.log('Error marking all notifications as read:', error);
+        }
     };
 
     const unreadCount = notifications.filter(n => !n.read).length;

@@ -2,507 +2,359 @@ import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     ScrollView,
     StyleSheet,
     StatusBar,
     SafeAreaView,
-    Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
 import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import Row from '../../components/wrapper/row';
-import { AddButton, BackIcon, BackWhite, DownChev } from '../../assets/SVGs';
-import IMG from '../../assets/Images';
-import SpaceBetweenRow from '../../components/wrapper/spacebetween';
+import { BackWhite } from '../../assets/SVGs';
 import CustomText from '../../components/TextComponent';
-import { useSelector } from 'react-redux';
-import useLoader from '../../utils/LoaderHook';
-import { apiDelete, apiGet } from '../../utils/Apis';
+import { apiGet, apiPost } from '../../utils/Apis';
 import urls from '../../config/urls';
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import { useIsFocused } from '@react-navigation/native';
-import { positionStyle } from 'react-native-flash-message';
 import FavouriteScreenSkeletonLoader from '../../components/Skeleton/FavoriteSkeletonLoader';
 
 
-export default function Favourite({ navigation }) {
 
-    const [fav, setFav] = useState([])
-    const { showLoader, hideLoader } = useLoader()
-    const isFocused = useIsFocused()
-    const [isLoading, setIsLoading] = useState(false)
+export default function Notifications({ navigation }) {
+    const { isDarkMode } = useSelector(state => state.theme);
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        getAllFav()
-    }, [isFocused])
+        getNotifications();
+    }, []);
 
-    const deleteFromWishList = async (id) => {
+    const getNotifications = async () => {
         try {
-            setIsLoading(true)
-            const res = await apiDelete(`/api/wishlist/remove/${id}`)
-            getAllFav()
-            setIsLoading(false)
+            setLoading(true);
+            const res = await apiGet(urls?.getNotifictations);
+            if (res?.data) {
+                const formattedData = res.data.map(item => ({
+                    id: item._id,
+                    type: item.type || 'order',
+                    title: item.title,
+                    message: item.message,
+                    time: getTimeAgo(item.createdAt),
+                    read: item.isRead,
+                    icon: getIconByType(item.type),
+                    iconColor: getIconColorByType(item.type),
+                }));
+                setNotifications(formattedData);
+            }
         } catch (error) {
-            console.log('+++++++++++++=');
-            setIsLoading(false)
+            console.log('Error fetching notifications:', error);
+        } finally {
+            setLoading(false);
         }
-    }
-
-    const getAllFav = async () => {
-        try {
-            setIsLoading(true)
-            const res = await apiGet(urls?.getAllFav)
-            // console.log('++++++++++++++',JSON.stringify(res?.data));
-            setFav(res?.data)
-            setIsLoading(false)
-
-
-        } catch (error) {
-            setIsLoading(false)
-        }
-    }
-    // Header Component
-    const renderHeader = () => (
-        <View style={styles.headerContainer}>
-            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
-            <TouchableOpacity>
-                <Row style={{ gap: 20 }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <BackWhite />
-
-                    </TouchableOpacity>
-                    <CustomText style={{
-                        color: 'white',
-                        fontFamily: FONTS_FAMILY.Poppins_Medium,
-                        fontSize: 18
-                    }}>Favourite ({fav?.length} Items)</CustomText>
-                </Row>
-
-            </TouchableOpacity>
-
-        </View>
-    );
-
-
-
-    // Top Picks Component
-    const renderTopPicks = () => {
-
-
-        return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.sectionHeader}>
-
-                </View>
-
-                <View style={{}}>
-                    {
-                        fav?.length > 0 ?
-                            (
-                                fav.map((item, index) => (
-                                    <View>
-
-                                        <TouchableOpacity key={index} style={styles.productCard1}
-                                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                                        >
-                                            <Image source={item?.productId?.images ? { uri: item?.productId?.images[0] } : IMG.Potato} style={{
-                                                height: 68, width: 80,
-                                                borderRadius: 10
-                                            }} />
-                                            <View style={{ marginLeft: 20 }}>
-                                                <Text style={styles.productName}>{item?.productId?.name}</Text>
-                                                <View style={styles.priceContainer}>
-                                                    {/* <Row style={{ gap: 10 }}> */}
-                                                    <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>Stock {item.productId?.stock}</Text>
-
-                                                    {/* </Row> */}
-
-                                                </View>
-                                                <Row style={{
-                                                    gap: 10
-                                                }}>
-                                                    <Text style={styles.currentPrice}>Rs{item.productId?.price}</Text>
-                                                    <Text style={styles.originalPrice}>Rs {item.productId?.discountPrice}</Text>
-
-                                                </Row>
-                                            </View>
-
-
-
-
-
-
-                                        </TouchableOpacity>
-                                        <Row style={{
-                                            // marginTop:40
-                                            alignSelf: 'flex-end',
-                                            gap: 10,
-                                            top: 5,
-                                            position: 'absolute',
-                                            right: 5,
-                                            zIndex: 10000
-                                        }}>
-                                            <TouchableOpacity
-                                                onPress={() => deleteFromWishList(item?.productId?._id)}
-                                                style={{
-                                                    // position: 'absolute', right: 15, top: 10, elevation: 1,
-                                                    backgroundColor: 'white',
-                                                    padding: 5,
-                                                    borderRadius: 100
-                                                }}
-                                            >
-                                                <AntDesign name='delete'
-                                                    color={App_Primary_color}
-                                                    size={22}
-                                                />
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity
-                                                // style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
-                                                onPress={() => navigation.navigate('ProductDetail', { productId: item?.productId?._id })}
-                                            >
-                                                <AddButton />
-                                            </TouchableOpacity>
-                                        </Row>
-                                    </View>
-                                ))
-
-                            ) :
-                            <CustomText
-                                style={{
-                                    alignSelf: 'center',
-                                    fontFamily: FONTS_FAMILY.Poppins_Medium,
-                                    marginTop: 40
-                                }}
-                            >No Items Added in Favourite</CustomText>
-                    }
-                </View>
-            </View>
-        );
     };
 
+    const getTimeAgo = (dateString) => {
+        const now = new Date();
+        const createdDate = new Date(dateString);
+        const diffInMs = now - createdDate;
+        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-    const { isDarkMode } = useSelector(state => state.theme)
+        if (diffInMinutes < 60) {
+            return `${diffInMinutes} min ago`;
+        } else if (diffInHours < 24) {
+            return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+        } else if (diffInDays === 1) {
+            return 'Yesterday';
+        } else {
+            return `${diffInDays} days ago`;
+        }
+    };
+
+    const getIconByType = (type) => {
+        const iconMap = {
+            order: 'check-circle',
+            payment: 'payments',
+            promo: 'local-offer',
+            shipping: 'local-shipping',
+        };
+        return iconMap[type] || 'notifications';
+    };
+
+    const getIconColorByType = (type) => {
+        const colorMap = {
+            order: '#10B981',
+            payment: '#3B82F6',
+            promo: '#F59E0B',
+            shipping: '#8B5CF6',
+        };
+        return colorMap[type] || '#6366F1';
+    };
+
+    const markAsRead = async (id) => {
+        try {
+            await apiPost(`/api/notification/read/${id}`);
+            setNotifications(prev =>
+                prev.map(notif =>
+                    notif.id === id ? { ...notif, read: true } : notif
+                )
+            );
+        } catch (error) {
+            console.log('Error marking notification as read:', error);
+        }
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            await apiPost('/api/notification/read-all');
+            setNotifications(prev =>
+                prev.map(notif => ({ ...notif, read: true }))
+            );
+        } catch (error) {
+            console.log('Error marking all notifications as read:', error);
+        }
+    };
+
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
         },
-
-        // Header Styles
         headerContainer: {
             backgroundColor: App_Primary_color,
             paddingHorizontal: 16,
             paddingTop: 16,
             paddingBottom: 24,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            // height: 200,
-            zIndex: 10000000
         },
-        topBar: {
+        headerRow: {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: 16,
         },
         leftHeader: {
-            // flexDirection: 'row',
-            // alignItems: 'center',
-        },
-        avatarContainer: {
-            width: 32,
-            height: 32,
-            backgroundColor: 'white',
-            borderRadius: 16,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: 8,
-        },
-        avatarText: {
-            color: 'white',
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-            fontSize: 14,
-        },
-        timeText: {
-            color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
-        },
-        rightHeader: {
-            flexDirection: 'row',
-        },
-        iconButton: {
-            marginLeft: 16,
-            backgroundColor: '#6C87CF',
-            padding: 5,
-            borderRadius: 100
-        },
-        titleContainer: {
-            marginBottom: 16,
-        },
-        mainTitle: {
-            color: 'white',
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 4,
-        },
-        subtitle: {
-            color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
-        },
-        searchContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#3658B0',
-            borderRadius: 100,
-            paddingHorizontal: 16,
-            height: 40,
+            gap: 20,
         },
-        searchIcon: {
-            marginRight: 12,
-        },
-        searchInput: {
-            flex: 1,
-            fontSize: 13,
+        headerTitle: {
             color: 'white',
-            fontFamily: FONTS_FAMILY.Poppins_Regular
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            fontSize: 18,
         },
-
-        // Section Styles
-        sectionContainer: {
-            // backgroundColor: 'white',
+        markAllButton: {
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: 20,
+        },
+        markAllText: {
+            color: 'white',
+            fontSize: 12,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+        },
+        contentContainer: {
             paddingHorizontal: 16,
-            paddingVertical: 15,
-            // marginBottom: 8,
-            zIndex: -100000,
-            // elevation:3
+            paddingTop: 16,
         },
         sectionTitle: {
-            fontSize: 16,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            color: '#1F2937',
-            marginBottom: 16,
-        },
-        sectionHeader: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            // marginBottom: 16,
-        },
-        seeAllText: {
-            color: '#3B82F6',
             fontSize: 14,
-            fontWeight: '500',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+            marginBottom: 12,
+            marginTop: 8,
         },
-
-        // Categories Styles
-        categoriesGrid: {
+        notificationCard: {
+            backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 12,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 2,
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 10
+            gap: 12,
         },
-        categoryItem: {
-            // alignItems: 'center',
-            // flex: 1,
+        unreadCard: {
+            borderLeftWidth: 4,
+            borderLeftColor: App_Primary_color,
         },
-        categoryIcon: {
-            width: 100,
-            height: 100,
-            borderRadius: 16,
-            // justifyContent: 'center',
-            // alignItems: 'center',
-            // marginBottom: 8,
-            paddingTop: 8,
-            paddingLeft: 8,
-        },
-        categoryEmoji: {
-            fontSize: 28,
-        },
-        categoryText: {
-            fontSize: 13,
-            color: 'black',
-            // textAlign: 'center',
-            lineHeight: 16,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold
-        },
-
-        // Promo Card Styles
-        promoCard: {
-            backgroundColor: '#F97316',
-            borderRadius: 16,
-            padding: 24,
-            overflow: 'hidden',
-        },
-        promoContent: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+        iconContainer: {
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: isDarkMode ? '#1F2937' : '#F3F4F6',
         },
-        promoTextContainer: {
+        notificationContent: {
             flex: 1,
         },
-        promoTitle: {
-            color: 'white',
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginBottom: 8,
-        },
-        promoSubtitle: {
-            color: 'white',
-            fontSize: 14,
-            opacity: 0.9,
-            marginBottom: 16,
-        },
-        shopNowButton: {
-            backgroundColor: 'white',
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-            borderRadius: 20,
-            alignSelf: 'flex-start',
-        },
-        shopNowText: {
-            color: '#F97316',
-            fontSize: 14,
-            fontWeight: '600',
-        },
-        promoEmoji: {
-            fontSize: 64,
-            opacity: 0.2,
-        },
-
-        // Products Grid Styles
-        productsGrid: {
+        notificationHeader: {
             flexDirection: 'row',
-            // flexWrap: 'wrap',
             justifyContent: 'space-between',
-            gap: 20
-        },
-        productCard: {
-            width: '48%',
-            backgroundColor: '#FFFFFF',
-            borderRadius: 16,
-            padding: 16,
-            marginBottom: 16,
-            shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            // elevation: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-        },
-        productCard1: {
-            width: '100%',
-            backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
-            borderRadius: 16,
-            padding: 16,
-            marginBottom: 16,
-            shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 3,
-            flexDirection: 'row',
-            // justifyContent: 'space-between'
-        },
-        productImageContainer: {
-            height: 96,
-            backgroundColor: '#F9FAFB',
-            borderRadius: 12,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 12,
-            position: 'relative',
-        },
-        productImage: {
-            fontSize: 32,
-        },
-        discountBadge: {
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: '#EF4444',
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            borderRadius: 12,
-        },
-        discountText: {
-            color: 'white',
-            fontSize: 10,
-            fontWeight: '600',
-        },
-        productName: {
-            fontSize: 14,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            color: isDarkMode ? 'white' : '#1F2937',
+            alignItems: 'flex-start',
             marginBottom: 4,
         },
-        ratingContainer: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 8,
-        },
-        ratingText: {
-            fontSize: 12,
-            color: isDarkMode ? 'white' : '#6B7280',
-            marginLeft: 4,
-        },
-        priceContainer: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        },
-        currentPrice: {
-            fontSize: 16,
-            fontWeight: 'bold',
+        notificationTitle: {
+            fontSize: 15,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             color: isDarkMode ? 'white' : '#1F2937',
+            flex: 1,
         },
-        originalPrice: {
+        unreadBadge: {
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: App_Primary_color,
+            marginLeft: 8,
+            marginTop: 4,
+        },
+        notificationMessage: {
+            fontSize: 13,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: isDarkMode ? '#D1D5DB' : '#6B7280',
+            lineHeight: 18,
+            marginBottom: 6,
+        },
+        timeText: {
             fontSize: 12,
-            color: '#9CA3AF',
-            textDecorationLine: 'line-through',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
         },
-        addButton: {
-            width: 32,
-            height: 32,
-            backgroundColor: '#3B82F6',
-            borderRadius: 16,
+        emptyContainer: {
+            flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            paddingTop: 100,
         },
-        addButtonText: {
-            color: 'white',
+        emptyIcon: {
+            marginBottom: 16,
+        },
+        emptyTitle: {
             fontSize: 18,
-            fontWeight: 'bold',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: isDarkMode ? 'white' : '#1F2937',
+            marginBottom: 8,
+        },
+        emptyText: {
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+            textAlign: 'center',
         },
     });
 
+    const renderHeader = () => (
+        <View style={styles.headerContainer}>
+            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+            <View style={styles.headerRow}>
+                <View style={styles.leftHeader}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <BackWhite />
+                    </TouchableOpacity>
+                    <CustomText style={styles.headerTitle}>
+                        Notifications {unreadCount > 0 && `(${unreadCount})`}
+                    </CustomText>
+                </View>
+                {unreadCount > 0 && (
+                    <TouchableOpacity
+                        style={styles.markAllButton}
+                        onPress={markAllAsRead}
+                    >
+                        <Text style={styles.markAllText}>Mark all read</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+        </View>
+    );
+
+    const renderNotification = (item) => (
+        <TouchableOpacity
+            key={item.id}
+            style={[
+                styles.notificationCard,
+                !item.read && styles.unreadCard,
+            ]}
+            onPress={() => markAsRead(item.id)}
+            activeOpacity={0.7}
+        >
+            <View style={styles.iconContainer}>
+                <MaterialIcons
+                    name={item.icon}
+                    size={24}
+                    color={item.iconColor}
+                />
+            </View>
+            <View style={styles.notificationContent}>
+                <View style={styles.notificationHeader}>
+                    <Text style={styles.notificationTitle} numberOfLines={1}>
+                        {item.title}
+                    </Text>
+                    {!item.read && <View style={styles.unreadBadge} />}
+                </View>
+                <Text style={styles.notificationMessage} numberOfLines={2}>
+                    {item.message}
+                </Text>
+                <Text style={styles.timeText}>{item.time}</Text>
+            </View>
+        </TouchableOpacity>
+    );
+
+    const unreadNotifications = notifications.filter(n => !n.read);
+    const readNotifications = notifications.filter(n => n.read);
+
+    if (loading) {
+        return (
+            <FavouriteScreenSkeletonLoader isDarkMode={isDarkMode} />
+        )
+    }
     return (
         <SafeAreaView style={styles.container}>
-            {isLoading ? (
-                <FavouriteScreenSkeletonLoader isDarkMode={isDarkMode} />
-            ) : (
-                <>
-                    {renderHeader()}
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        {renderTopPicks()}
-                    </ScrollView>
-                </>
+            {renderHeader()}
+            {(
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.contentContainer}
+                >
+                    {notifications.length === 0 ? (
+                        <View style={styles.emptyContainer}>
+                            <Ionicons
+                                name="notifications-off-outline"
+                                size={64}
+                                color={isDarkMode ? '#4B5563' : '#9CA3AF'}
+                                style={styles.emptyIcon}
+                            />
+                            <Text style={styles.emptyTitle}>No Notifications</Text>
+                            <Text style={styles.emptyText}>
+                                You're all caught up! {'\n'}
+                                Check back later for updates.
+                            </Text>
+                        </View>
+                    ) : (
+                        <>
+                            {unreadNotifications.length > 0 && (
+                                <>
+                                    <Text style={styles.sectionTitle}>NEW</Text>
+                                    {unreadNotifications.map(renderNotification)}
+                                </>
+                            )}
+                            {readNotifications.length > 0 && (
+                                <>
+                                    <Text style={styles.sectionTitle}>EARLIER</Text>
+                                    {readNotifications.map(renderNotification)}
+                                </>
+                            )}
+                        </>
+                    )}
+                </ScrollView>
             )}
         </SafeAreaView>
     );
 }
-
-

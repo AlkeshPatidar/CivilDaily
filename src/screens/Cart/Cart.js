@@ -1,716 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert, ToastAndroid } from 'react-native';
-// import IMG from '../../assets/Images';
-// import { FONTS_FAMILY } from '../../assets/Fonts';
-// import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
-// import { BackWhite } from '../../assets/SVGs';
-// import { useSelector } from 'react-redux';
-// import useLoader from '../../utils/LoaderHook';
-// import { apiDelete, apiGet } from '../../utils/Apis';
-// import urls from '../../config/urls';
-// import Row from '../../components/wrapper/row';
-// import AntDesign from 'react-native-vector-icons/AntDesign'
-// import SpaceBetweenRow from '../../components/wrapper/spacebetween';
-// import { useIsFocused } from '@react-navigation/native';
 
-// const CartScreen = ({ navigation }) => {
-//     const [activeTab, setActiveTab] = useState('My Cart');
-//     const [cartData, setCartData] = useState(null);
-//     // const [loading, setLoading] = useState(true);
-//     const { showLoader, hideLoader } = useLoader()
-
-//     const isFocused = useIsFocused()
-
-//     // Static data for current and previous orders (as requested)
-//     const currentOrders = [
-//         {
-//             id: "1",
-//             orderNumber: "#2019362",
-//             status: "On Progress",
-//             total: 18.99,
-//             items: 2,
-//             date: "2025-09-20",
-//             image: IMG.Potato,
-//             productName: "Fresh Pateto"
-//         }
-//     ];
-
-//     const previousOrders = [
-//         // Empty for now as requested
-//     ];
-
-//     useEffect(() => {
-//         fetchCartData();
-
-//     }, [isFocused]);
-
-//     useEffect(() => {
-//         fetchCurrentAndPrevious()
-//     }, [
-//         activeTab
-//     ])
-
-//     const fetchCartData = async () => {
-//         try {
-
-//             showLoader()
-//             const res = await apiGet('/api/order/my?orderType=previous')
-//             console.log(res?.data);
-//             // alert (0)
-//             // setCartData(res?.data)
-//             hideLoader()
-//         } catch (error) {
-//             console.error('Error fetching cart data:', error);
-//             hideLoader()
-//         }
-//     };
-
-//     const fetchCurrentAndPrevious = async () => {
-//         try {
-
-//             showLoader()
-//             const res = await apiGet(urls?.getCartData)
-//             // console.log(res?.data);
-//             // alert (0)
-//             setCartData(res?.data)
-//             hideLoader()
-//         } catch (error) {
-//             console.error('Error fetching cart data:', error);
-//             hideLoader()
-//         }
-//     };
-
-//     const deleteCartCarta = async (id) => {
-//         try {
-
-//             showLoader()
-//             const res = await apiDelete(`${urls?.deleteCartData}/${id}`)
-//             // console.log('++++++++++++++++++++++++++++++????????????',res);
-//             // setCartData(res?.data)
-//             fetchCartData()
-//             hideLoader()
-//         } catch (error) {
-//             console.error('Error fetching cart data:', error);
-//             hideLoader()
-//         }
-//     };
-
-
-
-//     const updateQuantity = async (itemId, newQuantity, stock) => {
-//         if (newQuantity < 1) {
-//             // Show confirmation for removal
-//             Alert.alert(
-//                 "Remove Item",
-//                 "Are you sure you want to remove this item from cart?",
-//                 [
-//                     { text: "Cancel", style: "cancel" },
-//                     { text: "Remove", onPress: () => removeFromCart(itemId) }
-//                 ]
-//             );
-//             return;
-//         }
-
-//         if (newQuantity > stock) {
-//             Alert.alert("Stock Limit", `Only ${stock} items available in stock`);
-//             return;
-//         }
-
-//         // Update local state immediately for better UX
-//         setCartData(prevCart => ({
-//             ...prevCart,
-//             items: prevCart.items.map(item =>
-//                 item._id === itemId
-//                     ? { ...item, quantity: newQuantity }
-//                     : item
-//             )
-//         }));
-
-//         // Here you would make API call to update quantity
-//         try {
-//             // await updateCartItemQuantity(itemId, newQuantity);
-//             console.log(`Updating item ${itemId} to quantity ${newQuantity}`);
-//         } catch (error) {
-//             console.error('Error updating quantity:', error);
-//             // Revert on error
-//             fetchCartData();
-//         }
-//     };
-
-//     const removeFromCart = async (itemId) => {
-//         // Update local state
-//         setCartData(prevCart => ({
-//             ...prevCart,
-//             items: prevCart.items.filter(item => item._id !== itemId)
-//         }));
-
-//         // Here you would make API call to remove item
-//         try {
-//             // await removeCartItem(itemId);
-//             console.log(`Removing item ${itemId} from cart`);
-//         } catch (error) {
-//             console.error('Error removing item:', error);
-//             // Revert on error
-//             fetchCartData();
-//         }
-//     };
-
-//     const renderMyCartContent = () => {
-//         // if (loading) {
-//         //     return (
-//         //         <View style={styles.emptyContainer}>
-//         //             <Text style={styles.emptyText}>Loading cart...</Text>
-//         //         </View>
-//         //     );
-//         // }
-
-//         if (!cartData || !cartData.items || cartData.items.length === 0) {
-//             return (
-//                 <View style={styles.emptyContainer}>
-//                     <Text style={styles.emptyText}>No items in cart</Text>
-//                 </View>
-//             );
-//         }
-
-//         return (
-//             <View style={styles.cartContainer}>
-//                 {/* Cart Header */}
-//                 <View style={styles.cartHeader}>
-//                     <Text style={styles.cartTitle}>• Cart Items ({cartData.items.length})</Text>
-//                     <Row style={{
-//                         gap: 15
-//                     }}>
-//                         <View style={styles.checkIcon}>
-//                             <Text style={styles.checkMark}>✓</Text>
-//                         </View>
-
-//                     </Row>
-//                 </View>
-
-//                 {/* Store Info */}
-//                 {/* <View style={styles.storeSection}>
-//                     <Text style={styles.sectionTitle}>Store</Text>
-//                     <Text style={styles.storeName}>Nippon Mart</Text>
-//                 </View> */}
-
-//                 {/* Product Summary */}
-//                 <View style={styles.productSection}>
-//                     <Text style={styles.sectionTitle}>Product Summary</Text>
-
-//                     {cartData.items.map((item, index) => (
-//                         <View key={item._id} style={styles.productItem}>
-//                             <Image
-//                                 source={{ uri: item.productId.images[0] }}
-//                                 style={styles.productImage}
-//                                 defaultSource={IMG.Potato}
-//                             />
-//                             <View style={styles.productDetails}>
-//                                 <Text style={styles.productName}>{item.productId.name}</Text>
-//                                 <Text style={styles.productVariant}>SKU: {item.productId.sku}</Text>
-//                                 <View style={styles.priceContainer}>
-//                                     <Text style={styles.productPrice}>
-//                                         ${(item.productId.price - item.productId.discountPrice).toFixed(2)}
-//                                     </Text>
-//                                     {item.productId.discountPrice > 0 && (
-//                                         <Text style={styles.originalPrice}>
-//                                             ${item.productId.price.toFixed(2)}
-//                                         </Text>
-//                                     )}
-//                                 </View>
-//                                 <SpaceBetweenRow style={{ gap: 80 }}>
-//                                     <Text style={styles.stockText}>
-//                                         Stock: {item.productId.stock}
-//                                     </Text>
-//                                     {/* Cart Total */}
-//                                     <TouchableOpacity
-//                                         onPress={() => deleteCartCarta(item?.productId?._id)}
-//                                         style={{ left: 30 }}
-//                                     >
-//                                         <AntDesign name='delete'
-//                                             color='red'
-//                                             size={20}
-
-//                                         />
-//                                     </TouchableOpacity>
-
-//                                 </SpaceBetweenRow>
-//                             </View>
-//                             <View style={styles.quantityContainer}>
-//                                 <TouchableOpacity
-//                                     style={styles.quantityButton}
-//                                     onPress={() => updateQuantity(item._id, item.quantity - 1, item.productId.stock)}
-//                                 >
-//                                     <Text style={styles.quantityButtonText}>−</Text>
-//                                 </TouchableOpacity>
-//                                 <Text style={styles.quantityText}>{item.quantity}</Text>
-//                                 <TouchableOpacity
-//                                     style={styles.quantityButton}
-//                                     onPress={() => updateQuantity(item._id, item.quantity + 1, item.productId.stock)}
-//                                 >
-//                                     <Text style={styles.quantityButtonText}>+</Text>
-//                                 </TouchableOpacity>
-
-//                             </View>
-
-//                         </View>
-//                     ))}
-//                 </View>
-
-
-//                 <View style={styles.totalSection}>
-//                     <Text style={styles.totalText}>
-//                         Total: ${cartData.items.reduce((total, item) =>
-//                             total + ((item.productId.price - item.productId.discountPrice) * item.quantity), 0
-//                         ).toFixed(2)}
-//                     </Text>
-//                 </View>
-//             </View>
-//         );
-//     };
-
-//     const renderCurrentOrderContent = () => (
-//         <View>
-//             {currentOrders.map((order) => (
-//                 <View key={order.id} style={styles.currentOrderCard}>
-//                     <View style={styles.orderHeader}>
-//                         <Image source={order.image} style={styles.orderImage} />
-//                         <View style={styles.orderInfo}>
-//                             <Text style={styles.orderTitle}>{order.productName}</Text>
-//                             <Text style={styles.orderId}>{order.orderNumber}</Text>
-//                         </View>
-//                         <View style={styles.statusBadge}>
-//                             <View style={styles.statusDot} />
-//                             <Text style={styles.statusText}>{order.status}</Text>
-//                         </View>
-//                     </View>
-
-//                     <View style={styles.orderFooter}>
-//                         <View style={styles.orderPricing}>
-//                             <Text style={styles.orderPrice}>${order.total}</Text>
-//                             <Text style={styles.orderItems}> • {order.items} Items</Text>
-//                         </View>
-//                         <TouchableOpacity
-//                             style={styles.trackOrderButton}
-//                             onPress={() => navigation.navigate('OrderTrackingScreen')}
-//                         >
-//                             <Text style={styles.trackOrderText}>Track Order</Text>
-//                             <Text style={styles.chevron}>›</Text>
-//                         </TouchableOpacity>
-//                     </View>
-//                 </View>
-//             ))}
-//         </View>
-//     );
-
-//     const renderPreviousOrderContent = () => (
-//         <View style={styles.emptyContainer}>
-//             <Text style={styles.emptyText}>No previous orders found</Text>
-//         </View>
-//     );
-
-//     const renderContent = () => {
-//         switch (activeTab) {
-//             case 'My Cart':
-//                 return renderMyCartContent();
-//             case 'Current Order':
-//                 return renderCurrentOrderContent();
-//             case 'Previous Order':
-//                 return renderPreviousOrderContent();
-//             default:
-//                 return renderMyCartContent();
-//         }
-//     };
-
-//     const { isDarkMode } = useSelector(state => state.theme);
-
-//     const styles = StyleSheet.create({
-//         container: {
-//             flex: 1,
-//             backgroundColor: isDarkMode ? darkMode25 : 'white',
-//         },
-//         header: {
-//             backgroundColor: App_Primary_color,
-//             height: 90,
-//             flexDirection: 'row',
-//             alignItems: 'flex-end',
-//             paddingBottom: 15,
-//             paddingHorizontal: 20,
-//         },
-//         backButton: {
-//             width: 30,
-//             bottom: 9
-//         },
-//         backIcon: {
-//             color: 'white',
-//         },
-//         headerTitle: {
-//             color: 'white',
-//             fontSize: 22,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             marginLeft: 10,
-//         },
-//         headerRight: {
-//             width: 30,
-//         },
-//         tabContainer: {
-//             backgroundColor: isDarkMode ? darkMode25 : 'white',
-//             flexDirection: 'row',
-//             paddingHorizontal: 20,
-//             paddingVertical: 15,
-//         },
-//         tab: {
-//             marginRight: 25,
-//             paddingBottom: 8,
-//         },
-//         activeTab: {
-//             borderBottomWidth: 3,
-//             borderBottomColor: '#5A6ACF',
-//         },
-//         tabText: {
-//             fontSize: 16,
-//             color: '#999',
-//             fontFamily: FONTS_FAMILY.Poppins_Medium
-//         },
-//         activeTabText: {
-//             color: isDarkMode ? 'white' : '#333',
-//             fontFamily: FONTS_FAMILY.Poppins_Medium
-//         },
-//         content: {
-//             flex: 1,
-//             padding: 20,
-//         },
-//         cartContainer: {
-//             backgroundColor: isDarkMode ? dark33 : 'white',
-//             borderRadius: 12,
-//             padding: 20,
-//             marginBottom: 20,
-//             shadowColor: '#000',
-//             shadowOffset: {
-//                 width: 0,
-//                 height: 1,
-//             },
-//             shadowOpacity: 0.05,
-//             shadowRadius: 3,
-//             borderWidth: 1,
-//             borderColor: '#CCCCCC'
-//         },
-//         cartHeader: {
-//             flexDirection: 'row',
-//             justifyContent: 'space-between',
-//             alignItems: 'center',
-//             paddingBottom: 15,
-//             borderBottomWidth: 1,
-//             borderBottomColor: '#E0E0E0',
-//             marginBottom: 20,
-//         },
-//         cartTitle: {
-//             fontSize: 16,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//         },
-//         checkIcon: {
-//             backgroundColor: '#4CAF50',
-//             width: 24,
-//             height: 24,
-//             borderRadius: 4,
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//         },
-//         checkMark: {
-//             color: 'white',
-//             fontSize: 14,
-//             fontWeight: 'bold',
-//         },
-//         storeSection: {
-//             marginBottom: 20,
-//         },
-//         sectionTitle: {
-//             fontSize: 14,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//             marginBottom: 5,
-//         },
-//         storeName: {
-//             fontSize: 15,
-//             color: isDarkMode ? 'white' : '#888',
-//         },
-//         productSection: {
-//             marginBottom: 20,
-//         },
-//         productItem: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//             marginBottom: 15,
-//             paddingBottom: 15,
-//             borderBottomWidth: 1,
-//             borderBottomColor: '#F0F0F0',
-//         },
-//         productImage: {
-//             width: 95,
-//             height: 80,
-//             borderRadius: 8,
-//             marginRight: 15,
-//         },
-//         productDetails: {
-//             flex: 1,
-//         },
-//         productName: {
-//             fontSize: 16,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//             marginBottom: 4,
-//             width: 100
-//         },
-//         productVariant: {
-//             fontSize: 12,
-//             color: isDarkMode ? '#ccc' : '#888',
-//             marginBottom: 6,
-//         },
-//         priceContainer: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//             marginBottom: 4,
-//         },
-//         productPrice: {
-//             fontSize: 16,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: App_Primary_color,
-//             marginRight: 8,
-//         },
-//         originalPrice: {
-//             fontSize: 14,
-//             color: '#888',
-//             textDecorationLine: 'line-through',
-//         },
-//         stockText: {
-//             fontSize: 12,
-//             color: isDarkMode ? '#ccc' : '#666',
-//         },
-//         quantityContainer: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//         },
-//         quantityButton: {
-//             backgroundColor: App_Primary_color,
-//             width: 30,
-//             height: 30,
-//             borderRadius: 15,
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//         },
-//         quantityButtonText: {
-//             fontSize: 18,
-//             color: 'white',
-//             fontWeight: '600',
-//         },
-//         quantityText: {
-//             fontSize: 16,
-//             fontWeight: '600',
-//             color: isDarkMode ? 'white' : '#333',
-//             marginHorizontal: 15,
-//             minWidth: 25,
-//             textAlign: 'center',
-//         },
-//         totalSection: {
-//             borderTopWidth: 1,
-//             borderTopColor: '#E0E0E0',
-//             paddingTop: 15,
-//             alignItems: 'flex-end',
-//         },
-//         totalText: {
-//             fontSize: 18,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//         },
-//         // Current Order Styles
-//         currentOrderCard: {
-//             backgroundColor: isDarkMode ? dark33 : 'white',
-//             borderRadius: 12,
-//             padding: 16,
-//             marginBottom: 16,
-//             shadowColor: '#000',
-//             shadowOffset: {
-//                 width: 0,
-//                 height: 1,
-//             },
-//             shadowOpacity: 0.05,
-//             shadowRadius: 3,
-//             borderWidth: 1,
-//             borderColor: '#CCCCCC',
-//         },
-//         orderHeader: {
-//             flexDirection: 'row',
-//             marginBottom: 16,
-//         },
-//         orderImage: {
-//             width: 60,
-//             height: 60,
-//             borderRadius: 8,
-//             marginRight: 12,
-//         },
-//         orderInfo: {
-//             flex: 1,
-//             justifyContent: 'center',
-//         },
-//         orderTitle: {
-//             fontSize: 16,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//             marginBottom: 2,
-//         },
-//         orderId: {
-//             fontSize: 14,
-//             color: isDarkMode ? 'white' : '#333',
-//             fontWeight: '500',
-//             marginBottom: 4,
-//         },
-//         statusBadge: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//             paddingHorizontal: 8,
-//             paddingVertical: 4,
-//             borderRadius: 12,
-//             borderWidth: 1,
-//             borderColor: '#FF9500',
-//             height: 24,
-//         },
-//         statusDot: {
-//             width: 6,
-//             height: 6,
-//             borderRadius: 3,
-//             backgroundColor: '#FF9500',
-//             marginRight: 6,
-//         },
-//         statusText: {
-//             fontSize: 12,
-//             fontWeight: '500',
-//             color: '#FF9500',
-//         },
-//         orderFooter: {
-//             flexDirection: 'row',
-//             justifyContent: 'space-between',
-//             alignItems: 'center',
-//         },
-//         orderPricing: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//         },
-//         orderPrice: {
-//             fontSize: 16,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium,
-//             color: isDarkMode ? 'white' : '#333',
-//         },
-//         orderItems: {
-//             fontSize: 14,
-//             color: isDarkMode ? 'white' : 'black',
-//             fontFamily: FONTS_FAMILY.Poppins_Regular
-//         },
-//         trackOrderButton: {
-//             flexDirection: 'row',
-//             alignItems: 'center',
-//         },
-//         trackOrderText: {
-//             fontSize: 14,
-//             color: isDarkMode ? 'white' : '#888',
-//             marginRight: 4,
-//             fontFamily: FONTS_FAMILY.Poppins_Medium
-//         },
-//         chevron: {
-//             fontSize: 16,
-//             color: '#888',
-//             fontWeight: '300',
-//             bottom: 3
-//         },
-//         // Empty state
-//         emptyContainer: {
-//             flex: 1,
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             paddingVertical: 60,
-//         },
-//         emptyText: {
-//             fontSize: 16,
-//             color: isDarkMode ? 'white' : '#888',
-//             textAlign: 'center',
-//         },
-//         checkoutContainer: {
-//             backgroundColor: isDarkMode ? darkMode25 : 'white',
-//             paddingHorizontal: 20,
-//             paddingVertical: 20,
-//             paddingBottom: 35,
-//         },
-//         checkoutButton: {
-//             backgroundColor: App_Primary_color,
-//             height: 56,
-//             borderRadius: 28,
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//         },
-//         checkoutText: {
-//             color: 'white',
-//             fontSize: 16,
-//             fontWeight: '600',
-//         },
-//     });
-
-//     const hasCartItems = cartData && cartData.items && cartData.items.length > 0;
-
-//     return (
-//         <View style={styles.container}>
-//             <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
-
-//             {/* Header */}
-//             <View style={styles.header}>
-//                 <TouchableOpacity style={styles.backButton}
-//                     onPress={() => navigation.goBack()}
-//                 >
-//                     <BackWhite />
-//                 </TouchableOpacity>
-//                 <Text style={styles.headerTitle}>Cart</Text>
-//                 <View style={styles.headerRight} />
-//             </View>
-
-//             {/* Tab Navigation */}
-//             <View style={styles.tabContainer}>
-//                 <TouchableOpacity
-//                     style={[styles.tab, activeTab === 'My Cart' && styles.activeTab]}
-//                     onPress={() => setActiveTab('My Cart')}
-//                 >
-//                     <Text style={[styles.tabText, activeTab === 'My Cart' && styles.activeTabText]}>My Cart</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity
-//                     style={[styles.tab, activeTab === 'Current Order' && styles.activeTab]}
-//                     onPress={() => setActiveTab('Current Order')}
-//                 >
-//                     <Text style={[styles.tabText, activeTab === 'Current Order' && styles.activeTabText]}>Current Order</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity
-//                     style={[styles.tab, activeTab === 'Previous Order' && styles.activeTab]}
-//                     onPress={() => setActiveTab('Previous Order')}
-//                 >
-//                     <Text style={[styles.tabText, activeTab === 'Previous Order' && styles.activeTabText]}>Previous Order</Text>
-//                 </TouchableOpacity>
-//             </View>
-
-//             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-//                 {renderContent()}
-//             </ScrollView>
-
-//             {/* Checkout Button - Only show for My Cart tab with items */}
-//             {activeTab === 'My Cart' && hasCartItems && (
-//                 <View style={styles.checkoutContainer}>
-//                     <TouchableOpacity style={styles.checkoutButton}
-//                         onPress={() => navigation.navigate('CheckoutSummary', { cartData: cartData })}
-//                     >
-//                         <Text style={styles.checkoutText}>Checkout</Text>
-//                     </TouchableOpacity>
-//                 </View>
-//             )}
-//         </View>
-//     );
-// };
-
-// export default CartScreen;
 
 
 
@@ -722,7 +10,7 @@ import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/color
 import { BackWhite } from '../../assets/SVGs';
 import { useSelector } from 'react-redux';
 import useLoader from '../../utils/LoaderHook';
-import { apiDelete, apiGet } from '../../utils/Apis';
+import { apiDelete, apiGet, apiPost } from '../../utils/Apis';
 import urls from '../../config/urls';
 import Row from '../../components/wrapper/row';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -730,6 +18,7 @@ import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import { useIsFocused } from '@react-navigation/native';
 import CartScreenSkeletonLoader from '../../components/Skeleton/CartScreenSkeletonLoader';
 import RNPrint from 'react-native-print'
+import { ToastMsg } from '../../utils/helperFunctions';
 
 
 const CartScreen = ({ navigation }) => {
@@ -821,242 +110,14 @@ const CartScreen = ({ navigation }) => {
     // ============================================
 
 
-    const exportToPDF = async () => {
-        const filteredTransactions = [
-            {
-                _id: "67890abc123def456",
-                customerName: "Rajesh Kumar",
-                customerPhone: "+91 98765-43210",
-                vehicleNumber: "MP 09 AB 1234",
-                totalAmount: 2850.00,
-                paidAmount: 2000.00,
-                remainAmount: 850.00,
-                paymentMode: "Cash",
-                paidStatus: "Partial",
-                entryTime: "2025-10-05T10:30:00.000Z",
-                products: [
-                    {
-                        _id: "prod001",
-                        product: {
-                            _id: "prod_ref_001",
-                            name: "Tata Salt (1kg)",
-                            category: "Grocery"
-                        },
-                        quantity: 5,
-                        priceAtTime: 25.00,
-                        // Total for this item: 5 × 25 = 125.00
-                    },
-                    {
-                        _id: "prod002",
-                        product: {
-                            _id: "prod_ref_002",
-                            name: "Fortune Sunflower Oil (1L)",
-                            category: "Cooking Oil"
-                        },
-                        quantity: 3,
-                        priceAtTime: 185.00,
-                        // Total for this item: 3 × 185 = 555.00
-                    },
-                    {
-                        _id: "prod003",
-                        product: {
-                            _id: "prod_ref_003",
-                            name: "Amul Butter (100g)",
-                            category: "Dairy"
-                        },
-                        quantity: 4,
-                        priceAtTime: 60.00,
-                        // Total for this item: 4 × 60 = 240.00
-                    },
-                    {
-                        _id: "prod004",
-                        product: {
-                            _id: "prod_ref_004",
-                            name: "Maggi Noodles (Pack of 12)",
-                            category: "Instant Food"
-                        },
-                        quantity: 2,
-                        priceAtTime: 140.00,
-                        // Total for this item: 2 × 140 = 280.00
-                    },
-                    {
-                        _id: "prod005",
-                        product: {
-                            _id: "prod_ref_005",
-                            name: "Britannia Good Day Cookies (200g)",
-                            category: "Biscuits"
-                        },
-                        quantity: 6,
-                        priceAtTime: 45.00,
-                        // Total for this item: 6 × 45 = 270.00
-                    },
-                    {
-                        _id: "prod006",
-                        product: {
-                            _id: "prod_ref_006",
-                            name: "Colgate Toothpaste (200g)",
-                            category: "Personal Care"
-                        },
-                        quantity: 3,
-                        priceAtTime: 125.00,
-                        // Total for this item: 3 × 125 = 375.00
-                    },
-                    {
-                        _id: "prod007",
-                        product: {
-                            _id: "prod_ref_007",
-                            name: "Tata Tea Gold (500g)",
-                            category: "Beverages"
-                        },
-                        quantity: 2,
-                        priceAtTime: 250.00,
-                        // Total for this item: 2 × 250 = 500.00
-                    },
-                    {
-                        _id: "prod008",
-                        product: {
-                            _id: "prod_ref_008",
-                            name: "Surf Excel Detergent (1kg)",
-                            category: "Household"
-                        },
-                        quantity: 1,
-                        priceAtTime: 185.00,
-                        // Total for this item: 1 × 185 = 185.00
-                    },
-                    {
-                        _id: "prod009",
-                        product: {
-                            _id: "prod_ref_009",
-                            name: "Parle-G Biscuits (800g)",
-                            category: "Biscuits"
-                        },
-                        quantity: 4,
-                        priceAtTime: 80.00,
-                        // Total for this item: 4 × 80 = 320.00
-                    }
-                ],
-                // Total of all products: 125 + 555 + 240 + 280 + 270 + 375 + 500 + 185 + 320 = 2850.00
-                payments: [
-                    {
-                        _id: "pay001",
-                        amountPaid: 1500.00,
-                        paymentMode: "Cash",
-                        paymentDate: "2025-10-05T10:35:00.000Z",
-                        note: "Initial payment"
-                    },
-                    {
-                        _id: "pay002",
-                        amountPaid: 500.00,
-                        paymentMode: "UPI",
-                        paymentDate: "2025-10-05T15:20:00.000Z",
-                        note: "Partial payment via PhonePe"
-                    }
-                ],
-                // Total paid: 1500 + 500 = 2000.00
-                // Remaining: 2850 - 2000 = 850.00
-                createdAt: "2025-10-05T10:30:00.000Z",
-                updatedAt: "2025-10-05T15:20:00.000Z"
-            },
-            {
-                _id: "67890abc123def457",
-                customerName: "Rajesh Kumar",
-                customerPhone: "+91 98765-43210",
-                vehicleNumber: "MP 09 AB 1234",
-                totalAmount: 450.00,
-                paidAmount: 450.00,
-                remainAmount: 0.00,
-                paymentMode: "UPI",
-                paidStatus: "Paid",
-                entryTime: "2025-10-04T14:20:00.000Z",
-                products: [
-                    {
-                        _id: "prod010",
-                        product: {
-                            _id: "prod_ref_010",
-                            name: "Dove Soap (125g × 3)",
-                            category: "Personal Care"
-                        },
-                        quantity: 1,
-                        priceAtTime: 150.00,
-                    },
-                    {
-                        _id: "prod011",
-                        product: {
-                            _id: "prod_ref_011",
-                            name: "Lays Chips (52g × 6)",
-                            category: "Snacks"
-                        },
-                        quantity: 1,
-                        priceAtTime: 120.00,
-                    },
-                    {
-                        _id: "prod012",
-                        product: {
-                            _id: "prod_ref_012",
-                            name: "Coca Cola (2L)",
-                            category: "Beverages"
-                        },
-                        quantity: 2,
-                        priceAtTime: 90.00,
-                    }
-                ],
-                payments: [
-                    {
-                        _id: "pay003",
-                        amountPaid: 450.00,
-                        paymentMode: "UPI",
-                        paymentDate: "2025-10-04T14:22:00.000Z",
-                        note: "Full payment via Google Pay"
-                    }
-                ],
-                createdAt: "2025-10-04T14:20:00.000Z",
-                updatedAt: "2025-10-04T14:22:00.000Z"
-            },
-            {
-                _id: "67890abc123def458",
-                customerName: "Rajesh Kumar",
-                customerPhone: "+91 98765-43210",
-                vehicleNumber: "MP 09 AB 5678",
-                totalAmount: 1200.00,
-                paidAmount: 0.00,
-                remainAmount: 1200.00,
-                paymentMode: "Credit",
-                paidStatus: "Unpaid",
-                entryTime: "2025-10-03T09:15:00.000Z",
-                products: [
-                    {
-                        _id: "prod013",
-                        product: {
-                            _id: "prod_ref_013",
-                            name: "Basmati Rice (5kg)",
-                            category: "Grocery"
-                        },
-                        quantity: 2,
-                        priceAtTime: 450.00,
-                    },
-                    {
-                        _id: "prod014",
-                        product: {
-                            _id: "prod_ref_014",
-                            name: "Aashirvaad Atta (10kg)",
-                            category: "Grocery"
-                        },
-                        quantity: 1,
-                        priceAtTime: 300.00,
-                    }
-                ],
-                payments: [],
-                createdAt: "2025-10-03T09:15:00.000Z",
-                updatedAt: "2025-10-03T09:15:00.000Z"
-            }
-        ];
-
+const exportToPDF = async (item) => {
+        console.log('++++++++++++++++++++++++==',item);
 
         const permission = await requestStoragePermission()
         if (!permission) return Alert.alert('Permission Denied', 'Cannot save PDF.')
 
-        if (!filteredTransactions.length) {
-            return Alert.alert('No Data', 'No transactions to export.')
+        if (!item || !item.productId) {
+            return Alert.alert('No Data', 'No product data to export.')
         }
 
         try {
@@ -1079,18 +140,20 @@ const CartScreen = ({ navigation }) => {
             const invoiceTime = formatTime(Date.now())
             const invoiceNumber = `INV-${Date.now()}`
 
-            const total = filteredTransactions.reduce(
-                (acc, t) => acc + Number(t.totalAmount || 0),
-                0
-            )
-            const paid = filteredTransactions.reduce(
-                (acc, t) => acc + Number(t.paidAmount || 0),
-                0
-            )
+            // Extract product data from item
+            const product = item.productId
+            const quantity = item.quantity || 1
+            const pricePerUnit = item.price || product.price || 0
+            const itemTotal = quantity * pricePerUnit
+            
+            // Calculate totals
+            const subtotal = itemTotal
+            const total = subtotal
+            const paid = 0  // Default 0, you can modify based on your data
             const remain = total - paid
 
-            const customerName = filteredTransactions[0]?.customerName || 'Walk-in Customer'
-            const customerPhone = filteredTransactions[0]?.customerPhone || 'N/A'
+            const customerName = 'Walk-in Customer'
+            const customerPhone = 'N/A'
 
             const invoiceStyle = `
 <style>
@@ -1298,24 +361,18 @@ const CartScreen = ({ navigation }) => {
 `
 
             let itemRows = ''
-            let itemNumber = 1
-
-            filteredTransactions.forEach((txn) => {
-                if (txn.products && txn.products.length > 0) {
-                    txn.products.forEach((p) => {
-                        const itemTotal = (p.quantity || 0) * (p.priceAtTime || 0)
-                        itemRows += `
+            
+            // Single item row
+            const productName = product.name || 'Item'
+            itemRows = `
             <tr>
-              <td class="text-center">${itemNumber++}</td>
-              <td class="item-name">${p.product?.name || 'Item'}</td>
-              <td class="text-center">${p.quantity || 0}</td>
-              <td class="text-right">₹${Number(p.priceAtTime || 0).toFixed(2)}</td>
+              <td class="text-center">1</td>
+              <td class="item-name">${productName}</td>
+              <td class="text-center">${quantity}</td>
+              <td class="text-right">₹${pricePerUnit.toFixed(2)}</td>
               <td class="text-right">₹${itemTotal.toFixed(2)}</td>
             </tr>
           `
-                    })
-                }
-            })
 
             // Determine payment status
             let paymentStatusClass = 'status-unpaid'
@@ -1397,7 +454,7 @@ const CartScreen = ({ navigation }) => {
         <div class="summary-section">
             <div class="summary-row">
                 <span class="summary-label">Subtotal:</span>
-                <span class="summary-value">₹${total.toFixed(2)}</span>
+                <span class="summary-value">₹${subtotal.toFixed(2)}</span>
             </div>
             <div class="summary-row">
                 <span class="summary-label">Tax (0%):</span>
@@ -1442,7 +499,7 @@ const CartScreen = ({ navigation }) => {
             })
 
             hideLoader()
-            Alert.alert('Success', 'Invoice ready to print!')
+            // Alert.alert('Success', 'Invoice ready to print!')
         } catch (error) {
             hideLoader()
             console.error('PDF export error:', error)
@@ -1486,6 +543,8 @@ const CartScreen = ({ navigation }) => {
             setCartData(null);
         }
     };
+
+
 
     const fetchCurrentAndPrevious = async () => {
         try {
@@ -1533,7 +592,7 @@ const CartScreen = ({ navigation }) => {
         }
 
         if (newQuantity > stock) {
-            Alert.alert("Stock Limit", `Only ${stock} items available in stock`);
+            ToastMsg("Stock Limit", `Only ${stock} items available in stock`);
             return;
         }
 
@@ -1547,10 +606,16 @@ const CartScreen = ({ navigation }) => {
         }));
 
         try {
-            console.log(`Updating item ${itemId} to quantity ${newQuantity}`);
+            const data = {
+                productId: itemId,
+                quantity: newQuantity
+            }
+            const res = await apiPost(urls?.updateCartData, data);
+            // setCartData(res?.data || null);
+            fetchCartData()
         } catch (error) {
-            console.error('Error updating quantity:', error);
-            fetchCartData();
+            console.error('Error fetching cart data:', error);
+            // setCartData(null);
         }
     };
 
@@ -1640,14 +705,14 @@ const CartScreen = ({ navigation }) => {
                                 <View style={styles.quantityContainer}>
                                     <TouchableOpacity
                                         style={styles.quantityButton}
-                                        onPress={() => updateQuantity(item._id, item.quantity - 1, item.productId.stock)}
+                                        onPress={() => updateQuantity(item.productId?._id, item.quantity - 1, item.productId.stock)}
                                     >
                                         <Text style={styles.quantityButtonText}>−</Text>
                                     </TouchableOpacity>
                                     <Text style={styles.quantityText}>{item.quantity}</Text>
                                     <TouchableOpacity
                                         style={styles.quantityButton}
-                                        onPress={() => updateQuantity(item._id, item.quantity + 1, item.productId.stock)}
+                                        onPress={() => updateQuantity(item.productId?._id, item.quantity + 1, item.productId.stock)}
                                     >
                                         <Text style={styles.quantityButtonText}>+</Text>
                                     </TouchableOpacity>
@@ -1720,7 +785,7 @@ const CartScreen = ({ navigation }) => {
                             </Text>
                             {order?.orderStatus == 'delivered' && <TouchableOpacity
                                 style={styles.trackOrderButton}
-                                onPress={exportToPDF}
+                                onPress={() => exportToPDF(item)}
                             >
                                 <Text style={styles.trackOrderText}>Download Invoice</Text>
                                 <Text style={styles.chevron}>›</Text>

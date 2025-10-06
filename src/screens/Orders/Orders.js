@@ -132,40 +132,50 @@ const MyOrdersPage = ({ navigation }) => {
         }
     };
 
-    const exportToPDF = async (order) => {
-        const permission = await requestStoragePermission();
-        if (!permission) return Alert.alert('Permission Denied', 'Cannot save PDF.');
+    const exportToPDF = async (item) => {
+        // console.log('++++++++++++++++++++++++==',item);
 
-        if (!order) {
-            return Alert.alert('No Data', 'No order data to export.');
+        const permission = await requestStoragePermission()
+        if (!permission) return Alert.alert('Permission Denied', 'Cannot save PDF.')
+
+        if (!item || !item.productId) {
+            return Alert.alert('No Data', 'No product data to export.')
         }
 
         try {
-            showLoader();
+            showLoader()
 
             const formatDate = (date) =>
                 new Date(date).toLocaleDateString('en-GB', {
                     day: '2-digit',
                     month: 'short',
                     year: 'numeric',
-                });
+                })
 
             const formatTime = (date) =>
                 new Date(date).toLocaleTimeString('en-GB', {
                     hour: '2-digit',
                     minute: '2-digit',
-                });
+                })
 
-            const invoiceDate = formatDate(Date.now());
-            const invoiceTime = formatTime(Date.now());
-            const invoiceNumber = `INV-${Date.now()}`;
+            const invoiceDate = formatDate(Date.now())
+            const invoiceTime = formatTime(Date.now())
+            const invoiceNumber = `INV-${Date.now()}`
 
-            const total = Number(order.totalAmount || 0);
-            const paid = Number(order.paidAmount || 0);
-            const remain = total - paid;
+            // Extract product data from item
+            const product = item.productId
+            const quantity = item.quantity || 1
+            const pricePerUnit = item.price || product.price || 0
+            const itemTotal = quantity * pricePerUnit
 
-            const customerName = order.customerName || 'Walk-in Customer';
-            const customerPhone = order.customerPhone || 'N/A';
+            // Calculate totals
+            const subtotal = itemTotal
+            const total = subtotal
+            const paid = 0  // Default 0, you can modify based on your data
+            const remain = total - paid
+
+            const customerName = 'Walk-in Customer'
+            const customerPhone = 'N/A'
 
             const invoiceStyle = `
 <style>
@@ -370,34 +380,31 @@ const MyOrdersPage = ({ navigation }) => {
         margin: 15px 0;
     }
 </style>
-`;
+`
 
-            let itemRows = '';
-            let itemNumber = 1;
+            let itemRows = ''
 
-            if (order.items && order.items.length > 0) {
-                order.items.forEach((item) => {
-                    const itemTotal = (item.quantity || 0) * (item.productId?.price || 0);
-                    itemRows += `
+            // Single item row
+            const productName = product.name || 'Item'
+            itemRows = `
             <tr>
-              <td class="text-center">${itemNumber++}</td>
-              <td class="item-name">${item.productId?.name || 'Item'}</td>
-              <td class="text-center">${item.quantity || 0}</td>
-              <td class="text-right">₹${Number(item.productId?.price || 0).toFixed(2)}</td>
+              <td class="text-center">1</td>
+              <td class="item-name">${productName}</td>
+              <td class="text-center">${quantity}</td>
+              <td class="text-right">₹${pricePerUnit.toFixed(2)}</td>
               <td class="text-right">₹${itemTotal.toFixed(2)}</td>
             </tr>
-          `;
-                });
-            }
+          `
 
-            let paymentStatusClass = 'status-unpaid';
-            let paymentStatusText = 'UNPAID';
+            // Determine payment status
+            let paymentStatusClass = 'status-unpaid'
+            let paymentStatusText = 'UNPAID'
             if (paid >= total) {
-                paymentStatusClass = 'status-paid';
-                paymentStatusText = 'PAID';
+                paymentStatusClass = 'status-paid'
+                paymentStatusText = 'PAID'
             } else if (paid > 0) {
-                paymentStatusClass = 'status-partial';
-                paymentStatusText = 'PARTIAL';
+                paymentStatusClass = 'status-partial'
+                paymentStatusText = 'PARTIAL'
             }
 
             const html = `
@@ -411,6 +418,7 @@ const MyOrdersPage = ({ navigation }) => {
 </head>
 <body>
     <div class="invoice-container">
+        <!-- Header -->
         <div class="invoice-header">
             <div class="store-name">🛒 RR MART</div>
             <div class="store-tagline">Your Trusted Shopping Destination</div>
@@ -419,6 +427,7 @@ const MyOrdersPage = ({ navigation }) => {
             </div>
         </div>
 
+        <!-- Invoice Info -->
         <div class="invoice-info">
             <div class="info-block">
                 <div class="info-label">Invoice Number</div>
@@ -440,12 +449,14 @@ const MyOrdersPage = ({ navigation }) => {
             </div>
         </div>
 
+        <!-- Customer Info -->
         <div class="customer-section">
             <div class="customer-title">Bill To</div>
             <div class="customer-name">${customerName}</div>
             <div class="customer-phone">📱 ${customerPhone}</div>
         </div>
 
+        <!-- Items Table -->
         <table class="items-table">
             <thead>
                 <tr>
@@ -461,10 +472,11 @@ const MyOrdersPage = ({ navigation }) => {
             </tbody>
         </table>
 
+        <!-- Summary Section -->
         <div class="summary-section">
             <div class="summary-row">
                 <span class="summary-label">Subtotal:</span>
-                <span class="summary-value">₹${total.toFixed(2)}</span>
+                <span class="summary-value">₹${subtotal.toFixed(2)}</span>
             </div>
             <div class="summary-row">
                 <span class="summary-label">Tax (0%):</span>
@@ -489,6 +501,7 @@ const MyOrdersPage = ({ navigation }) => {
             </div>
         </div>
 
+        <!-- Footer -->
         <div class="invoice-footer">
             <div class="footer-text">
                 Thank you for shopping with RR Mart! We appreciate your business.<br>
@@ -499,21 +512,22 @@ const MyOrdersPage = ({ navigation }) => {
     </div>
 </body>
 </html>
-`;
+`
 
+            // Using react-native-print (No permission needed, direct print)
             await RNPrint.print({
                 html: html,
                 jobName: `RRMart_Invoice_${invoiceNumber}`,
-            });
+            })
 
-            hideLoader();
-            Alert.alert('Success', 'Invoice ready to print!');
+            hideLoader()
+            // Alert.alert('Success', 'Invoice ready to print!')
         } catch (error) {
-            hideLoader();
-            console.error('PDF export error:', error);
-            Alert.alert('Error', 'Could not generate invoice');
+            hideLoader()
+            console.error('PDF export error:', error)
+            Alert.alert('Error', 'Could not generate invoice')
         }
-    };
+    }
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
@@ -584,7 +598,7 @@ const MyOrdersPage = ({ navigation }) => {
                             {order?.orderStatus?.toLowerCase() === 'delivered' && (
                                 <TouchableOpacity
                                     style={styles.downloadButton}
-                                    onPress={() => exportToPDF(order)}
+                                    onPress={() => exportToPDF(item)}
                                 >
                                     <Text style={styles.downloadText}>Download Invoice</Text>
                                     <Text style={styles.chevron}>›</Text>

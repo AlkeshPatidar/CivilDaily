@@ -10,7 +10,9 @@ export default {
  getCartData:'/api/cart/my',
  deleteCartData:'/api/cart/remove',
  getSubCategories:'/api/subcategory/all',
- getAllBanners:'/api/banner/all'
+ getAllBanners:'/api/banner/all',
+ updateCartData:'/api/cart/update',
+ getNotifictations:'/api/notification/my'
 //  productOnBasisOfCategory:'/api/product/all?categoryId=68d3db3da72d0c08a5829486&subCategoryId=68d3e08ea77ed1f629491892'
 
 
