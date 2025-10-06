@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+
+import React, { useEffect, useState, useRef } from 'react';
 import {
     View,
     Text,
@@ -10,6 +11,7 @@ import {
     SafeAreaView,
     Image,
     RefreshControl,
+    Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
@@ -26,12 +28,122 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import LinearGradient from 'react-native-linear-gradient';
 import HomeScreenSkeletonLoader from '../../components/Skeleton/HomeSkeletonLoader';
 import { useIsFocused } from '@react-navigation/native';
+import CustomText from '../../components/TextComponent';
+
+// Animated Card Component
+const AnimatedCard = ({ children, delay = 0, style, onPress, activeOpacity = 0.9 }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(30)).current;
+    const scaleAnim = useRef(new Animated.Value(0.9)).current;
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 500,
+                delay: delay,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 500,
+                delay: delay,
+                useNativeDriver: true,
+            }),
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                delay: delay,
+                friction: 8,
+                tension: 40,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
+    const handlePressIn = () => {
+        Animated.spring(scaleAnim, {
+            toValue: 0.95,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const handlePressOut = () => {
+        Animated.spring(scaleAnim, {
+            toValue: 1,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const animatedStyle = {
+        opacity: fadeAnim,
+        transform: [
+            { translateY: slideAnim },
+            { scale: scaleAnim }
+        ],
+    };
+
+    if (onPress) {
+        return (
+            <TouchableOpacity
+                onPress={onPress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                activeOpacity={activeOpacity}
+            >
+                <Animated.View style={[style, animatedStyle]}>
+                    {children}
+                </Animated.View>
+            </TouchableOpacity>
+        );
+    }
+
+    return (
+        <Animated.View style={[style, animatedStyle]}>
+            {children}
+        </Animated.View>
+    );
+};
+
+// Pulse Animation Component for Add Buttons
+const PulseButton = ({ children, onPress, style }) => {
+    const pulseAnim = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(pulseAnim, {
+                    toValue: 1.1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(pulseAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, []);
+
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <Animated.View style={[style, { transform: [{ scale: pulseAnim }] }]}>
+                {children}
+            </Animated.View>
+        </TouchableOpacity>
+    );
+};
 
 export default function HomeScreen({ navigation }) {
     let selector = useSelector(state => state?.user?.userData);
     if (Object.keys(selector).length != 0) {
         selector = JSON.parse(selector);
     }
+
+    console.log('Selector:::::', selector);
+    
     const { showLoader, hideLoader } = useLoader()
     const [categories, setCategories] = useState([])
     const [allProducts, setAllProducts] = useState([])
@@ -41,11 +153,25 @@ export default function HomeScreen({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
 
     const { isDarkMode } = useSelector(state => state.theme);
-    const isFocused=useIsFocused()
+    const isFocused = useIsFocused()
+
+    // Animation refs
+    const headerAnim = useRef(new Animated.Value(-100)).current;
+    const searchAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         initializeData()
-    }, [isFocused])
+        animateHeader();
+    }, [])
+
+    const animateHeader = () => {
+        Animated.spring(headerAnim, {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+        }).start();
+    };
 
     const initializeData = async () => {
         setIsLoading(true)
@@ -96,15 +222,22 @@ export default function HomeScreen({ navigation }) {
     }
 
     const renderHeader = () => (
-        <View style={styles.headerContainer}>
+        <Animated.View style={[styles.headerContainer, { transform: [{ translateY: headerAnim }] }]}>
             <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
 
             <View style={styles.topBar}>
                 <View style={styles.leftHeader}>
                     <Text style={styles.deliverText}>Deliver to</Text>
                     <Row style={{ alignItems: 'center' }}>
-                        <Ionicons name="location" size={16} color="white" style={{ marginRight: 4 }} />
-                        <Text style={styles.locationText}>Jakarta, Indonesia</Text>
+                        <Ionicons name="location" size={16} color="white" style={{ marginRight: 4, bottom: 2 }} />
+                        {selector?.addresses?.length > 0 ? 
+                            <Text style={styles.locationText}>{selector?.addresses[0]?.city}, {selector?.addresses[0]?.country}</Text> :
+                            <TouchableOpacity 
+                                onPress={() => navigation.navigate('AddAddressScreen')}
+                            >
+                                <CustomText style={styles.locationText}>Add Address</CustomText>
+                            </TouchableOpacity>
+                        }
                         <TouchableOpacity style={{ marginLeft: 4 }}>
                             <DownChev />
                         </TouchableOpacity>
@@ -118,14 +251,17 @@ export default function HomeScreen({ navigation }) {
                     >
                         <Ionicons name="cart-outline" size={22} color="white" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity 
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('Notifications')}
+                    >
                         <Ionicons name="notifications-outline" size={22} color="white" />
                         <View style={[styles.badge, styles.notificationDot]} />
                     </TouchableOpacity>
                 </View>
             </View>
 
-            <View style={styles.searchContainer}>
+            <Animated.View style={[styles.searchContainer, { transform: [{ scale: searchAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0.98] }) }] }]}>
                 <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search for products..."
@@ -135,8 +271,8 @@ export default function HomeScreen({ navigation }) {
                 <TouchableOpacity style={styles.filterButton}>
                     <Ionicons name="options-outline" size={20} color={App_Primary_color} />
                 </TouchableOpacity>
-            </View>
-        </View>
+            </Animated.View>
+        </Animated.View>
     );
 
     const renderBannerSection = () => (
@@ -145,15 +281,15 @@ export default function HomeScreen({ navigation }) {
                 <Carousel
                     data={[IMG.HomeBanner, IMG.HomeBanner, IMG.HomeBanner]}
                     renderItem={({ item }) => (
-                        <View style={styles.bannerCard}>
-                            {/* {console.log('+++++++++++++++>>>', item)
-                            } */}
-                            <Image
-                                source={ item}
-                                style={styles.bannerImage}
-                                resizeMode='contain'
-                            />
-                        </View>
+                        <AnimatedCard delay={100}>
+                            <View style={styles.bannerCard}>
+                                <Image
+                                    source={item}
+                                    style={styles.bannerImage}
+                                    resizeMode='contain'
+                                />
+                            </View>
+                        </AnimatedCard>
                     )}
                     sliderWidth={320}
                     itemWidth={320}
@@ -188,9 +324,9 @@ export default function HomeScreen({ navigation }) {
                         <Text style={styles.sectionTitle}>Shop by Category</Text>
                         <View style={styles.titleUnderline} />
                     </View>
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity>
                         <Text style={styles.viewAllText}>View All →</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </SpaceBetweenRow>
                 
                 <ScrollView 
@@ -199,13 +335,14 @@ export default function HomeScreen({ navigation }) {
                     contentContainerStyle={styles.categoriesGrid}
                 >
                     {categories.map((category, index) => (
-                        <TouchableOpacity 
-                            key={index} 
+                        <AnimatedCard
+                            key={index}
+                            delay={index * 100}
                             style={[
                                 styles.categoryCard,
                                 { backgroundColor: isDarkMode ? dark55 : '#FFFFFF' }
                             ]}
-                            activeOpacity={0.8}
+                            onPress={() => {}}
                         >
                             <View style={styles.categoryImageContainer}>
                                 <Image 
@@ -216,7 +353,7 @@ export default function HomeScreen({ navigation }) {
                             <Text style={styles.categoryName} numberOfLines={2}>
                                 {category.name}
                             </Text>
-                        </TouchableOpacity>
+                        </AnimatedCard>
                     ))}
                 </ScrollView>
             </View>
@@ -231,9 +368,9 @@ export default function HomeScreen({ navigation }) {
                         <Text style={styles.sectionTitle}>Today's Special</Text>
                         <View style={styles.titleUnderline} />
                     </View>
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity>
                         <Text style={styles.viewAllText}>See All →</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </SpaceBetweenRow>
 
                 <ScrollView 
@@ -242,13 +379,13 @@ export default function HomeScreen({ navigation }) {
                     contentContainerStyle={styles.horizontalProductsGrid}
                 >
                     {allProducts?.slice(0, 6).map((item, index) => (
-                        <TouchableOpacity 
-                            key={index} 
+                        <AnimatedCard
+                            key={index}
+                            delay={index * 80}
                             style={[
                                 styles.horizontalProductCard,
                                 { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
                             ]}
-                            activeOpacity={0.9}
                             onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                         >
                             <View style={styles.productImageWrapper}>
@@ -280,12 +417,15 @@ export default function HomeScreen({ navigation }) {
                                             <Text style={styles.originalPrice}>Rs {item.discountPrice}</Text>
                                         )}
                                     </View>
-                                    <TouchableOpacity style={styles.addToCartButton}>
+                                    <PulseButton 
+                                        style={styles.addToCartButton}
+                                        onPress={() => {}}
+                                    >
                                         <Ionicons name="add" size={18} color="white" />
-                                    </TouchableOpacity>
+                                    </PulseButton>
                                 </View>
                             </View>
-                        </TouchableOpacity>
+                        </AnimatedCard>
                     ))}
                 </ScrollView>
             </View>
@@ -304,13 +444,13 @@ export default function HomeScreen({ navigation }) {
 
                 <View>
                     {allProducts.map((item, index) => (
-                        <TouchableOpacity 
-                            key={index} 
+                        <AnimatedCard
+                            key={index}
+                            delay={index * 60}
                             style={[
                                 styles.listProductCard,
                                 { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
                             ]}
-                            activeOpacity={0.9}
                             onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                         >
                             <View style={styles.listProductImageContainer}>
@@ -334,10 +474,13 @@ export default function HomeScreen({ navigation }) {
                                 </View>
                             </View>
 
-                            <TouchableOpacity style={styles.listAddButton}>
+                            <PulseButton 
+                                style={styles.listAddButton}
+                                onPress={() => {}}
+                            >
                                 <AddButton />
-                            </TouchableOpacity>
-                        </TouchableOpacity>
+                            </PulseButton>
+                        </AnimatedCard>
                     ))}
                 </View>
             </View>
@@ -652,7 +795,6 @@ export default function HomeScreen({ navigation }) {
         },
     });
 
-    // Main return with conditional rendering
     return (
         <SafeAreaView style={styles.container}>
             {isLoading ? (

@@ -1,3 +1,5 @@
+
+
 // import React, { useState } from 'react';
 // import {
 //     View,
@@ -18,14 +20,18 @@
 // import { ToastMsg } from '../../utils/helperFunctions';
 
 // const CheckoutSummary = ({ navigation, route }) => {
-//     // console.log(route, '+++++++++++==');
 //     let selector = useSelector(state => state?.user?.userData);
 //     if (Object.keys(selector).length != 0) {
 //         selector = JSON.parse(selector);
 //     }
 
+//     const { showLoader, hideLoader } = useLoader();
 
-//     const { showLoader, hideLoader } = useLoader()
+//     // State for address management
+//     const [selectedAddressId, setSelectedAddressId] = useState(
+//         selector?.addresses?.find(addr => addr.isDefault)?._id || selector?.addresses?.[0]?._id || null
+//     );
+//     const [isAddressExpanded, setIsAddressExpanded] = useState(false);
 
 //     const [cartItems, setCartItems] = useState([
 //         {
@@ -46,33 +52,44 @@
 //         },
 //     ]);
 
-//     orderPlace
 //     const orderPlace = async () => {
 //         try {
-//             showLoader()
+//             showLoader();
+            
+//             // Get selected address
+//             const selectedAddress = selector?.addresses?.find(addr => addr._id === selectedAddressId);
+            
+//             if (!selectedAddress) {
+//                 ToastMsg('Please select a delivery address');
+//                 hideLoader();
+//                 return;
+//             }
+
 //             const data = {
 //                 "shippingAddress": {
-//                     "fullName": "Rahul Sharma",
-//                     "mobile": "9876543210",
-//                     "addressLine1": "Flat No. 101, Green Residency",
-//                     "addressLine2": "Near City Mall",
-//                     "city": "Indore",
-//                     "state": "Madhya Pradesh",
-//                     "postalCode": "452001",
-//                     "country": "India"
+//                     "fullName": selector?.name || "User", // You can add fullName field to your user data
+//                     "mobile": selector?.mobile || selector?.phone || "", // Adjust field name as per your user data
+//                     "addressLine1": selectedAddress.addressLine1,
+//                     "addressLine2": selectedAddress.addressLine2,
+//                     "city": selectedAddress.city,
+//                     "state": selectedAddress.state,
+//                     "postalCode": selectedAddress.postalCode,
+//                     "country": selectedAddress.country
 //                 },
 //                 "paymentMethod": "cod"
-//             }
-//             const res = await apiPost('/api/order/place', data)
+//             };
+
+//             const res = await apiPost('/api/order/place', data);
 //             console.log('Res::::::', res);
-//             hideLoader()
-//             ToastMsg(res?.message)
-//             navigation?.goBack()
+//             hideLoader();
+//             ToastMsg(res?.message);
+//             navigation?.goBack();
 
 //         } catch (error) {
-//             hideLoader()
+//             hideLoader();
+//             console.log('Order place error:', error);
 //         }
-//     }
+//     };
 
 //     const [promoCode, setPromoCode] = useState('');
 
@@ -91,9 +108,19 @@
 //     const taxAndOtherFees = 2.50;
 //     const total = subtotal + deliveryFee + taxAndOtherFees;
 
+//     // Get selected address for display
+//     const getSelectedAddress = () => {
+//         return selector?.addresses?.find(addr => addr._id === selectedAddressId);
+//     };
 
+//     // Handle address selection
+//     const handleAddressSelect = (addressId) => {
+//         setSelectedAddressId(addressId);
+//         setIsAddressExpanded(false);
+//     };
 
-//     const { isDarkMode } = useSelector(state => state.theme)
+//     const { isDarkMode } = useSelector(state => state.theme);
+
 //     const styles = StyleSheet.create({
 //         container: {
 //             flex: 1,
@@ -125,7 +152,6 @@
 //             fontSize: 18,
 //             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
 //             color: isDarkMode ? white : '#111827',
-//             // marginBottom: 16,
 //             marginTop: 20
 //         },
 //         addressContainer: {
@@ -137,6 +163,7 @@
 //             shadowOffset: { width: 0, height: 1 },
 //             shadowOpacity: 0.1,
 //             shadowRadius: 2,
+//             marginTop: 12,
 //         },
 //         addressContent: {
 //             flexDirection: 'row',
@@ -157,6 +184,57 @@
 //         addressDetail: {
 //             fontSize: 14,
 //             color: isDarkMode ? 'white' : '#6b7280',
+//         },
+//         addressItem: {
+//             flexDirection: 'row',
+//             alignItems: 'center',
+//             paddingVertical: 12,
+//             borderBottomWidth: 1,
+//             borderBottomColor: isDarkMode ? '#374151' : '#f3f4f6',
+//         },
+//         radioButton: {
+//             width: 20,
+//             height: 20,
+//             borderRadius: 10,
+//             borderWidth: 2,
+//             borderColor: App_Primary_color,
+//             marginRight: 12,
+//             alignItems: 'center',
+//             justifyContent: 'center',
+//         },
+//         radioButtonSelected: {
+//             width: 10,
+//             height: 10,
+//             borderRadius: 5,
+//             backgroundColor: App_Primary_color,
+//         },
+//         addAddressButton: {
+//             flexDirection: 'row',
+//             alignItems: 'center',
+//             justifyContent: 'center',
+//             backgroundColor: isDarkMode ? dark55 : '#f3f4f6',
+//             borderRadius: 8,
+//             paddingVertical: 12,
+//             marginTop: 12,
+//             borderWidth: 1,
+//             borderStyle: 'dashed',
+//             borderColor: App_Primary_color,
+//         },
+//         addAddressText: {
+//             marginLeft: 8,
+//             fontSize: 14,
+//             color: App_Primary_color,
+//             fontWeight: '600',
+//         },
+//         expandButton: {
+//             alignItems: 'center',
+//             paddingVertical: 8,
+//             marginTop: 8,
+//         },
+//         expandText: {
+//             fontSize: 12,
+//             color: App_Primary_color,
+//             fontWeight: '600',
 //         },
 //         cartItem: {
 //             backgroundColor: isDarkMode ? darkMode25 : '#F8F8F8',
@@ -342,23 +420,81 @@
 //             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
 //                 {/* Delivery Address */}
 //                 <Text style={styles.sectionTitle}>Delivery Address</Text>
-//                 {selector?.addresses?.map((item, index) => {
-//                     return (
-//                         <View style={styles.section}>
-//                             <TouchableOpacity style={styles.addressContainer}>
-//                                 <View style={styles.addressContent}>
-//                                     <Ionicons name="location" size={20} color="#6b7280" style={styles.locationIcon} />
-//                                     <View style={styles.addressText}>
-//                                         <Text style={styles.addressLabel}>{item?.addressLine1},{item?.addressLine2}</Text>
-//                                         <Text style={styles.addressDetail}>{item?.city},{item?.state},{item?.country},{item?.postalCode}</Text>
+                
+//                 <View style={styles.addressContainer}>
+//                     {/* Selected Address Display */}
+//                     {getSelectedAddress() && (
+//                         <TouchableOpacity 
+//                             style={styles.addressContent}
+//                             onPress={() => setIsAddressExpanded(!isAddressExpanded)}
+//                         >
+//                             <Ionicons name="location" size={20} color="#6b7280" style={styles.locationIcon} />
+//                             <View style={styles.addressText}>
+//                                 <Text style={styles.addressLabel}>
+//                                     {getSelectedAddress()?.addressLine1}, {getSelectedAddress()?.addressLine2}
+//                                 </Text>
+//                                 <Text style={styles.addressDetail}>
+//                                     {getSelectedAddress()?.city}, {getSelectedAddress()?.state}, {getSelectedAddress()?.country}, {getSelectedAddress()?.postalCode}
+//                                 </Text>
+//                             </View>
+//                             <Ionicons 
+//                                 name={isAddressExpanded ? "chevron-up" : "chevron-down"} 
+//                                 size={20} 
+//                                 color="#6b7280" 
+//                             />
+//                         </TouchableOpacity>
+//                     )}
+
+//                     {/* Expanded Address List */}
+//                     {isAddressExpanded && selector?.addresses?.length > 1 && (
+//                         <View style={{ marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: isDarkMode ? '#374151' : '#e5e7eb' }}>
+//                             {selector?.addresses?.map((item, index) => (
+//                                 <TouchableOpacity
+//                                     key={item._id}
+//                                     style={[styles.addressItem, index === selector.addresses.length - 1 && { borderBottomWidth: 0 }]}
+//                                     onPress={() => handleAddressSelect(item._id)}
+//                                 >
+//                                     <View style={styles.radioButton}>
+//                                         {selectedAddressId === item._id && <View style={styles.radioButtonSelected} />}
 //                                     </View>
-//                                     <Ionicons name="chevron-forward" size={20} color="#6b7280" />
-//                                 </View>
-//                             </TouchableOpacity>
+//                                     <View style={styles.addressText}>
+//                                         <Text style={styles.addressLabel}>
+//                                             {item?.addressLine1}, {item?.addressLine2}
+//                                         </Text>
+//                                         <Text style={styles.addressDetail}>
+//                                             {item?.city}, {item?.state}, {item?.country}, {item?.postalCode}
+//                                         </Text>
+//                                     </View>
+//                                 </TouchableOpacity>
+//                             ))}
 //                         </View>
-//                     )
-//                 })
-//                 }
+//                     )}
+
+//                     {/* Add New Address Button */}
+//                     <TouchableOpacity 
+//                         style={styles.addAddressButton}
+//                         onPress={() => {
+//                             // Navigate to add address screen
+//                             navigation.navigate('AddAddressScreen');
+//                             console.log('Navigate to add address screen');
+//                         }}
+//                     >
+//                         <Ionicons name="add-circle-outline" size={20} color={App_Primary_color} />
+//                         <Text style={styles.addAddressText}>Add New Address</Text>
+//                     </TouchableOpacity>
+
+//                     {/* Expand/Collapse Button (only show if more than 1 address) */}
+//                     {selector?.addresses?.length > 1 && (
+//                         <TouchableOpacity 
+//                             style={styles.expandButton}
+//                             onPress={() => setIsAddressExpanded(!isAddressExpanded)}
+//                         >
+//                             <Text style={styles.expandText}>
+//                                 {isAddressExpanded ? 'Show Less' : `View All ${selector.addresses.length} Addresses`}
+//                             </Text>
+//                         </TouchableOpacity>
+//                     )}
+//                 </View>
 
 //                 {/* Products in Cart */}
 //                 <View style={styles.section}>
@@ -368,23 +504,10 @@
 //                             <Image source={{ uri: item.productId?.images[0] }} style={styles.itemImage} />
 //                             <View style={styles.itemDetails}>
 //                                 <Text style={styles.itemName}>{item.productId?.name}</Text>
-//                                 {/* <Text style={styles.itemVariant}>Variant, {item.variant}</Text> */}
 //                                 <Text style={styles.itemPrice}>${item.productId?.price}</Text>
 //                             </View>
 //                             <View style={styles.quantityContainer}>
-//                                 {/* <TouchableOpacity
-//                                     style={styles.quantityButton}
-//                                     onPress={() => updateQuantity(item.id, false)}
-//                                 >
-//                                     <Ionicons name="remove" size={16} color="white" />
-//                                 </TouchableOpacity> */}
 //                                 <Text style={styles.quantityText}>Quantity: {item?.quantity}</Text>
-//                                 {/* <TouchableOpacity
-//                                     style={styles.quantityButton}
-//                                     onPress={() => updateQuantity(item.id, true)}
-//                                 >
-//                                     <Ionicons name="add" size={16} color="white" />
-//                                 </TouchableOpacity> */}
 //                             </View>
 //                         </View>
 //                     ))}
@@ -436,9 +559,13 @@
 
 //             {/* Confirm Order Button */}
 //             <View style={styles.footer}>
-//                 <TouchableOpacity style={styles.confirmButton}
-//                     // onPress={()=>navigation.navigate('PaymentMethodScreen')}
+//                 <TouchableOpacity 
+//                     style={[
+//                         styles.confirmButton,
+//                         !selectedAddressId && { backgroundColor: '#9ca3af' }
+//                     ]}
 //                     onPress={() => orderPlace()}
+//                     disabled={!selectedAddressId}
 //                 >
 //                     <Text style={styles.confirmButtonText}>Confirm Your Order</Text>
 //                 </TouchableOpacity>
@@ -447,10 +574,7 @@
 //     );
 // };
 
-
-
 // export default CheckoutSummary;
-
 
 import React, { useState } from 'react';
 import {
@@ -470,6 +594,7 @@ import { useSelector } from 'react-redux';
 import useLoader from '../../utils/LoaderHook';
 import { apiPost } from '../../utils/Apis';
 import { ToastMsg } from '../../utils/helperFunctions';
+import OrderSuccessModal from './OrderSuccessModel'; // Import the modal
 
 const CheckoutSummary = ({ navigation, route }) => {
     let selector = useSelector(state => state?.user?.userData);
@@ -478,6 +603,10 @@ const CheckoutSummary = ({ navigation, route }) => {
     }
 
     const { showLoader, hideLoader } = useLoader();
+    const { isDarkMode } = useSelector(state => state.theme);
+
+    // State for order success modal
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // State for address management
     const [selectedAddressId, setSelectedAddressId] = useState(
@@ -519,8 +648,8 @@ const CheckoutSummary = ({ navigation, route }) => {
 
             const data = {
                 "shippingAddress": {
-                    "fullName": selector?.name || "User", // You can add fullName field to your user data
-                    "mobile": selector?.mobile || selector?.phone || "", // Adjust field name as per your user data
+                    "fullName": selector?.name || "User",
+                    "mobile": selector?.mobile || selector?.phone || "",
                     "addressLine1": selectedAddress.addressLine1,
                     "addressLine2": selectedAddress.addressLine2,
                     "city": selectedAddress.city,
@@ -534,12 +663,18 @@ const CheckoutSummary = ({ navigation, route }) => {
             const res = await apiPost('/api/order/place', data);
             console.log('Res::::::', res);
             hideLoader();
-            ToastMsg(res?.message);
-            navigation?.goBack();
+            
+            // Show success modal instead of toast
+            if (res?.success || res?.message) {
+                setShowSuccessModal(true);
+            } else {
+                ToastMsg(res?.message || 'Order failed');
+            }
 
         } catch (error) {
             hideLoader();
             console.log('Order place error:', error);
+            ToastMsg('Order placement failed');
         }
     };
 
@@ -571,7 +706,17 @@ const CheckoutSummary = ({ navigation, route }) => {
         setIsAddressExpanded(false);
     };
 
-    const { isDarkMode } = useSelector(state => state.theme);
+    // Modal handlers
+    const handleTrackOrder = () => {
+        setShowSuccessModal(false);
+        // Navigate to track order screen
+        navigation.navigate('TrackOrderScreen'); // Adjust route name as needed
+    };
+
+    const handleBackToHome = () => {
+        setShowSuccessModal(false);
+        navigation.navigate('Tab'); // Adjust route name as needed
+    };
 
     const styles = StyleSheet.create({
         container: {
@@ -926,7 +1071,6 @@ const CheckoutSummary = ({ navigation, route }) => {
                     <TouchableOpacity 
                         style={styles.addAddressButton}
                         onPress={() => {
-                            // Navigate to add address screen
                             navigation.navigate('AddAddressScreen');
                             console.log('Navigate to add address screen');
                         }}
@@ -935,7 +1079,7 @@ const CheckoutSummary = ({ navigation, route }) => {
                         <Text style={styles.addAddressText}>Add New Address</Text>
                     </TouchableOpacity>
 
-                    {/* Expand/Collapse Button (only show if more than 1 address) */}
+                    {/* Expand/Collapse Button */}
                     {selector?.addresses?.length > 1 && (
                         <TouchableOpacity 
                             style={styles.expandButton}
@@ -1022,6 +1166,14 @@ const CheckoutSummary = ({ navigation, route }) => {
                     <Text style={styles.confirmButtonText}>Confirm Your Order</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Order Success Modal */}
+            <OrderSuccessModal
+                visible={showSuccessModal}
+                onTrackOrder={handleTrackOrder}
+                onBackToHome={handleBackToHome}
+                isDarkMode={isDarkMode}
+            />
         </SafeAreaView>
     );
 };

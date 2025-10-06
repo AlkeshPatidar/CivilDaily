@@ -398,10 +398,10 @@ const ProfilePage = ({ navigation }) => {
       section: 'General',
       items: [
         { icon: '📍', title: 'Address Detail', onPress: () => { navigation.navigate('AddressDetailsPage') } },
-        { icon: '📦', title: 'Pickup Option', onPress: () => { } },
+        // { icon: '📦', title: 'Pickup Option', onPress: () => { } },
         { icon: '🧾', title: 'My Orders', onPress: () => { navigation.navigate('MyOrdersPage') } },
         { icon: 'ℹ️', title: 'Appearance', onPress: () => { navigation.navigate('AppearancePage') } },
-        { icon: '🔒', title: 'Change Password', onPress: () => { } },
+        // { icon: '🔒', title: 'Change Password', onPress: () => { } },
       ],
     },
     {

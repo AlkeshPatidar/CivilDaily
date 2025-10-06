@@ -29,6 +29,7 @@ import CategoryProducts from '../../screens/Category/CategoriesProducts';
 import Signup from '../../screens/Auth/Signup';
 import ForgotPassword from '../../screens/Auth/ForgetPassword';
 import AddAddressScreen from '../../screens/Profile/AddAdress';
+import Notifications from '../../screens/Notification/Notification';
 
 
 
@@ -77,6 +78,8 @@ const StackNavigation = () => {
         <Stack.Screen name={'OrderTrackingScreen'} component={OrderTrackingScreen} />
         <Stack.Screen name={'CategoryProducts'} component={CategoryProducts} />
         <Stack.Screen name={'AddAddressScreen'} component={AddAddressScreen} />
+        <Stack.Screen name={'Notifications'} component={Notifications} />
+
 
 
 

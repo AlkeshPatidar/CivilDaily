@@ -99,68 +99,86 @@ export default function Favourite({ navigation }) {
                 </View>
 
                 <View style={{}}>
-                    {fav.map((item, index) => (
-                        <View>
+                    {
+                        fav?.length > 0 ?
+                            (
+                                fav.map((item, index) => (
+                                    <View>
 
-                            <TouchableOpacity key={index} style={styles.productCard1}
-                                onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                            >
-                                <Image source={item?.productId?.images ? { uri: item?.productId?.images[0] } : IMG.Potato} style={{
-                                    height: 68, width: 80,
-                                    borderRadius: 10
-                                }} />
-                                <View style={{ marginLeft: 20 }}>
-                                    <Text style={styles.productName}>{item?.productId?.name}</Text>
-                                    <View style={styles.priceContainer}>
-                                        <Row style={{ gap: 10 }}>
-                                            <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>Stock {item.productId?.stock}</Text>
-                                            <Text style={styles.currentPrice}>Rs{item.productId?.price}</Text>
-                                            <Text style={styles.originalPrice}>Rs {item.productId?.discountPrice}</Text>
+                                        <TouchableOpacity key={index} style={styles.productCard1}
+                                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                                        >
+                                            <Image source={item?.productId?.images ? { uri: item?.productId?.images[0] } : IMG.Potato} style={{
+                                                height: 68, width: 80,
+                                                borderRadius: 10
+                                            }} />
+                                            <View style={{ marginLeft: 20 }}>
+                                                <Text style={styles.productName}>{item?.productId?.name}</Text>
+                                                <View style={styles.priceContainer}>
+                                                    {/* <Row style={{ gap: 10 }}> */}
+                                                    <Text style={{ fontSize: 12, fontFamily: FONTS_FAMILY.Poppins_Regular, color: '#777777' }}>Stock {item.productId?.stock}</Text>
+
+                                                    {/* </Row> */}
+
+                                                </View>
+                                                <Row style={{
+                                                    gap: 10
+                                                }}>
+                                                    <Text style={styles.currentPrice}>Rs{item.productId?.price}</Text>
+                                                    <Text style={styles.originalPrice}>Rs {item.productId?.discountPrice}</Text>
+
+                                                </Row>
+                                            </View>
+
+
+
+
+
+
+                                        </TouchableOpacity>
+                                        <Row style={{
+                                            // marginTop:40
+                                            alignSelf: 'flex-end',
+                                            gap: 10,
+                                            top: 5,
+                                            position: 'absolute',
+                                            right: 5,
+                                            zIndex: 10000
+                                        }}>
+                                            <TouchableOpacity
+                                                onPress={() => deleteFromWishList(item?.productId?._id)}
+                                                style={{
+                                                    // position: 'absolute', right: 15, top: 10, elevation: 1,
+                                                    backgroundColor: 'white',
+                                                    padding: 5,
+                                                    borderRadius: 100
+                                                }}
+                                            >
+                                                <AntDesign name='delete'
+                                                    color={App_Primary_color}
+                                                    size={22}
+                                                />
+                                            </TouchableOpacity>
+
+                                            <TouchableOpacity
+                                                // style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
+                                                onPress={() => navigation.navigate('ProductDetail', { productId: item?.productId?._id })}
+                                            >
+                                                <AddButton />
+                                            </TouchableOpacity>
                                         </Row>
-
                                     </View>
+                                ))
 
-                                </View>
-
-
-
-
-
-
-                            </TouchableOpacity>
-                            <Row style={{
-                                // marginTop:40
-                                alignSelf: 'flex-end',
-                                gap: 10,
-                                top: 5,
-                                position: 'absolute',
-                                right: 5,
-                                zIndex: 10000
-                            }}>
-                                <TouchableOpacity
-                                    onPress={() => deleteFromWishList(item?.productId?._id)}
-                                    style={{
-                                        // position: 'absolute', right: 15, top: 10, elevation: 1,
-                                        backgroundColor: 'white',
-                                        padding: 5,
-                                        borderRadius: 100
-                                    }}
-                                >
-                                    <AntDesign name='delete'
-                                        color={App_Primary_color}
-                                        size={22}
-                                    />
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    // style={{ position: 'absolute', right: 10, bottom: 10, elevation: 1 }}
-                                    onPress={() => navigation.navigate('ProductDetail', { productId: item?.productId?._id })}
-                                >
-                                    <AddButton />
-                                </TouchableOpacity>
-                            </Row>
-                        </View>
-                    ))}
+                            ) :
+                            <CustomText
+                                style={{
+                                    alignSelf: 'center',
+                                    fontFamily: FONTS_FAMILY.Poppins_Medium,
+                                    marginTop: 40
+                                }}
+                            >No Items Added in Favourite</CustomText>
+                    }
                 </View>
             </View>
         );

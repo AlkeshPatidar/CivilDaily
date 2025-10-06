@@ -715,7 +715,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert, PermissionsAndroid, Linking, Platform } from 'react-native';
 import IMG from '../../assets/Images';
 import { FONTS_FAMILY } from '../../assets/Fonts';
 import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
@@ -729,6 +729,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import { useIsFocused } from '@react-navigation/native';
 import CartScreenSkeletonLoader from '../../components/Skeleton/CartScreenSkeletonLoader';
+import RNPrint from 'react-native-print'
 
 
 const CartScreen = ({ navigation }) => {
@@ -747,6 +748,724 @@ const CartScreen = ({ navigation }) => {
             loadData();
         }
     }, [isFocused, activeTab]);
+
+    const requestStoragePermission = async () => {
+        if (Platform.OS !== 'android') return true
+
+        try {
+            if (Platform.Version >= 33) {
+                return true
+            }
+
+            if (Platform.Version >= 30) {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.MANAGE_EXTERNAL_STORAGE,
+                )
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    return true
+                } else {
+                    Alert.alert(
+                        'Permission Required',
+                        'Please enable "All files access" manually in app settings.',
+                        [
+                            {
+                                text: 'Go to Settings',
+                                onPress: () => Linking.openSettings(),
+                            },
+                            { text: 'Cancel', style: 'cancel' },
+                        ],
+                    )
+                    return false
+                }
+            }
+
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                    title: 'Storage Permission Required',
+                    message: 'This app needs access to your storage to save files.',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            )
+
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                return true
+            } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+                Alert.alert(
+                    'Permission Required',
+                    'Please enable storage permission manually in app settings.',
+                    [
+                        {
+                            text: 'Go to Settings',
+                            onPress: () => Linking.openSettings(),
+                        },
+                        { text: 'Cancel', style: 'cancel' },
+                    ],
+                )
+                return false
+            } else {
+                Alert.alert('Permission Denied', 'Cannot save file without permission.')
+                return false
+            }
+        } catch (err) {
+            console.warn('Permission error:', err)
+            return false
+        }
+    }
+
+    // ============================================
+    // OPTION 1: Using react-native-print (Recommended - Most Stable)
+    // Install: npm install react-native-print
+    // ============================================
+
+
+    const exportToPDF = async () => {
+        const filteredTransactions = [
+            {
+                _id: "67890abc123def456",
+                customerName: "Rajesh Kumar",
+                customerPhone: "+91 98765-43210",
+                vehicleNumber: "MP 09 AB 1234",
+                totalAmount: 2850.00,
+                paidAmount: 2000.00,
+                remainAmount: 850.00,
+                paymentMode: "Cash",
+                paidStatus: "Partial",
+                entryTime: "2025-10-05T10:30:00.000Z",
+                products: [
+                    {
+                        _id: "prod001",
+                        product: {
+                            _id: "prod_ref_001",
+                            name: "Tata Salt (1kg)",
+                            category: "Grocery"
+                        },
+                        quantity: 5,
+                        priceAtTime: 25.00,
+                        // Total for this item: 5 × 25 = 125.00
+                    },
+                    {
+                        _id: "prod002",
+                        product: {
+                            _id: "prod_ref_002",
+                            name: "Fortune Sunflower Oil (1L)",
+                            category: "Cooking Oil"
+                        },
+                        quantity: 3,
+                        priceAtTime: 185.00,
+                        // Total for this item: 3 × 185 = 555.00
+                    },
+                    {
+                        _id: "prod003",
+                        product: {
+                            _id: "prod_ref_003",
+                            name: "Amul Butter (100g)",
+                            category: "Dairy"
+                        },
+                        quantity: 4,
+                        priceAtTime: 60.00,
+                        // Total for this item: 4 × 60 = 240.00
+                    },
+                    {
+                        _id: "prod004",
+                        product: {
+                            _id: "prod_ref_004",
+                            name: "Maggi Noodles (Pack of 12)",
+                            category: "Instant Food"
+                        },
+                        quantity: 2,
+                        priceAtTime: 140.00,
+                        // Total for this item: 2 × 140 = 280.00
+                    },
+                    {
+                        _id: "prod005",
+                        product: {
+                            _id: "prod_ref_005",
+                            name: "Britannia Good Day Cookies (200g)",
+                            category: "Biscuits"
+                        },
+                        quantity: 6,
+                        priceAtTime: 45.00,
+                        // Total for this item: 6 × 45 = 270.00
+                    },
+                    {
+                        _id: "prod006",
+                        product: {
+                            _id: "prod_ref_006",
+                            name: "Colgate Toothpaste (200g)",
+                            category: "Personal Care"
+                        },
+                        quantity: 3,
+                        priceAtTime: 125.00,
+                        // Total for this item: 3 × 125 = 375.00
+                    },
+                    {
+                        _id: "prod007",
+                        product: {
+                            _id: "prod_ref_007",
+                            name: "Tata Tea Gold (500g)",
+                            category: "Beverages"
+                        },
+                        quantity: 2,
+                        priceAtTime: 250.00,
+                        // Total for this item: 2 × 250 = 500.00
+                    },
+                    {
+                        _id: "prod008",
+                        product: {
+                            _id: "prod_ref_008",
+                            name: "Surf Excel Detergent (1kg)",
+                            category: "Household"
+                        },
+                        quantity: 1,
+                        priceAtTime: 185.00,
+                        // Total for this item: 1 × 185 = 185.00
+                    },
+                    {
+                        _id: "prod009",
+                        product: {
+                            _id: "prod_ref_009",
+                            name: "Parle-G Biscuits (800g)",
+                            category: "Biscuits"
+                        },
+                        quantity: 4,
+                        priceAtTime: 80.00,
+                        // Total for this item: 4 × 80 = 320.00
+                    }
+                ],
+                // Total of all products: 125 + 555 + 240 + 280 + 270 + 375 + 500 + 185 + 320 = 2850.00
+                payments: [
+                    {
+                        _id: "pay001",
+                        amountPaid: 1500.00,
+                        paymentMode: "Cash",
+                        paymentDate: "2025-10-05T10:35:00.000Z",
+                        note: "Initial payment"
+                    },
+                    {
+                        _id: "pay002",
+                        amountPaid: 500.00,
+                        paymentMode: "UPI",
+                        paymentDate: "2025-10-05T15:20:00.000Z",
+                        note: "Partial payment via PhonePe"
+                    }
+                ],
+                // Total paid: 1500 + 500 = 2000.00
+                // Remaining: 2850 - 2000 = 850.00
+                createdAt: "2025-10-05T10:30:00.000Z",
+                updatedAt: "2025-10-05T15:20:00.000Z"
+            },
+            {
+                _id: "67890abc123def457",
+                customerName: "Rajesh Kumar",
+                customerPhone: "+91 98765-43210",
+                vehicleNumber: "MP 09 AB 1234",
+                totalAmount: 450.00,
+                paidAmount: 450.00,
+                remainAmount: 0.00,
+                paymentMode: "UPI",
+                paidStatus: "Paid",
+                entryTime: "2025-10-04T14:20:00.000Z",
+                products: [
+                    {
+                        _id: "prod010",
+                        product: {
+                            _id: "prod_ref_010",
+                            name: "Dove Soap (125g × 3)",
+                            category: "Personal Care"
+                        },
+                        quantity: 1,
+                        priceAtTime: 150.00,
+                    },
+                    {
+                        _id: "prod011",
+                        product: {
+                            _id: "prod_ref_011",
+                            name: "Lays Chips (52g × 6)",
+                            category: "Snacks"
+                        },
+                        quantity: 1,
+                        priceAtTime: 120.00,
+                    },
+                    {
+                        _id: "prod012",
+                        product: {
+                            _id: "prod_ref_012",
+                            name: "Coca Cola (2L)",
+                            category: "Beverages"
+                        },
+                        quantity: 2,
+                        priceAtTime: 90.00,
+                    }
+                ],
+                payments: [
+                    {
+                        _id: "pay003",
+                        amountPaid: 450.00,
+                        paymentMode: "UPI",
+                        paymentDate: "2025-10-04T14:22:00.000Z",
+                        note: "Full payment via Google Pay"
+                    }
+                ],
+                createdAt: "2025-10-04T14:20:00.000Z",
+                updatedAt: "2025-10-04T14:22:00.000Z"
+            },
+            {
+                _id: "67890abc123def458",
+                customerName: "Rajesh Kumar",
+                customerPhone: "+91 98765-43210",
+                vehicleNumber: "MP 09 AB 5678",
+                totalAmount: 1200.00,
+                paidAmount: 0.00,
+                remainAmount: 1200.00,
+                paymentMode: "Credit",
+                paidStatus: "Unpaid",
+                entryTime: "2025-10-03T09:15:00.000Z",
+                products: [
+                    {
+                        _id: "prod013",
+                        product: {
+                            _id: "prod_ref_013",
+                            name: "Basmati Rice (5kg)",
+                            category: "Grocery"
+                        },
+                        quantity: 2,
+                        priceAtTime: 450.00,
+                    },
+                    {
+                        _id: "prod014",
+                        product: {
+                            _id: "prod_ref_014",
+                            name: "Aashirvaad Atta (10kg)",
+                            category: "Grocery"
+                        },
+                        quantity: 1,
+                        priceAtTime: 300.00,
+                    }
+                ],
+                payments: [],
+                createdAt: "2025-10-03T09:15:00.000Z",
+                updatedAt: "2025-10-03T09:15:00.000Z"
+            }
+        ];
+
+
+        const permission = await requestStoragePermission()
+        if (!permission) return Alert.alert('Permission Denied', 'Cannot save PDF.')
+
+        if (!filteredTransactions.length) {
+            return Alert.alert('No Data', 'No transactions to export.')
+        }
+
+        try {
+            showLoader()
+
+            const formatDate = (date) =>
+                new Date(date).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                })
+
+            const formatTime = (date) =>
+                new Date(date).toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })
+
+            const invoiceDate = formatDate(Date.now())
+            const invoiceTime = formatTime(Date.now())
+            const invoiceNumber = `INV-${Date.now()}`
+
+            const total = filteredTransactions.reduce(
+                (acc, t) => acc + Number(t.totalAmount || 0),
+                0
+            )
+            const paid = filteredTransactions.reduce(
+                (acc, t) => acc + Number(t.paidAmount || 0),
+                0
+            )
+            const remain = total - paid
+
+            const customerName = filteredTransactions[0]?.customerName || 'Walk-in Customer'
+            const customerPhone = filteredTransactions[0]?.customerPhone || 'N/A'
+
+            const invoiceStyle = `
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body { 
+        font-family: 'Arial', sans-serif; 
+        padding: 30px;
+        background: #fff;
+        color: #333;
+    }
+    .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        border: 2px solid #2c3e50;
+        padding: 0;
+    }
+    .invoice-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        border-bottom: 4px solid #e74c3c;
+    }
+    .store-name {
+        font-size: 36px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+    .store-tagline {
+        font-size: 14px;
+        opacity: 0.9;
+        font-style: italic;
+    }
+    .store-contact {
+        font-size: 12px;
+        margin-top: 10px;
+        opacity: 0.85;
+    }
+    .invoice-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 25px 30px;
+        background: #ecf0f1;
+        border-bottom: 2px solid #bdc3c7;
+    }
+    .info-block {
+        flex: 1;
+    }
+    .info-label {
+        font-size: 11px;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .info-value {
+        font-size: 14px;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+    .customer-section {
+        padding: 20px 30px;
+        background: #fff;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    .customer-title {
+        font-size: 12px;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .customer-name {
+        font-size: 16px;
+        color: #2c3e50;
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+    .customer-phone {
+        font-size: 13px;
+        color: #7f8c8d;
+    }
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+    .items-table thead {
+        background: #34495e;
+        color: white;
+    }
+    .items-table th {
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .items-table th:last-child {
+        border-right: none;
+        text-align: right;
+    }
+    .items-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ecf0f1;
+        font-size: 13px;
+        color: #2c3e50;
+    }
+    .items-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    .item-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .summary-section {
+        padding: 25px 30px;
+        background: #ecf0f1;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 14px;
+    }
+    .summary-row.total {
+        border-top: 2px solid #2c3e50;
+        padding-top: 15px;
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    .summary-label {
+        color: #7f8c8d;
+        font-weight: 600;
+    }
+    .summary-value {
+        color: #2c3e50;
+        font-weight: bold;
+    }
+    .summary-row.remaining .summary-value {
+        color: #e74c3c;
+    }
+    .summary-row.paid .summary-value {
+        color: #27ae60;
+    }
+    .payment-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .status-paid {
+        background: #d4edda;
+        color: #27ae60;
+    }
+    .status-partial {
+        background: #fff3cd;
+        color: #f39c12;
+    }
+    .status-unpaid {
+        background: #f8d7da;
+        color: #e74c3c;
+    }
+    .invoice-footer {
+        padding: 20px 30px;
+        text-align: center;
+        background: #fff;
+        border-top: 2px solid #ecf0f1;
+    }
+    .footer-text {
+        font-size: 11px;
+        color: #7f8c8d;
+        line-height: 1.6;
+    }
+    .footer-highlight {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 13px;
+        margin-top: 10px;
+        display: block;
+    }
+    .divider {
+        height: 2px;
+        background: linear-gradient(to right, transparent, #e74c3c, transparent);
+        margin: 15px 0;
+    }
+</style>
+`
+
+            let itemRows = ''
+            let itemNumber = 1
+
+            filteredTransactions.forEach((txn) => {
+                if (txn.products && txn.products.length > 0) {
+                    txn.products.forEach((p) => {
+                        const itemTotal = (p.quantity || 0) * (p.priceAtTime || 0)
+                        itemRows += `
+            <tr>
+              <td class="text-center">${itemNumber++}</td>
+              <td class="item-name">${p.product?.name || 'Item'}</td>
+              <td class="text-center">${p.quantity || 0}</td>
+              <td class="text-right">₹${Number(p.priceAtTime || 0).toFixed(2)}</td>
+              <td class="text-right">₹${itemTotal.toFixed(2)}</td>
+            </tr>
+          `
+                    })
+                }
+            })
+
+            // Determine payment status
+            let paymentStatusClass = 'status-unpaid'
+            let paymentStatusText = 'UNPAID'
+            if (paid >= total) {
+                paymentStatusClass = 'status-paid'
+                paymentStatusText = 'PAID'
+            } else if (paid > 0) {
+                paymentStatusClass = 'status-partial'
+                paymentStatusText = 'PARTIAL'
+            }
+
+            const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RR Mart Invoice</title>
+    ${invoiceStyle}
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="store-name">🛒 RR MART</div>
+            <div class="store-tagline">Your Trusted Shopping Destination</div>
+            <div class="store-contact">
+                📍 Shop No. 15, Main Market, City Center | 📞 +91 98765-43210 | ✉️ contact@rrmart.com
+            </div>
+        </div>
+
+        <!-- Invoice Info -->
+        <div class="invoice-info">
+            <div class="info-block">
+                <div class="info-label">Invoice Number</div>
+                <div class="info-value">${invoiceNumber}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Invoice Date</div>
+                <div class="info-value">${invoiceDate}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Invoice Time</div>
+                <div class="info-value">${invoiceTime}</div>
+            </div>
+            <div class="info-block">
+                <div class="info-label">Payment Status</div>
+                <div class="info-value">
+                    <span class="payment-status ${paymentStatusClass}">${paymentStatusText}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-section">
+            <div class="customer-title">Bill To</div>
+            <div class="customer-name">${customerName}</div>
+            <div class="customer-phone">📱 ${customerPhone}</div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Item Description</th>
+                    <th style="width: 80px;" class="text-center">Qty</th>
+                    <th style="width: 100px;" class="text-right">Rate</th>
+                    <th style="width: 120px;" class="text-right">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${itemRows}
+            </tbody>
+        </table>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="summary-row">
+                <span class="summary-label">Subtotal:</span>
+                <span class="summary-value">₹${total.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Tax (0%):</span>
+                <span class="summary-value">₹0.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Discount:</span>
+                <span class="summary-value">₹0.00</span>
+            </div>
+            <div class="divider"></div>
+            <div class="summary-row total">
+                <span class="summary-label">Total Amount:</span>
+                <span class="summary-value">₹${total.toFixed(2)}</span>
+            </div>
+            <div class="summary-row paid">
+                <span class="summary-label">Amount Paid:</span>
+                <span class="summary-value">₹${paid.toFixed(2)}</span>
+            </div>
+            <div class="summary-row remaining">
+                <span class="summary-label">Balance Due:</span>
+                <span class="summary-value">₹${remain.toFixed(2)}</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="invoice-footer">
+            <div class="footer-text">
+                Thank you for shopping with RR Mart! We appreciate your business.<br>
+                For any queries, please contact us at the above details.
+            </div>
+            <span class="footer-highlight">🎉 Visit Again! Happy Shopping! 🎉</span>
+        </div>
+    </div>
+</body>
+</html>
+`
+
+            // Using react-native-print (No permission needed, direct print)
+            await RNPrint.print({
+                html: html,
+                jobName: `RRMart_Invoice_${invoiceNumber}`,
+            })
+
+            hideLoader()
+            Alert.alert('Success', 'Invoice ready to print!')
+        } catch (error) {
+            hideLoader()
+            console.error('PDF export error:', error)
+            Alert.alert('Error', 'Could not generate invoice')
+        }
+    }
+
+    // ============================================
+    // OPTION 2: If you need to save file (use rn-fetch-blob)
+    // Install: npm install rn-fetch-blob
+    // ============================================
+
+    /*
+    import RNFetchBlob from 'rn-fetch-blob';
+    
+    // After creating HTML, use this to save:
+    const { config, fs } = RNFetchBlob;
+    const fileName = `RRMart_Invoice_${invoiceNumber}.html`;
+    const path = `${fs.dirs.DownloadDir}/${fileName}`;
+    
+    await RNFetchBlob.fs.writeFile(path, html, 'utf8');
+    Alert.alert('Success', `Saved to: ${path}`);
+    */
 
     const loadData = async () => {
         setIsLoading(true);
@@ -772,7 +1491,7 @@ const CartScreen = ({ navigation }) => {
         try {
             const orderType = activeTab === 'Current Order' ? 'current' : 'previous';
             const res = await apiGet(`/api/order/my?orderType=${orderType}`);
-            
+
             if (activeTab === 'Current Order') {
                 setCurrentOrders(res?.data || []);
             } else if (activeTab === 'Previous Order') {
@@ -995,9 +1714,18 @@ const CartScreen = ({ navigation }) => {
                 <View style={styles.orderItemsContainer}>
                     <Text style={styles.orderItemsTitle}>Items:</Text>
                     {order.items.map((item, index) => (
-                        <Text key={index} style={styles.orderItemText}>
-                            • {item.productId?.name} (Qty: {item.quantity})
-                        </Text>
+                        <SpaceBetweenRow>
+                            <Text key={index} style={styles.orderItemText}>
+                                • {item.productId?.name} (Qty: {item.quantity})
+                            </Text>
+                            {order?.orderStatus == 'delivered' && <TouchableOpacity
+                                style={styles.trackOrderButton}
+                                onPress={exportToPDF}
+                            >
+                                <Text style={styles.trackOrderText}>Download Invoice</Text>
+                                <Text style={styles.chevron}>›</Text>
+                            </TouchableOpacity>}
+                        </SpaceBetweenRow>
                     ))}
                 </View>
             </View>
@@ -1388,7 +2116,7 @@ const CartScreen = ({ navigation }) => {
 
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
@@ -1433,7 +2161,7 @@ const CartScreen = ({ navigation }) => {
                     {/* Checkout Button - Only show for My Cart tab with items */}
                     {activeTab === 'My Cart' && hasCartItems && (
                         <View style={styles.checkoutContainer}>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={styles.checkoutButton}
                                 onPress={() => navigation.navigate('CheckoutSummary', { cartData: cartData })}
                             >
