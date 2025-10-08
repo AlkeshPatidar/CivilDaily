@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     View,
     Text,
@@ -7,6 +7,7 @@ import {
     StyleSheet,
     StatusBar,
     SafeAreaView,
+    Animated,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -22,6 +23,7 @@ import urls from '../../config/urls';
 export default function Notifications({ navigation }) {
     const { isDarkMode } = useSelector(state => state.theme);
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getNotifications();
@@ -29,6 +31,7 @@ export default function Notifications({ navigation }) {
 
     const getNotifications = async () => {
         try {
+            setLoading(true);
             const res = await apiGet(urls?.getNotifictations);
             if (res?.data) {
                 const formattedData = res.data.map(item => ({
@@ -45,6 +48,8 @@ export default function Notifications({ navigation }) {
             }
         } catch (error) {
             console.log('Error fetching notifications:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -242,6 +247,40 @@ export default function Notifications({ navigation }) {
             color: isDarkMode ? '#9CA3AF' : '#6B7280',
             textAlign: 'center',
         },
+        skeletonCard: {
+            backgroundColor: isDarkMode ? dark33 : '#FFFFFF',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 12,
+            flexDirection: 'row',
+            gap: 12,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 2,
+        },
+        skeletonCircle: {
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: isDarkMode ? '#374151' : '#E5E7EB',
+        },
+        skeletonContent: {
+            flex: 1,
+            gap: 8,
+        },
+        skeletonLine: {
+            height: 14,
+            borderRadius: 4,
+            backgroundColor: isDarkMode ? '#374151' : '#E5E7EB',
+        },
+        skeletonLineShort: {
+            height: 12,
+            borderRadius: 4,
+            backgroundColor: isDarkMode ? '#374151' : '#E5E7EB',
+            width: '60%',
+        },
     });
 
     const renderHeader = () => (
@@ -268,37 +307,107 @@ export default function Notifications({ navigation }) {
         </View>
     );
 
-    const renderNotification = (item) => (
-        <TouchableOpacity
-            key={item.id}
-            style={[
-                styles.notificationCard,
-                !item.read && styles.unreadCard,
-            ]}
-            onPress={() => markAsRead(item.id)}
-            activeOpacity={0.7}
-        >
-            <View style={styles.iconContainer}>
-                <MaterialIcons
-                    name={item.icon}
-                    size={24}
-                    color={item.iconColor}
-                />
-            </View>
-            <View style={styles.notificationContent}>
-                <View style={styles.notificationHeader}>
-                    <Text style={styles.notificationTitle} numberOfLines={1}>
-                        {item.title}
-                    </Text>
-                    {!item.read && <View style={styles.unreadBadge} />}
-                </View>
-                <Text style={styles.notificationMessage} numberOfLines={2}>
-                    {item.message}
-                </Text>
-                <Text style={styles.timeText}>{item.time}</Text>
-            </View>
-        </TouchableOpacity>
-    );
+    const SkeletonLoader = () => {
+        const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+        useEffect(() => {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(shimmerAnim, {
+                        toValue: 1,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(shimmerAnim, {
+                        toValue: 0,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    }),
+                ])
+            ).start();
+        }, []);
+
+        const opacity = shimmerAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.3, 1],
+        });
+
+        return (
+            <>
+                {[1, 2, 3, 4, 5].map((item) => (
+                    <Animated.View key={item} style={[styles.skeletonCard, { opacity }]}>
+                        <View style={styles.skeletonCircle} />
+                        <View style={styles.skeletonContent}>
+                            <View style={[styles.skeletonLine, { width: '70%' }]} />
+                            <View style={styles.skeletonLine} />
+                            <View style={styles.skeletonLineShort} />
+                        </View>
+                    </Animated.View>
+                ))}
+            </>
+        );
+    };
+
+    const AnimatedNotificationCard = ({ item, index }) => {
+        const fadeAnim = useRef(new Animated.Value(0)).current;
+        const translateAnim = useRef(new Animated.Value(-30)).current;
+
+        useEffect(() => {
+            Animated.parallel([
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 400,
+                    delay: index * 100,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(translateAnim, {
+                    toValue: 0,
+                    delay: index * 100,
+                    tension: 50,
+                    friction: 7,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        }, []);
+
+        return (
+            <Animated.View
+                style={{
+                    opacity: fadeAnim,
+                    transform: [{ translateY: translateAnim }],
+                }}
+            >
+                <TouchableOpacity
+                    style={[
+                        styles.notificationCard,
+                        !item.read && styles.unreadCard,
+                    ]}
+                    onPress={() => markAsRead(item.id)}
+                    activeOpacity={0.7}
+                >
+                    <View style={styles.iconContainer}>
+                        <MaterialIcons
+                            name={item.icon}
+                            size={24}
+                            color={item.iconColor}
+                        />
+                    </View>
+                    <View style={styles.notificationContent}>
+                        <View style={styles.notificationHeader}>
+                            <Text style={styles.notificationTitle} numberOfLines={1}>
+                                {item.title}
+                            </Text>
+                            {!item.read && <View style={styles.unreadBadge} />}
+                        </View>
+                        <Text style={styles.notificationMessage} numberOfLines={2}>
+                            {item.message}
+                        </Text>
+                        <Text style={styles.timeText}>{item.time}</Text>
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    };
 
     const unreadNotifications = notifications.filter(n => !n.read);
     const readNotifications = notifications.filter(n => n.read);
@@ -310,7 +419,9 @@ export default function Notifications({ navigation }) {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.contentContainer}
             >
-                {notifications.length === 0 ? (
+                {loading ? (
+                    <SkeletonLoader />
+                ) : notifications.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <Ionicons
                             name="notifications-off-outline"
@@ -329,13 +440,25 @@ export default function Notifications({ navigation }) {
                         {unreadNotifications.length > 0 && (
                             <>
                                 <Text style={styles.sectionTitle}>NEW</Text>
-                                {unreadNotifications.map(renderNotification)}
+                                {unreadNotifications.map((item, index) => (
+                                    <AnimatedNotificationCard 
+                                        key={item.id} 
+                                        item={item} 
+                                        index={index} 
+                                    />
+                                ))}
                             </>
                         )}
                         {readNotifications.length > 0 && (
                             <>
                                 <Text style={styles.sectionTitle}>EARLIER</Text>
-                                {readNotifications.map(renderNotification)}
+                                {readNotifications.map((item, index) => (
+                                    <AnimatedNotificationCard 
+                                        key={item.id} 
+                                        item={item} 
+                                        index={unreadNotifications.length + index} 
+                                    />
+                                ))}
                             </>
                         )}
                     </>

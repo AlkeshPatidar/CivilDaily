@@ -983,11 +983,15 @@ export default function HomeScreen({ navigation }) {
     // Animation refs
     const headerAnim = useRef(new Animated.Value(-100)).current;
     const searchAnim = useRef(new Animated.Value(0)).current;
+    // const isFocused =useIsFocused()
 
     useEffect(() => {
         initializeData()
-        animateHeader();
     }, [])
+    useEffect(()=>{
+        animateHeader();
+
+    },[isFocused])
 
     const animateHeader = () => {
         Animated.spring(headerAnim, {
@@ -1226,7 +1230,7 @@ export default function HomeScreen({ navigation }) {
                                 styles.horizontalProductCard,
                                 { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
                             ]}
-                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                            // onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                         >
                             <View style={styles.productImageWrapper}>
                                 <Image 
@@ -1259,7 +1263,9 @@ export default function HomeScreen({ navigation }) {
                                     </View>
                                     <PulseButton 
                                         style={styles.addToCartButton}
-                                        onPress={() => {}}
+                                        // onPress={() => {}}
+                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+
                                     >
                                         <Ionicons name="add" size={18} color="white" />
                                     </PulseButton>
@@ -1303,7 +1309,7 @@ export default function HomeScreen({ navigation }) {
                                 styles.listProductCard,
                                 { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
                             ]}
-                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+                            // onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                         >
                             <View style={styles.listProductImageContainer}>
                                 <Image 
@@ -1328,7 +1334,9 @@ export default function HomeScreen({ navigation }) {
 
                             <PulseButton 
                                 style={styles.listAddButton}
-                                onPress={() => {}}
+                                // onPress={() => {}}
+                            onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+
                             >
                                 <AddButton />
                             </PulseButton>
