@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import CustomText from '../../components/TextComponent'
-import color, { App_Primary_color } from '../../common/Colors/colors'
+import color, { App_Primary_color, white } from '../../common/Colors/colors'
 import { FONTS_FAMILY } from '../../assets/Fonts'
 import IMG from '../../assets/Images'
 
@@ -14,6 +14,7 @@ import HomeScreen from '../../screens/Home/Home'
 import Category from '../../screens/Category/Category'
 import Favourite from '../../screens/Favourites/Favourites'
 import ProfilePage from '../../screens/Profile/Profile'
+import MyOrdersPage from '../../screens/Orders/Orders'
 
 const Tab = createBottomTabNavigator()
 
@@ -56,7 +57,7 @@ function TabNavigation() {
           alignItems: 'center',
           elevation: 20,
           shadowColor: '#000',
-          paddingHorizontal: 20,
+          paddingHorizontal: 10,
           backgroundColor: isDarkMode ? '#444' : 'white',
           display: keyboardVisible ? 'none' : 'flex', // Hide tab bar when keyboard is open
         },
@@ -78,16 +79,16 @@ function TabNavigation() {
                   style={{
                     height: 56,
                     width: 56,
-                    bottom:30
+                    bottom: 30
                     // tintColor: App_Primary_color,
 
                   }}
                 />
-               
+
               </View>
             ) : (
               <View
-               style={{
+                style={{
                   alignItems: 'center',
                   gap: 8,
                 }}
@@ -129,10 +130,10 @@ function TabNavigation() {
                   style={{
                     height: 56,
                     width: 56,
-                    bottom:30
+                    bottom: 30
                   }}
                 />
-             
+
               </View>
             ) : (
               <View
@@ -161,6 +162,63 @@ function TabNavigation() {
             ),
         }}
       />
+
+      <Tab.Screen
+        name='My Order'
+        component={MyOrdersPage}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  // gap: 8,
+                  backgroundColor: App_Primary_color,
+                  justifyContent: 'center',
+                  bottom: 30,
+                  height: 56,
+                  width: 56,
+                  borderRadius: 28,
+                }}>
+                <Image
+                  source={IMG.myOrder}
+                  style={{
+                    height: 30,
+                    width: 30,
+                    // bottom:30,
+                    tintColor: white,
+                  }}
+                />
+
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                <Image
+                  source={IMG.myOrder}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    tintColor: '#6B7280',
+                  }}
+                />
+
+                <CustomText
+                  style={{
+                    color: isDarkMode ? 'white' : '#6B7280',
+                    fontSize: 12,
+                    fontFamily: FONTS_FAMILY.Poppins_Regular,
+                  }}>
+                  My Order's
+                </CustomText>
+              </View>
+            ),
+        }}
+      />
       <Tab.Screen
         name='Message'
         component={Favourite}
@@ -176,12 +234,12 @@ function TabNavigation() {
                 <Image
                   source={IMG.activeFav}
                   style={{
-                     height: 56,
+                    height: 56,
                     width: 56,
-                    bottom:30
+                    bottom: 30
                   }}
                 />
-              
+
               </View>
             ) : (
               <View
@@ -225,12 +283,12 @@ function TabNavigation() {
                 <Image
                   source={IMG.activeProfile}
                   style={{
-                     height: 56,
+                    height: 56,
                     width: 56,
-                    bottom:30
+                    bottom: 30
                   }}
                 />
-             
+
               </View>
             ) : (
               <View

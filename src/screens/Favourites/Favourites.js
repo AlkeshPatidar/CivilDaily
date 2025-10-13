@@ -534,6 +534,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useIsFocused } from '@react-navigation/native';
 import { positionStyle } from 'react-native-flash-message';
 import FavouriteScreenSkeletonLoader from '../../components/Skeleton/FavoriteSkeletonLoader';
+import BlinKitLoader from '../../components/Skeleton/BlinkitLoader';
 
 
 export default function Favourite({ navigation }) {
@@ -913,7 +914,7 @@ export default function Favourite({ navigation }) {
             },
             shadowOpacity: 0.05,
             shadowRadius: 2,
-            elevation: 3,
+            elevation: 1,
             flexDirection: 'row',
         },
         productImageContainer: {
@@ -991,7 +992,9 @@ export default function Favourite({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             {isLoading ? (
-                <FavouriteScreenSkeletonLoader isDarkMode={isDarkMode} />
+                // <FavouriteScreenSkeletonLoader isDarkMode={isDarkMode} />
+                <BlinKitLoader isDarkMode={isDarkMode} />
+
             ) : (
                 <>
                     {renderHeader()}

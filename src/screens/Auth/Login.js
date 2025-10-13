@@ -536,6 +536,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { apiPost, getItem, setItem } from '../../utils/Apis';
 import { setUser } from '../../redux/reducer/user';
 import CustomText from '../../components/TextComponent';
+import { showToast } from '../../components/Tooltips/SuccessToolTip';
 
 // Country data with flags
 const countries = [
@@ -682,7 +683,8 @@ const Login = ({ navigation }) => {
               navigation.replace('Tab');
             }
           }
-          ToastMsg(response?.message);
+          // ToastMsg(response?.message);
+          showToast('Welcome back! Let’s get your groceries delivered.', 'success', 3000);
           hideLoader();
         }
       } catch (error) {
@@ -721,7 +723,9 @@ const Login = ({ navigation }) => {
               navigation.replace('Tab');
             }
           }
-          ToastMsg(response?.message);
+          // ToastMsg(response?.message);
+          showToast('Welcome back! Let’s get your groceries delivered.', 'success', 3000);
+
           hideLoader();
         }
       } catch (error) {

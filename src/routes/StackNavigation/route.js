@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator,  } from '@react-navigation/native-stack';
 
 import Splash1 from '../../screens/Splash/Splash1';
 import Login from '../../screens/Auth/Login';
@@ -35,11 +35,6 @@ import Notifications from '../../screens/Notification/Notification';
 
 
 const Stack = createNativeStackNavigator();
-
-
-
-
-
 const StackNavigation = () => {
   return (
     <NavigationContainer>
@@ -47,6 +42,7 @@ const StackNavigation = () => {
         screenOptions={{
           headerShown: false,
           cardStyle: { backgroundColor: '#000' },
+          animation: 'slide_from_right'
         }}
         initialRouteName="SplashScreen">
           
@@ -56,9 +52,6 @@ const StackNavigation = () => {
         <Stack.Screen name={'Login'} component={Login} />
         <Stack.Screen name={'Signup'} component={Signup} />
         <Stack.Screen name={'ForgotPassword'} component={ForgotPassword} />
-
-        
-
         <Stack.Screen name={'Otpscreen'} component={OtpScreen} />
         <Stack.Screen name={'LocationPermissionScreen'} component={LocationPermissionScreen} />
         <Stack.Screen name={'Home'} component={HomeScreen} />
@@ -79,20 +72,6 @@ const StackNavigation = () => {
         <Stack.Screen name={'CategoryProducts'} component={CategoryProducts} />
         <Stack.Screen name={'AddAddressScreen'} component={AddAddressScreen} />
         <Stack.Screen name={'Notifications'} component={Notifications} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,6 +7,7 @@ import Loader from './src/components/Loader'
 import {Provider, useSelector} from 'react-redux'
 import store from './src/redux/store'
 import {LoginCheckProvider} from './src/utils/Context'
+import ToastMessage from './src/components/Tooltips/SuccessToolTip'
 
 const MainApp = () => {
   const loaderVisible = useSelector(state => state?.loader?.loader)
@@ -19,7 +20,8 @@ const MainApp = () => {
           backgroundColor={color.App_Primary_color}
         />
         <StackNavigation />
-        <FlashMessage position='top' />
+        {/* <FlashMessage position='top' /> */}
+         <ToastMessage />
         <Loader visible={loaderVisible} />
       </SafeAreaView>
     </LoginCheckProvider>

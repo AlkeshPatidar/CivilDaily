@@ -1259,6 +1259,7 @@ import { useIsFocused } from '@react-navigation/native';
 import CartScreenSkeletonLoader from '../../components/Skeleton/CartScreenSkeletonLoader';
 import RNPrint from 'react-native-print'
 import { ToastMsg } from '../../utils/helperFunctions';
+import { showToast } from '../../components/Tooltips/SuccessToolTip';
 
 
 const CartScreen = ({ navigation }) => {
@@ -1859,6 +1860,7 @@ const CartScreen = ({ navigation }) => {
         try {
             showLoader();
             const res = await apiDelete(`${urls?.deleteCartData}/${id}`);
+            showToast('Item removed from cart','success',  3000);
             await fetchCartData();
             hideLoader();
         } catch (error) {
@@ -1914,6 +1916,7 @@ const CartScreen = ({ navigation }) => {
 
         try {
             console.log(`Removing item ${itemId} from cart`);
+         deleteCartCarta(itemId)
         } catch (error) {
             console.error('Error removing item:', error);
             fetchCartData();

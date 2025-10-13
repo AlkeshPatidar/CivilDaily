@@ -33,6 +33,11 @@ const IMG = {
   activeProfile: require('../Images/activeProfile.png'),
   MapImage: require('../Images/MapImage.png'),
 
+  myOrder: require('../Images/myOrder.png'),
+
+
+  
+
 
 
 

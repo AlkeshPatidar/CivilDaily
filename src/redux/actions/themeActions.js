@@ -11,6 +11,7 @@ const THEME_STORAGE_KEY = '@app_theme';
 export const initializeTheme = async () => {
   try {
     const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+    console.log('Saved theme from storage::::::::::::>>>>>>', savedTheme);
     
     if (savedTheme !== null) {
       const themeData = JSON.parse(savedTheme);
@@ -81,6 +82,9 @@ export const enableSystemTheme = async () => {
 
 // Set specific theme
 export const setSpecificTheme = async (isDarkMode) => {
+
+  console.log('setSpecificTheme called with:', isDarkMode);
+  
   dispatch(setTheme(isDarkMode));
   
   // Save to AsyncStorage

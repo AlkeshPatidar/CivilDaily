@@ -688,8 +688,8 @@ export default function CategoryProducts({ navigation, route }) {
     const { showLoader, hideLoader } = useLoader()
     const [allProducts, setAllProducts] = useState([])
     const { isDarkMode } = useSelector(state => state.theme)
-        const [isLoading, setIsLoading] = useState(true)
-    
+    const [isLoading, setIsLoading] = useState(true)
+
 
     // Animation values
     const headerAnim = useRef(new Animated.Value(0)).current;
@@ -703,11 +703,11 @@ export default function CategoryProducts({ navigation, route }) {
 
     const getProducts = async () => {
         try {
-           setIsLoading(true)
+            setIsLoading(true)
             const res = await apiGet(`${urls.getAllProducts}?categoryId=${route?.params?.categoryId}&subCategoryId=${route?.params?.subcategoryId}`)
             setAllProducts(res?.data)
             // hideLoader()
-           setIsLoading(false)
+            setIsLoading(false)
 
 
             // Start animations after data loads
@@ -715,7 +715,7 @@ export default function CategoryProducts({ navigation, route }) {
         } catch (error) {
             console.error('Error fetching categories:', error);
             // hideLoader()
-           setIsLoading(false)
+            setIsLoading(false)
 
         }
     };
@@ -917,6 +917,35 @@ export default function CategoryProducts({ navigation, route }) {
         );
     };
 
+    const PulseButton = ({ children, onPress, style }) => {
+        const pulseAnim = useRef(new Animated.Value(1)).current;
+
+        useEffect(() => {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(pulseAnim, {
+                        toValue: 1.1,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(pulseAnim, {
+                        toValue: 1,
+                        duration: 1000,
+                        useNativeDriver: true,
+                    }),
+                ])
+            ).start();
+        }, []);
+
+        return (
+            <TouchableOpacity onPress={onPress}>
+                <Animated.View style={[style, { transform: [{ scale: pulseAnim }] }]}>
+                    {children}
+                </Animated.View>
+            </TouchableOpacity>
+        );
+    };
+
     // Animated Product Card Component
     const AnimatedProductCard = ({ item, index, navigation, isDarkMode }) => {
         const itemAnim = useRef(new Animated.Value(0)).current;
@@ -955,12 +984,20 @@ export default function CategoryProducts({ navigation, route }) {
                             {item.name}
                         </Text>
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={styles.addButton}
                         onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
                     >
                         <AddButton />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+                    <PulseButton
+                        style={{...styles.addToCartButton,...styles.addButton}}
+                        // onPress={() => {}}
+                        onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
+
+                    >
+                        <Ionicons name="add" size={18} color="white" />
+                    </PulseButton>
                 </View>
             </Animated.View>
         );
@@ -1003,7 +1040,7 @@ export default function CategoryProducts({ navigation, route }) {
                         </Row>
                     </View>
 
-                    <View style={styles.rightHeader}>
+                    {/* <View style={styles.rightHeader}>
                         <TouchableOpacity style={styles.iconButton}>
                             <SearchWIthBg />
                         </TouchableOpacity>
@@ -1013,7 +1050,7 @@ export default function CategoryProducts({ navigation, route }) {
                         >
                             <Filter />
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                 </View>
             </Animated.View>
         );
@@ -1130,6 +1167,14 @@ export default function CategoryProducts({ navigation, route }) {
             paddingVertical: 15,
             zIndex: -100000,
         },
+          addToCartButton: {
+                    backgroundColor: App_Primary_color,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
 
         // Categories Styles
         categoriesGrid: {
@@ -1181,7 +1226,10 @@ export default function CategoryProducts({ navigation, route }) {
         },
         productInfo: {
             flex: 1,
-            marginBottom: 8,
+            // marginBottom: 8,
+            paddingLeft: 10,
+            alignItems: 'flex-start',
+            // justifyContent: 'center',
         },
         productName: {
             fontSize: 13,
@@ -1352,7 +1400,7 @@ export default function CategoryProducts({ navigation, route }) {
                     <>
                         {renderHeader()}
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            {renderCategories()}
+                            {/* {renderCategories()} */}
                             {renderProductsGrid()}
                         </ScrollView>
                         {renderFilterModal()}

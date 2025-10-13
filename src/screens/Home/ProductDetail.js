@@ -605,6 +605,7 @@ import { ToastMsg } from '../../utils/helperFunctions';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetailSkeletonLoader from '../../components/Skeleton/ProductDetailSkeletonLoader';
+import { showToast } from '../../components/Tooltips/SuccessToolTip';
 
 const { width: screenWidth } = Dimensions.get('window');
 const SLIDER_WIDTH = screenWidth;
@@ -791,7 +792,7 @@ const ProductDetail = ({ navigation, route }) => {
       hideLoader();
 
       if (response?.statusCode === 200 || response?.status === 200 || response?.success) {
-        ToastMsg(response?.message || response?.data?.message || 'Product added to cart successfully');
+        showToast(response?.message || response?.data?.message || 'Product added to cart successfully');
         setQuantity(1);
         navigation.navigate('CartScreen');
       } else {
@@ -1116,7 +1117,7 @@ const ProductDetail = ({ navigation, route }) => {
                     style={[styles.quantityButton, !canDecreaseQuantity && { opacity: 0.5 }]}
                     onPress={decreaseQuantity}
                     disabled={!canDecreaseQuantity}>
-                    <Text style={{ fontSize: 18, color: 'white' }}>-</Text>
+                    <Text style={{fontSize: 20, color:isDarkMode? 'white':'gray'}}>-</Text>
                   </TouchableOpacity>
 
                   <View style={styles.quantityDisplay}>
@@ -1127,7 +1128,7 @@ const ProductDetail = ({ navigation, route }) => {
                     style={[styles.quantityButton, !canIncreaseQuantity && { opacity: 0.5 }]}
                     onPress={increaseQuantity}
                     disabled={!canIncreaseQuantity}>
-                    <Text style={{ fontSize: 18, color: 'white' }}>+</Text>
+                    <Text style={{ fontSize: 20, color:isDarkMode? 'white':'gray' }}>+</Text>
                   </TouchableOpacity>
                 </View>
               </View>

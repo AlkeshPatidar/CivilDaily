@@ -34,6 +34,8 @@ export default function Category({ navigation }) {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null)
     const [filteredSubCategories, setFilteredSubCategories] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [cartCount, setCartCount] = useState(0);
+
 
     const { isDarkMode } = useSelector(state => state.theme)
     const isFocused = useIsFocused()
@@ -43,18 +45,57 @@ export default function Category({ navigation }) {
     const categoriesAnim = useRef(new Animated.Value(0)).current;
     const subCategoriesAnim = useRef(new Animated.Value(0)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [notificationCount, setNotificationCount] = useState(0);
+
 
     useEffect(() => {
         initializeData()
     }, [isFocused])
 
+    const fetchCartData = async () => {
+        try {
+            const res = await apiGet(urls?.getCartData);
+            const count = res?.data?.items?.length || 0;
+
+            setCartCount(count);
+        } catch (error) {
+            console.log('Error fetching cart data:', error);
+        }
+    };
+
+    useEffect(() => {
+        // Initial API calls
+        fetchCartData();
+        fetchNotificationCount()
+        const interval = setInterval(() => {
+            fetchCartData();
+            fetchNotificationCount()
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+    const fetchNotificationCount = async () => {
+        try {
+            const res = await apiGet(urls?.getNotifictations);
+            const items = res?.data?.items || res?.data || []; // adjust if API returns data inside `data.items` or `data`
+
+            // sirf unread notifications count karne ke liye
+            const unreadCount = items.filter(item => item.isRead === false).length;
+
+            setNotificationCount(unreadCount);
+        } catch (error) {
+            console.log('Error fetching notification count:', error);
+        }
+    };
     useEffect(() => {
         if (selectedCategoryId) {
-            const filtered = subCategories.filter(sub => 
+            const filtered = subCategories.filter(sub =>
                 sub.categoryId._id === selectedCategoryId
             );
             setFilteredSubCategories(filtered);
-            
+
             // Animate subcategories when they change
             if (filtered.length > 0) {
                 animateSubCategories();
@@ -71,7 +112,7 @@ export default function Category({ navigation }) {
             getSubCategories()
         ])
         setIsLoading(false)
-        
+
         // Start animations after loading
         startMountAnimations();
     }
@@ -128,7 +169,7 @@ export default function Category({ navigation }) {
         try {
             const res = await apiGet(urls?.getCategory)
             setCategories(res?.data || [])
-            
+
             // Auto-select first category if available
             if (res?.data && res?.data.length > 0) {
                 setSelectedCategoryId(res.data[0]._id);
@@ -152,101 +193,101 @@ export default function Category({ navigation }) {
     };
 
 
-// Separate component for animated category item
-const AnimatedCategoryItem = ({ category, isSelected, onPress, index, isLoading }) => {
-    const itemAnim = useRef(new Animated.Value(0)).current;
-    
-    useEffect(() => {
-        if (!isLoading) {
+    // Separate component for animated category item
+    const AnimatedCategoryItem = ({ category, isSelected, onPress, index, isLoading }) => {
+        const itemAnim = useRef(new Animated.Value(0)).current;
+
+        useEffect(() => {
+            if (!isLoading) {
+                Animated.spring(itemAnim, {
+                    toValue: 1,
+                    tension: 50,
+                    friction: 7,
+                    delay: index * 50,
+                    useNativeDriver: true,
+                }).start();
+            }
+        }, [isLoading]);
+
+        const scale = itemAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.8, 1],
+        });
+
+        return (
+            <Animated.View
+                style={{
+                    opacity: itemAnim,
+                    transform: [{ scale }],
+                }}
+            >
+                <TouchableOpacity
+                    style={[
+                        styles.categoryItem,
+                        isSelected && styles.selectedCategoryItem
+                    ]}
+                    onPress={onPress}
+                >
+                    <View style={[
+                        styles.categoryIcon,
+                        isSelected && styles.selectedCategoryIcon
+                    ]}>
+                        <Text style={[
+                            styles.categoryText,
+                            isSelected && styles.selectedCategoryText
+                        ]}>
+                            {category.name}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    };
+
+    // Separate component for animated subcategory item
+    const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
+        const itemAnim = useRef(new Animated.Value(0)).current;
+
+        useEffect(() => {
             Animated.spring(itemAnim, {
                 toValue: 1,
                 tension: 50,
                 friction: 7,
-                delay: index * 50,
+                delay: index * 80,
                 useNativeDriver: true,
             }).start();
-        }
-    }, [isLoading]);
+        }, []);
 
-    const scale = itemAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0.8, 1],
-    });
+        const scale = itemAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.9, 1],
+        });
 
-    return (
-        <Animated.View
-            style={{
-                opacity: itemAnim,
-                transform: [{ scale }],
-            }}
-        >
-            <TouchableOpacity 
-                style={[
-                    styles.categoryItem,
-                    isSelected && styles.selectedCategoryItem
-                ]}
-                onPress={onPress}
+        return (
+            <Animated.View
+                style={{
+                    opacity: itemAnim,
+                    transform: [{ scale }],
+                }}
             >
-                <View style={[
-                    styles.categoryIcon,
-                    isSelected && styles.selectedCategoryIcon
-                ]}>
-                    <Text style={[
-                        styles.categoryText,
-                        isSelected && styles.selectedCategoryText
-                    ]}>
-                        {category.name}
-                    </Text>
-                </View>
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
-
-// Separate component for animated subcategory item
-const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
-    const itemAnim = useRef(new Animated.Value(0)).current;
-    
-    useEffect(() => {
-        Animated.spring(itemAnim, {
-            toValue: 1,
-            tension: 50,
-            friction: 7,
-            delay: index * 80,
-            useNativeDriver: true,
-        }).start();
-    }, []);
-
-    const scale = itemAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0.9, 1],
-    });
-
-    return (
-        <Animated.View
-            style={{
-                opacity: itemAnim,
-                transform: [{ scale }],
-            }}
-        >
-            <TouchableOpacity 
-                style={styles.productCard}
-                onPress={onPress}
-            >
-                <Image 
-                    source={{ uri: item.image }} 
-                    style={{
-                        height: 87, 
-                        width: 100,
-                        borderRadius: 10
-                    }} 
-                    defaultSource={IMG.sprite}
-                />
-                <Text style={styles.productName}>{item.name}</Text>
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
+                <TouchableOpacity
+                    style={styles.productCard}
+                    onPress={onPress}
+                >
+                    <Image
+                        source={{ uri: item.image }}
+                        style={{
+                            height: 87,
+                            width: 100,
+                            borderRadius: 10
+                        }}
+                        defaultSource={IMG.sprite}
+                    />
+                    <Text style={styles.productName}>{item.name}</Text>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    };
 
 
     // Header Component
@@ -257,7 +298,7 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
         });
 
         return (
-            <Animated.View 
+            <Animated.View
                 style={[
                     styles.headerContainer,
                     {
@@ -277,14 +318,30 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
                     </View>
 
                     <View style={styles.rightHeader}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.iconButton}
                             onPress={() => navigation.navigate('CartScreen')}
                         >
                             <Ionicons name="cart-outline" size={20} color="white" />
+                            <View style={{ position: 'absolute', top: -4, right: 0 }}>
+                                {cartCount > 0 && (
+                                    <View style={styles.badge}>
+                                        <Text style={styles.badgeText}>{cartCount}</Text>
+                                    </View>
+                                )}
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButton}>
+                        <TouchableOpacity style={styles.iconButton}
+                        onPress={() => navigation.navigate('Notifications')}
+                        >
                             <Ionicons name="notifications-outline" size={20} color="white" />
+                            <View style={{ position: 'absolute', top: -4, right: 0 }}>
+                                {notificationCount > 0 && (
+                                    <View style={styles.badge}>
+                                        <Text style={styles.badgeText}>{notificationCount}</Text>
+                                    </View>
+                                )}
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -300,7 +357,7 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
         });
 
         return (
-            <Animated.View 
+            <Animated.View
                 style={[
                     styles.sectionContainer,
                     {
@@ -310,8 +367,8 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
                 ]}
             >
                 <Text style={styles.sectionTitle}>Categories</Text>
-                
-                <ScrollView 
+
+                <ScrollView
                     contentContainerStyle={styles.categoriesGrid}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -339,7 +396,7 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
 
         if (filteredSubCategories.length === 0) {
             return (
-                <Animated.View 
+                <Animated.View
                     style={[
                         styles.sectionContainer,
                         {
@@ -358,7 +415,7 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
         });
 
         return (
-            <Animated.View 
+            <Animated.View
                 style={[
                     styles.sectionContainer,
                     {
@@ -373,10 +430,10 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
                             key={item._id}
                             item={item}
                             index={index}
-                            onPress={() => navigation.navigate('CategoryProducts', { 
+                            onPress={() => navigation.navigate('CategoryProducts', {
                                 categoryId: selectedCategoryId,
                                 subcategoryId: item._id,
-                                subcategoryName: item.name 
+                                subcategoryName: item.name
                             })}
                         />
                     ))}
@@ -509,6 +566,23 @@ const AnimatedSubCategoryItem = ({ item, onPress, index }) => {
             color: isDarkMode ? '#ccc' : '#6B7280',
             textAlign: 'center',
             fontFamily: FONTS_FAMILY.Poppins_Regular,
+        },
+        badge: {
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            backgroundColor: '#EF4444',
+            borderRadius: 10,
+            minWidth: 18,
+            height: 18,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 4,
+        },
+        badgeText: {
+            color: 'white',
+            fontSize: 10,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
         },
     });
 

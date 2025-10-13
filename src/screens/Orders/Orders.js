@@ -24,6 +24,7 @@ import { useIsFocused } from '@react-navigation/native';
 import RNPrint from 'react-native-print';
 import IMG from '../../assets/Images';
 import SpaceBetweenRow from '../../components/wrapper/spacebetween';
+import BlinKitLoader from '../../components/Skeleton/BlinkitLoader';
 
 const MyOrdersPage = ({ navigation }) => {
     const [activeTab, setActiveTab] = useState('Current Order');
@@ -868,7 +869,8 @@ const MyOrdersPage = ({ navigation }) => {
                 >
                     {isLoading ? (
                         <View style={styles.emptyContainer}>
-                            <Text style={styles.emptyText}>Loading...</Text>
+                            {/* <Text style={styles.emptyText}>Loading...</Text> */}
+                            <BlinKitLoader isDarkMode={isDarkMode}/>
                         </View>
                     ) : currentOrdersList.length > 0 ? (
                         currentOrdersList.map((order) =>
@@ -881,6 +883,7 @@ const MyOrdersPage = ({ navigation }) => {
                             </Text>
                         </View>
                     )}
+                    <View style={{ height: 60 }} />
                 </ScrollView>
             </View>
         </SafeAreaView>

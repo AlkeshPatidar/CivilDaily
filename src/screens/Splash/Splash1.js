@@ -119,7 +119,11 @@ const OnboardingScreen = ({ navigation }) => {
             color: '#777777',
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Regular
-          }}>Get your grocery needs at your service within a minute. fast, efficient, and convenient.</CustomText>
+          }}>
+            {/* Get your grocery needs at your service within a minute. fast, efficient, and convenient. */}
+
+            Shop smarter with exclusive deals and same-day delivery. Your groceries, fresh and affordable — right at your doorstep.
+          </CustomText>
 
         </View>
 

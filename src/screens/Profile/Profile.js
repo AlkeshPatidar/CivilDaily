@@ -528,7 +528,7 @@ const ProfilePage = ({ navigation }) => {
     },
     content: {
       flex: 1,
-      backgroundColor: isDarkMode ? darkMode25 : 'white',
+      backgroundColor: isDarkMode ? darkMode25 : '#F8F9FA',
       marginTop: -15,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
@@ -556,10 +556,11 @@ const ProfilePage = ({ navigation }) => {
       justifyContent: 'space-between',
       paddingVertical: 6,
       paddingHorizontal: 20,
-      backgroundColor: 'white',
-      borderBottomWidth: 1,
+      // backgroundColor: 'white',
+      // borderBottomWidth: 1,
       borderBottomColor: '#CCCCCC',
-      backgroundColor: isDarkMode ? dark33 : '#F8F8F8'
+      backgroundColor: isDarkMode ? dark33 : 'white',
+      elevation:1
     },
     menuItemLeft: {
       flexDirection: 'row',
