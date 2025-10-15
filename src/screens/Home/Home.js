@@ -31,6 +31,9 @@ import { useIsFocused } from '@react-navigation/native';
 import CustomText from '../../components/TextComponent';
 import BlinKitLoader from '../../components/Skeleton/BlinkitLoader';
 
+import messaging from '@react-native-firebase/messaging';
+import { PermissionsAndroid, Platform, Alert } from 'react-native';
+
 // Animated Card Component
 const AnimatedCard = ({ children, delay = 0, style, onPress, activeOpacity = 0.9 }) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -238,6 +241,74 @@ export default function HomeScreen({ navigation }) {
             if (wobbleLoop) wobbleLoop.stop();
         };
     }, [cartCount]);
+
+    async function requestUserPermission() {
+    if (Platform.OS === 'ios') {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+      }
+    } else {
+      // Android 13+ needs runtime permission
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+      console.log('Notification permission:', granted);
+    }
+  }
+
+  // Get FCM Token
+  async function getFCMToken() {
+    try {
+      const token = await messaging().getToken();
+      console.log('FCM Token:', token);
+      // Save this token to your backend or use it for testing
+      return token;
+    } catch (error) {
+      console.log('Error getting token:', error);
+    }
+  }
+
+  useEffect(() => {
+    requestUserPermission();
+    getFCMToken();
+
+    // Foreground notification handler
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert(
+        remoteMessage.notification?.title || 'Notification',
+        remoteMessage.notification?.body || 'New message'
+      );
+      console.log('Foreground notification:', remoteMessage);
+    });
+
+    // Background/Quit state handler
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Background notification:', remoteMessage);
+    });
+
+    // Notification opened app from background
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log('Notification opened app:', remoteMessage);
+      // Navigate to specific screen if needed
+    });
+
+    // Check if app was opened from notification (quit state)
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log('App opened from quit state:', remoteMessage);
+        }
+      });
+
+    return unsubscribe;
+  }, []);
+
 
 
     const fetchCartData = async () => {

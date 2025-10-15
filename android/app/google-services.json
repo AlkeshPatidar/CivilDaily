@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1015279282591",
+    "project_id": "rrmart-c1119",
+    "storage_bucket": "rrmart-c1119.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015279282591:android:aaa91a68d7a6b6ac6d35aa",
+        "android_client_info": {
+          "package_name": "com.rrmart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACD0tPfJEFnfJ5M1x7Vxr7GY16WW17klM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

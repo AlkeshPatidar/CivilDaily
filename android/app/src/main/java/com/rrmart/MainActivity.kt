@@ -1,4 +1,4 @@
-package com.management
+package com.rrmart
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,4 +1,4 @@
-package com.management
+package com.rrmart
 
 import android.app.Application
 import com.facebook.react.PackageList
