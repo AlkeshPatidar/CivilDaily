@@ -64,7 +64,7 @@ export const enableSystemTheme = async () => {
       THEME_STORAGE_KEY,
       JSON.stringify({
         isDarkMode,
-        isSystemTheme: true,
+        isSystemTheme: false,
       })
     );
   } catch (error) {

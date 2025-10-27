@@ -1,5 +1,10 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+
+
+import React, { useEffect, useState, useRef,
+    useCallback
+
+ } from 'react';
 import {
     View,
     Text,
@@ -30,115 +35,32 @@ import HomeScreenSkeletonLoader from '../../components/Skeleton/HomeSkeletonLoad
 import { useIsFocused } from '@react-navigation/native';
 import CustomText from '../../components/TextComponent';
 import BlinKitLoader from '../../components/Skeleton/BlinkitLoader';
-
 import messaging from '@react-native-firebase/messaging';
-import { PermissionsAndroid, Platform, Alert } from 'react-native';
+import { PermissionsAndroid, Platform, Alert, Dimensions } from 'react-native';
+import AllPrducts from './All';
+import { s } from 'react-native-size-matters';
+import Beauty from './Beuty';
+import Party from './Party';
+import Gifting from './Gifting';
+import Electronics from './Electronics';
+import Kids from './Kids';
+import Festival from './Festival';
 
-// Animated Card Component
-const AnimatedCard = ({ children, delay = 0, style, onPress, activeOpacity = 0.9 }) => {
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    const slideAnim = useRef(new Animated.Value(30)).current;
-    const scaleAnim = useRef(new Animated.Value(0.9)).current;
+const { width } = Dimensions.get('window');
 
-    useEffect(() => {
-        Animated.parallel([
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: 500,
-                delay: delay,
-                useNativeDriver: true,
-            }),
-            Animated.timing(slideAnim, {
-                toValue: 0,
-                duration: 500,
-                delay: delay,
-                useNativeDriver: true,
-            }),
-            Animated.spring(scaleAnim, {
-                toValue: 1,
-                delay: delay,
-                friction: 8,
-                tension: 40,
-                useNativeDriver: true,
-            }),
-        ]).start();
-    }, []);
 
-    const handlePressIn = () => {
-        Animated.spring(scaleAnim, {
-            toValue: 0.95,
-            useNativeDriver: true,
-        }).start();
-    };
 
-    const handlePressOut = () => {
-        Animated.spring(scaleAnim, {
-            toValue: 1,
-            friction: 8,
-            tension: 40,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const animatedStyle = {
-        opacity: fadeAnim,
-        transform: [
-            { translateY: slideAnim },
-            { scale: scaleAnim }
-        ],
-    };
-
-    if (onPress) {
-        return (
-            <TouchableOpacity
-                onPress={onPress}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                activeOpacity={activeOpacity}
-            >
-                <Animated.View style={[style, animatedStyle]}>
-                    {children}
-                </Animated.View>
-            </TouchableOpacity>
-        );
-    }
-
-    return (
-        <Animated.View style={[style, animatedStyle]}>
-            {children}
-        </Animated.View>
-    );
-};
-
-// Pulse Animation Component for Add Buttons
-const PulseButton = ({ children, onPress, style }) => {
-    const pulseAnim = useRef(new Animated.Value(1)).current;
-
-    useEffect(() => {
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(pulseAnim, {
-                    toValue: 1.1,
-                    duration: 1000,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(pulseAnim, {
-                    toValue: 1,
-                    duration: 1000,
-                    useNativeDriver: true,
-                }),
-            ])
-        ).start();
-    }, []);
-
-    return (
-        <TouchableOpacity onPress={onPress}>
-            <Animated.View style={[style, { transform: [{ scale: pulseAnim }] }]}>
-                {children}
-            </Animated.View>
-        </TouchableOpacity>
-    );
-};
+const FILTER_CATEGORIES = [
+    { name: 'All', icon: 'grid-outline' },
+    { name: 'Party', icon: 'balloon-outline' },
+    { name: 'Gifting', icon: 'gift-outline' },
+    { name: 'Electronics', icon: 'phone-portrait-outline' },
+    { name: 'Beauty', icon: 'rose-outline' },
+    { name: 'Kids', icon: 'happy-outline' },
+    { name: 'Decor', icon: 'home-outline' },
+    { name: 'Festivals', icon: 'sparkles-outline' },
+    // { name: 'Premium', icon: 'star-outline' }
+];
 
 export default function HomeScreen({ navigation }) {
     let selector = useSelector(state => state?.user?.userData);
@@ -146,16 +68,13 @@ export default function HomeScreen({ navigation }) {
         selector = JSON.parse(selector);
     }
 
-    // console.log('Selector:::::', selector);
-
     const { showLoader, hideLoader } = useLoader()
     const [categories, setCategories] = useState([])
-    const [allProducts, setAllProducts] = useState([])
-    const [banners, setBanners] = useState([])
-    const [activeSlide, setActiveSlide] = useState(0);
+  
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
     const { isDarkMode } = useSelector(state => state.theme);
     const isFocused = useIsFocused()
@@ -163,44 +82,51 @@ export default function HomeScreen({ navigation }) {
     const [cartCount, setCartCount] = useState(0);
     const [notificationCount, setNotificationCount] = useState(0);
 
-    // Animation refs
     const headerAnim = useRef(new Animated.Value(-100)).current;
     const searchAnim = useRef(new Animated.Value(0)).current;
-    //   const floatingButtonAnim = useRef(new Animated.Value(100)).current;
+    const floatingButtonAnim = useRef(new Animated.Value(400)).current;
+    const floatWobbleAnim = useRef(new Animated.Value(0)).current;
 
-    const floatingButtonAnim = useRef(new Animated.Value(400)).current; // initial off-screen
-    const floatWobbleAnim = useRef(new Animated.Value(0)).current; // for continuous wobble
-    // const isFocused =useIsFocused()
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setRefreshTrigger(prev => prev + 1); // 🔥 trigger change
+    setTimeout(() => setRefreshing(false), 1000);
+  }, []);
+
+   useEffect(() => {
+        fetchCartData();
+        fetchNotificationCount();
+        const interval = setInterval(() => {
+            fetchCartData();
+            fetchNotificationCount();
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const animateHeader = () => {
+        Animated.spring(headerAnim, {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+        }).start();
+    };
 
     useEffect(() => {
         initializeData()
     }, [])
+
     useEffect(() => {
         animateHeader();
     }, [isFocused])
-
-    //  useEffect(() => {
-    //     if (cartCount > 0) {
-    //         Animated.spring(floatingButtonAnim, {
-    //             toValue: 0,
-    //             friction: 8,
-    //             tension: 40,
-    //             useNativeDriver: true,
-    //         }).start();
-    //     } else {
-    //         Animated.timing(floatingButtonAnim, {
-    //             toValue: 100,
-    //             duration: 300,
-    //             useNativeDriver: true,
-    //         }).start();
-    //     }
-    // }, [cartCount]);
 
     useEffect(() => {
         let wobbleLoop;
 
         if (cartCount > 0) {
-            // Bring button in
             Animated.spring(floatingButtonAnim, {
                 toValue: 0,
                 friction: 8,
@@ -208,7 +134,6 @@ export default function HomeScreen({ navigation }) {
                 useNativeDriver: true,
             }).start();
 
-            // Start continuous left-right wobble
             wobbleLoop = Animated.loop(
                 Animated.sequence([
                     Animated.timing(floatWobbleAnim, {
@@ -225,7 +150,6 @@ export default function HomeScreen({ navigation }) {
             );
             wobbleLoop.start();
         } else {
-            // Stop wobble and slide out
             floatWobbleAnim.stopAnimation();
             if (wobbleLoop) wobbleLoop.stop();
 
@@ -236,80 +160,69 @@ export default function HomeScreen({ navigation }) {
             }).start();
         }
 
-        // cleanup
         return () => {
             if (wobbleLoop) wobbleLoop.stop();
         };
     }, [cartCount]);
 
     async function requestUserPermission() {
-    if (Platform.OS === 'ios') {
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+        if (Platform.OS === 'ios') {
+            const authStatus = await messaging().requestPermission();
+            const enabled =
+                authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      if (enabled) {
-        console.log('Authorization status:', authStatus);
-      }
-    } else {
-      // Android 13+ needs runtime permission
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-      );
-      console.log('Notification permission:', granted);
-    }
-  }
-
-  // Get FCM Token
-  async function getFCMToken() {
-    try {
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-      // Save this token to your backend or use it for testing
-      return token;
-    } catch (error) {
-      console.log('Error getting token:', error);
-    }
-  }
-
-  useEffect(() => {
-    requestUserPermission();
-    getFCMToken();
-
-    // Foreground notification handler
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert(
-        remoteMessage.notification?.title || 'Notification',
-        remoteMessage.notification?.body || 'New message'
-      );
-      console.log('Foreground notification:', remoteMessage);
-    });
-
-    // Background/Quit state handler
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Background notification:', remoteMessage);
-    });
-
-    // Notification opened app from background
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('Notification opened app:', remoteMessage);
-      // Navigate to specific screen if needed
-    });
-
-    // Check if app was opened from notification (quit state)
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log('App opened from quit state:', remoteMessage);
+            if (enabled) {
+                console.log('Authorization status:', authStatus);
+            }
+        } else {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+            );
+            console.log('Notification permission:', granted);
         }
-      });
+    }
 
-    return unsubscribe;
-  }, []);
+    async function getFCMToken() {
+        try {
+            const token = await messaging().getToken();
+            console.log('FCM Token:', token);
+            return token;
+        } catch (error) {
+            console.log('Error getting token:', error);
+        }
+    }
 
+    useEffect(() => {
+        requestUserPermission();
+        getFCMToken();
 
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(
+                remoteMessage.notification?.title || 'Notification',
+                remoteMessage.notification?.body || 'New message'
+            );
+            console.log('Foreground notification:', remoteMessage);
+        });
+
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Background notification:', remoteMessage);
+        });
+
+        messaging().onNotificationOpenedApp(remoteMessage => {
+            console.log('Notification opened app:', remoteMessage);
+        });
+
+        messaging()
+            .getInitialNotification()
+            .then(remoteMessage => {
+                if (remoteMessage) {
+                    console.log('App opened from quit state:', remoteMessage);
+                }
+            });
+
+        return unsubscribe;
+    }, []);
 
     const fetchCartData = async () => {
         try {
@@ -320,65 +233,28 @@ export default function HomeScreen({ navigation }) {
             console.log('Error fetching cart data:', error);
         }
     };
+
     const fetchNotificationCount = async () => {
         try {
             const res = await apiGet(urls?.getNotifictations);
-            const items = res?.data?.items || res?.data || []; // adjust if API returns data inside `data.items` or `data`
-
-            // sirf unread notifications count karne ke liye
+            const items = res?.data?.items || res?.data || [];
             const unreadCount = items.filter(item => item.isRead === false).length;
-
             setNotificationCount(unreadCount);
         } catch (error) {
             console.log('Error fetching notification count:', error);
         }
     };
 
-
-    useEffect(() => {
-        // Initial API calls
-        fetchCartData();
-        fetchNotificationCount();
-        const interval = setInterval(() => {
-            fetchCartData();
-            fetchNotificationCount();
-
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-
-
-
-    const animateHeader = () => {
-        Animated.spring(headerAnim, {
-            toValue: 0,
-            friction: 8,
-            tension: 40,
-            useNativeDriver: true,
-        }).start();
-    };
+   
 
     const initializeData = async () => {
         setIsLoading(true)
         await Promise.all([
             getCategories(),
-            getAllProduct(),
-            getAllBanners()
         ])
         setIsLoading(false)
     }
 
-    const onRefresh = async () => {
-        setRefreshing(true);
-        await Promise.all([
-            getCategories(),
-            getAllProduct(),
-            getAllBanners()
-        ])
-        setRefreshing(false);
-    };
 
     const getCategories = async () => {
         try {
@@ -389,29 +265,234 @@ export default function HomeScreen({ navigation }) {
         }
     }
 
-    const getAllBanners = async () => {
-        try {
-            const res = await apiGet(urls?.getAllBanners)
-            console.log(res?.data, 'Banners::::::::::::::::::');
-            setBanners(res?.data || [])
-        } catch (error) {
-            console.log('Error fetching banners:', error)
-        }
-    }
+  
 
-    const getAllProduct = async () => {
-        try {
-            const res = await apiGet(urls?.getAllProducts)
-            setAllProducts(res?.data || [])
-        } catch (error) {
-            console.log('Error fetching products:', error)
-        }
-    }
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: isDarkMode ? darkMode25 : '#F8F8F8',
+        },
+        headerContainer: {
+            backgroundColor: App_Primary_color,
+            paddingHorizontal: 16,
+            paddingTop: 12,
+            paddingBottom: 12,
+        },
+        topBar: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 12,
+        },
+        leftHeader: {
+            flex: 1,
+        },
+        deliverText: {
+            color: 'rgba(255, 255, 255, 0.9)',
+            fontFamily: FONTS_FAMILY.Poppins_Bold,
+            fontSize: 13,
+            marginBottom: 2,
+        },
+        locationText: {
+            color: 'white',
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            fontSize: 14,
+            maxWidth: 180,
+        },
+        rightHeader: {
+            flexDirection: 'row',
+            gap: 12,
+        },
+        iconButton: {
+            position: 'relative',
+            padding: 4,
+        },
+        badge: {
+            position: 'absolute',
+            top: -2,
+            right: -2,
+            backgroundColor: '#FFD700',
+            borderRadius: 10,
+            minWidth: 18,
+            height: 18,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 4,
+        },
+        badgeText: {
+            color: App_Primary_color,
+            fontSize: 10,
+            fontFamily: FONTS_FAMILY.Poppins_Bold,
+        },
+        searchContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            borderRadius: 12,
+            paddingHorizontal: 14,
+            height: 46,
+        },
+        searchIcon: {
+            marginRight: 10,
+        },
+        searchInput: {
+            flex: 1,
+            fontSize: 14,
+            color: '#000',
+            fontFamily: FONTS_FAMILY.Poppins_Regular,
+        },
+        filterCategoriesContainer: {
+            // backgroundColor: isDarkMode ? dark33 : 'white',
+            top: 12,
+            // paddingHorizontal: 8,
+            // borderBottomWidth: 1,
+            // borderBottomColor: isDarkMode ? dark55 : '#F0F0F0',
+        },
+        filterCategoriesScroll: {
+            paddingHorizontal: 8,
+        },
+        filterCategoryChip: {
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 20,
+            marginRight: 8,
+            alignItems: 'center',
+            // borderWidth: 1,
+        },
+        filterCategoryChipActive: {
+            // backgroundColor: App_Primary_color,
+            // borderColor: App_Primary_color,
+            // borderBottomWidth:3,
+            // borderWidth:0,
+            borderColor: white,
 
-    // Filter products based on search query
-    const filteredProducts = allProducts.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+        },
+        filterCategoryChipInactive: {
+            // backgroundColor: isDarkMode ? dark55 : '#F8F8F8',
+            // borderColor: isDarkMode ? dark55 : '#E0E0E0',
+        },
+        filterCategoryText: {
+            fontSize: 13,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: white
+        },
+        filterCategoryTextActive: {
+            color: 'white',
+        },
+        filterCategoryTextInactive: {
+            color: white,
+        },
+        categoriesSection: {
+            backgroundColor: isDarkMode ? dark33 : 'white',
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            marginBottom: 8,
+        },
+        categoriesTitle: {
+            fontSize: 16,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: isDarkMode ? white : '#000',
+            marginBottom: 12,
+        },
+        categoriesGrid: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+        },
+        categoryChip: {
+            width: (width - 48) / 4,
+            alignItems: 'center',
+            marginBottom: 12,
+        },
+        categoryIconContainer: {
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: isDarkMode ? dark55 : '#F5F5F5',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 6,
+            overflow: 'hidden',
+        },
+        categoryIcon: {
+            width: '100%',
+            height: '100%',
+        },
+        categoryChipText: {
+            fontSize: 11,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? white : '#333',
+            textAlign: 'center',
+        },
+        bannerSection: {
+            marginBottom: 8,
+            width:'100%',
+            // backgroundColor:'red'
+        },
+        carouselContainer: {
+            // alignItems: 'center',
+        },
+        bannerCard: {
+            // overflow: 'hidden',
+        },
+        bannerImage: {
+            height: 160,
+            width: '100%',
+        },
+        paginationContainer: {
+            paddingVertical: 8,
+        },
+        paginationDot: {
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: App_Primary_color,
+        },
+        paginationDotInactive: {
+            backgroundColor: '#D1D5DB',
+        },
+ 
+      
+        floatingButtonContainer: {
+            position: 'absolute',
+            bottom: 80,
+            right: 20,
+            zIndex: 100,
+        },
+        floatingButton: {
+            backgroundColor: App_Primary_color,
+            borderRadius: 28,
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.3,
+            shadowRadius: 12,
+            elevation: 15,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+        },
+        floatingButtonText: {
+            color: 'white',
+            fontSize: 14,
+            fontFamily: FONTS_FAMILY.Poppins_Bold,
+        },
+        floatingBadge: {
+            backgroundColor: '#FFD700',
+            borderRadius: 12,
+            minWidth: 22,
+            height: 22,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 6,
+        },
+        floatingBadgeText: {
+            color: App_Primary_color,
+            fontSize: 11,
+            fontFamily: FONTS_FAMILY.Poppins_Bold,
+        },
+    });
 
     const renderHeader = () => (
         <Animated.View style={[styles.headerContainer, { transform: [{ translateY: headerAnim }] }]}>
@@ -419,14 +500,14 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.topBar}>
                 <View style={styles.leftHeader}>
-                    <Text style={styles.deliverText}>Deliver to</Text>
+                    <Text style={styles.deliverText}>Delivery in 10 minutes</Text>
                     <Row style={{ alignItems: 'center' }}>
-                        <Ionicons name="location" size={16} color="white" style={{ marginRight: 4, bottom: 2 }} />
+                        <Ionicons name="location-sharp" size={18} color="white" style={{ marginRight: 4 }} />
                         {selector?.addresses?.length > 0 ?
-                            <Text style={styles.locationText}>{selector?.addresses[0]?.city}, {selector?.addresses[0]?.country}</Text> :
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('AddAddressScreen')}
-                            >
+                            <Text style={styles.locationText} numberOfLines={1}>
+                                {selector?.addresses[0]?.city}, {selector?.addresses[0]?.country}
+                            </Text> :
+                            <TouchableOpacity onPress={() => navigation.navigate('AddAddressScreen')}>
                                 <CustomText style={styles.locationText}>Add Address</CustomText>
                             </TouchableOpacity>
                         }
@@ -441,659 +522,51 @@ export default function HomeScreen({ navigation }) {
                         style={styles.iconButton}
                         onPress={() => navigation.navigate('CartScreen')}
                     >
-                        <Ionicons name="cart-outline" size={22} color="white" />
-                        <View style={{ position: 'absolute', top: -4, right: 0 }}>
-                            {cartCount > 0 && (
-                                <View style={styles.badge}>
-                                    <Text style={styles.badgeText}>{cartCount}</Text>
-                                </View>
-                            )}
-                        </View>
+                        <Ionicons name="cart-outline" size={24} color="white" />
+                        {cartCount > 0 && (
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>{cartCount}</Text>
+                            </View>
+                        )}
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.iconButton}
                         onPress={() => navigation.navigate('Notifications')}
                     >
-                        <Ionicons name="notifications-outline" size={22} color="white" />
-                        {/* <View style={[styles.badge, styles.notificationDot]} /> */}
-                        <View style={{ position: 'absolute', top: -4, right: 0 }}>
-                            {notificationCount > 0 && (
-                                <View style={styles.badge}>
-                                    <Text style={styles.badgeText}>{notificationCount}</Text>
-                                </View>
-                            )}
-                        </View>
+                        <Ionicons name="notifications-outline" size={24} color="white" />
+                        {notificationCount > 0 && (
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>{notificationCount}</Text>
+                            </View>
+                        )}
                     </TouchableOpacity>
                 </View>
             </View>
 
-            <Animated.View style={[styles.searchContainer, { transform: [{ scale: searchAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0.98] }) }] }]}>
-                <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
+            <Animated.View style={styles.searchContainer}>
+                <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search for products..."
-                    placeholderTextColor="#9CA3AF"
+                    placeholderTextColor="#999"
                     style={styles.searchInput}
                     value={searchQuery}
-                    onChangeText={setSearchQuery}
+                    // onChangeText={setSearchQuery}
+                    onFocus={()=>navigation.navigate('SearchScreen')}
                 />
                 {searchQuery.length > 0 && (
                     <TouchableOpacity onPress={() => setSearchQuery('')}>
-                        <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+                        <Ionicons name="close-circle" size={20} color="#999" />
                     </TouchableOpacity>
                 )}
             </Animated.View>
+            {/* {renderFilterCategories()} */}
+
         </Animated.View>
     );
 
-    const renderBannerSection = () => (
-        <View style={styles.bannerSection}>
-            <View style={styles.carouselContainer}>
-                <Carousel
-                    data={banners}
-                    renderItem={({ item }) => (
-                        <AnimatedCard delay={100}>
-                            <View style={styles.bannerCard}>
-                                <Image
-                                    source={{ uri: item?.image }}
-                                    style={styles.bannerImage}
-                                // resizeMode='contain'
-                                />
-                            </View>
-                        </AnimatedCard>
-                    )}
-                    sliderWidth={320}
-                    itemWidth={320}
-                    autoplay={true}
-                    autoplayDelay={500}
-                    autoplayInterval={3000}
-                    loop={true}
-                    onSnapToItem={(index) => setActiveSlide(index)}
-                    enableMomentum={false}
-                    lockScrollWhileSnapping={true}
-                    inactiveSlideScale={0.92}
-                    inactiveSlideOpacity={0.7}
-                />
-            </View>
-            <Pagination
-                dotsLength={banners.length > 0 ? banners.length : 3}
-                activeDotIndex={activeSlide}
-                containerStyle={styles.paginationContainer}
-                dotStyle={styles.paginationDot}
-                inactiveDotStyle={styles.paginationDotInactive}
-                inactiveDotOpacity={0.4}
-                inactiveDotScale={0.8}
-            />
-        </View>
-    );
 
-    const renderCategories = () => {
-        return (
-            <View style={styles.sectionContainer}>
-                <SpaceBetweenRow style={{ marginBottom: 10 }}>
-                    <View>
-                        <Text style={styles.sectionTitle}>Shop by Category</Text>
-                        <View style={styles.titleUnderline} />
-                    </View>
-                    {/* <TouchableOpacity>
-                        <Text style={styles.viewAllText}>View All →</Text>
-                    </TouchableOpacity> */}
-                </SpaceBetweenRow>
 
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.categoriesGrid}
-                >
-                    {categories.map((category, index) => (
-                        <AnimatedCard
-                            key={index}
-                            delay={index * 100}
-                            style={[
-                                styles.categoryCard,
-                                { backgroundColor: isDarkMode ? dark55 : '#FFFFFF' }
-                            ]}
-                            onPress={() => { }}
-                        >
-                            <View style={styles.categoryImageContainer}>
-                                <Image
-                                    source={{ uri: category?.image }}
-                                    style={styles.categoryImage}
-                                />
-                            </View>
-                            <Text style={styles.categoryName} numberOfLines={2}>
-                                {category.name}
-                            </Text>
-                        </AnimatedCard>
-                    ))}
-                </ScrollView>
-            </View>
-        );
-    };
 
-    const renderTodaysChoice = () => {
-        const displayProducts = filteredProducts.slice(0, 6);
-
-        if (searchQuery && displayProducts.length === 0) {
-            return null;
-        }
-
-        return (
-            <View style={styles.sectionContainer}>
-                <SpaceBetweenRow style={{ marginBottom: 16 }}>
-                    <View>
-                        <Text style={styles.sectionTitle}>Today's Special</Text>
-                        <View style={styles.titleUnderline} />
-                    </View>
-                    {/* <TouchableOpacity>
-                        <Text style={styles.viewAllText}>See All →</Text>
-                    </TouchableOpacity> */}
-                </SpaceBetweenRow>
-
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.horizontalProductsGrid}
-                >
-                    {displayProducts.map((item, index) => (
-                        <AnimatedCard
-                            key={index}
-                            delay={index * 80}
-                            style={[
-                                styles.horizontalProductCard,
-                                { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
-                            ]}
-                        // onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                        >
-
-                            <View style={styles.productImageWrapper}>
-                                <Image
-                                    source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta}
-                                    style={styles.horizontalProductImage}
-                                />
-                                {item?.discountPrice && (
-                                    <View style={styles.discountBadge}>
-                                        <Text style={styles.discountBadgeText}>
-                                            {Math.round(((item.price - item.discountPrice) / item.price) * 100)}% OFF
-                                        </Text>
-                                    </View>
-                                )}
-                            </View>
-
-                            <View style={styles.horizontalProductInfo}>
-                                <SpaceBetweenRow>
-                                    <Text style={styles.horizontalProductName} numberOfLines={2}>
-                                        {item.name}
-                                    </Text>
-                                    <Text style={styles.stockText}>Stock: {item.stock}</Text>
-                                </SpaceBetweenRow>
-
-                                <View style={styles.horizontalPriceRow}>
-                                    <View>
-                                        <Text style={styles.currentPrice}>Rs {item.price}</Text>
-                                        {item?.discountPrice && (
-                                            <Text style={styles.originalPrice}>Rs {item.discountPrice}</Text>
-                                        )}
-                                    </View>
-                                    <PulseButton
-                                        style={styles.addToCartButton}
-                                        // onPress={() => {}}
-                                        onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-
-                                    >
-                                        <Ionicons name="add" size={18} color="white" />
-                                    </PulseButton>
-                                </View>
-                            </View>
-                        </AnimatedCard>
-                    ))}
-                </ScrollView>
-            </View>
-        );
-    };
-
-    const renderTopPicks = () => {
-        if (searchQuery && filteredProducts.length === 0) {
-            return (
-                <View style={styles.sectionContainer}>
-                    <View style={styles.noResultsContainer}>
-                        <Ionicons name="search-outline" size={64} color="#9CA3AF" />
-                        <Text style={styles.noResultsText}>No products found</Text>
-                        <Text style={styles.noResultsSubtext}>Try searching with different keywords</Text>
-                    </View>
-                </View>
-            );
-        }
-
-        return (
-            <View style={styles.sectionContainer}>
-                <SpaceBetweenRow style={{ marginBottom: 16 }}>
-                    <View>
-                        <Text style={styles.sectionTitle}>Top Picks For You</Text>
-                        <View style={styles.titleUnderline} />
-                    </View>
-                </SpaceBetweenRow>
-
-                <View>
-                    {filteredProducts.map((item, index) => (
-                        <AnimatedCard
-                            key={index}
-                            delay={index * 60}
-                            style={[
-                                styles.listProductCard,
-                                { backgroundColor: isDarkMode ? dark33 : '#FFFFFF' }
-                            ]}
-                        // onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-                        >
-                            <View style={styles.listProductImageContainer}>
-                                <Image
-                                    source={item?.images?.length > 0 ? { uri: item?.images[0] } : IMG.eggPasta}
-                                    style={styles.listProductImage}
-                                />
-                            </View>
-
-                            <View style={styles.listProductInfo}>
-                                <Text style={styles.listProductName} numberOfLines={2}>
-                                    {item.name}
-                                </Text>
-                                <Text style={styles.stockText}>Stock: {item.stock}</Text>
-
-                                <View style={styles.listPriceRow}>
-                                    <Text style={styles.currentPrice}>Rs {item.price}</Text>
-                                    {item?.discountPrice && (
-                                        <Text style={styles.originalPrice}>Rs {item.discountPrice}</Text>
-                                    )}
-                                </View>
-                            </View>
-
-                            <PulseButton
-                                style={styles.listAddButton}
-                                // onPress={() => {}}
-                                onPress={() => navigation.navigate('ProductDetail', { productId: item?._id })}
-
-                            >
-                                <AddButton />
-                            </PulseButton>
-                        </AnimatedCard>
-                    ))}
-                </View>
-            </View>
-        );
-    };
-
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: isDarkMode ? darkMode25 : '#F3F4F6',
-        },
-        headerContainer: {
-            backgroundColor: App_Primary_color,
-            paddingHorizontal: 20,
-            paddingTop: 16,
-            paddingBottom: 24,
-            borderBottomLeftRadius: 24,
-            borderBottomRightRadius: 24,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
-            elevation: 8,
-        },
-        topBar: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 20,
-        },
-        leftHeader: {
-            flex: 1,
-        },
-        deliverText: {
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-            fontSize: 12,
-            marginBottom: 2,
-        },
-        locationText: {
-            color: 'white',
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            fontSize: 15,
-        },
-        rightHeader: {
-            flexDirection: 'row',
-            gap: 12,
-        },
-        iconButton: {
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            padding: 8,
-            borderRadius: 12,
-            position: 'relative',
-        },
-        badge: {
-            position: 'absolute',
-            top: -4,
-            right: -4,
-            backgroundColor: '#EF4444',
-            borderRadius: 10,
-            minWidth: 18,
-            height: 18,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingHorizontal: 4,
-        },
-        badgeText: {
-            color: 'white',
-            fontSize: 10,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        },
-        notificationDot: {
-            minWidth: 8,
-            height: 8,
-            top: 2,
-            right: 2,
-        },
-        searchContainer: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            borderRadius: 16,
-            paddingHorizontal: 16,
-            height: 50,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 4,
-            elevation: 3,
-        },
-        searchIcon: {
-            marginRight: 12,
-        },
-        searchInput: {
-            flex: 1,
-            fontSize: 14,
-            color: '#1F2937',
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-        },
-        filterButton: {
-            padding: 6,
-        },
-        bannerSection: {
-            marginTop: 20,
-        },
-        carouselContainer: {
-            alignItems: 'center',
-        },
-        bannerCard: {
-            overflow: 'hidden',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
-        },
-        bannerImage: {
-            height: 140,
-            width: '100%',
-            borderRadius: 20,
-        },
-        paginationContainer: {
-            paddingVertical: 12,
-        },
-        paginationDot: {
-            width: 24,
-            height: 8,
-            borderRadius: 4,
-            backgroundColor: App_Primary_color,
-        },
-        paginationDotInactive: {
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-        },
-        sectionContainer: {
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-        },
-        sectionTitle: {
-            fontSize: 18,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            color: isDarkMode ? white : '#1F2937',
-        },
-        titleUnderline: {
-            width: 40,
-            height: 3,
-            backgroundColor: App_Primary_color,
-            borderRadius: 2,
-            marginTop: 4,
-        },
-        viewAllText: {
-            color: App_Primary_color,
-            fontSize: 14,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-        },
-        categoriesGrid: {
-            gap: 12,
-            paddingRight: 20,
-        },
-        categoryCard: {
-            width: 110,
-            borderRadius: 16,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 4,
-            elevation: 3,
-            marginBottom: 10,
-        },
-        categoryImageContainer: {
-            width: 100,
-            height: 80,
-            borderRadius: 12,
-            overflow: 'hidden',
-            marginBottom: 8,
-            marginTop: 8,
-        },
-        categoryImage: {
-            width: '100%',
-            height: '100%',
-        },
-        categoryName: {
-            fontSize: 12,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            color: isDarkMode ? white : '#374151',
-            textAlign: 'center',
-            lineHeight: 16,
-            marginBottom: 4,
-        },
-        horizontalProductsGrid: {
-            gap: 16,
-            paddingRight: 20,
-        },
-        horizontalProductCard: {
-            width: 160,
-            borderRadius: 16,
-            overflow: 'hidden',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 4,
-            // elevation: 3,
-            marginBottom: 0,
-        },
-        productImageWrapper: {
-            position: 'relative',
-        },
-        horizontalProductImage: {
-            width: '100%',
-            height: 140,
-            backgroundColor: '#F3F4F6',
-        },
-        discountBadge: {
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: '#EF4444',
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            borderRadius: 8,
-        },
-        discountBadgeText: {
-            color: 'white',
-            fontSize: 10,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        },
-        horizontalProductInfo: {
-            padding: 12,
-        },
-        horizontalProductName: {
-            fontSize: 14,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            color: isDarkMode ? white : '#1F2937',
-        },
-        stockText: {
-            fontSize: 11,
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-            color: '#9CA3AF',
-        },
-        horizontalPriceRow: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        },
-        currentPrice: {
-            fontSize: 16,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            color: isDarkMode ? white : '#1F2937',
-        },
-        originalPrice: {
-            fontSize: 12,
-            color: '#9CA3AF',
-            textDecorationLine: 'line-through',
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-        },
-        addToCartButton: {
-            backgroundColor: App_Primary_color,
-            width: 32,
-            height: 32,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        listProductCard: {
-            flexDirection: 'row',
-            borderRadius: 16,
-            padding: 12,
-            marginBottom: 12,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.06,
-            shadowRadius: 4,
-            elevation: 2,
-        },
-        listProductImageContainer: {
-            width: 90,
-            height: 90,
-            borderRadius: 12,
-            overflow: 'hidden',
-            backgroundColor: '#F3F4F6',
-        },
-        listProductImage: {
-            width: '100%',
-            height: '100%',
-        },
-        listProductInfo: {
-            flex: 1,
-            marginLeft: 12,
-            justifyContent: 'center',
-        },
-        listProductName: {
-            fontSize: 15,
-            fontFamily: FONTS_FAMILY.Poppins_Medium,
-            color: isDarkMode ? white : '#1F2937',
-            marginBottom: 2,
-        },
-        ratingText: {
-            fontSize: 12,
-            color: '#6B7280',
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-            marginLeft: 4,
-        },
-        listPriceRow: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 8,
-            marginTop: 6,
-        },
-        listAddButton: {
-            alignSelf: 'center',
-        },
-        noResultsContainer: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 60,
-        },
-        noResultsText: {
-            fontSize: 18,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            color: isDarkMode ? white : '#1F2937',
-            marginTop: 16,
-        },
-        noResultsSubtext: {
-            fontSize: 14,
-            fontFamily: FONTS_FAMILY.Poppins_Regular,
-            color: '#9CA3AF',
-            marginTop: 8,
-        },
-        // ------------
-        floatingButtonContainer: {
-            position: 'absolute',
-            bottom: 80,
-            // left: 20,
-            right: 20,
-            zIndex: 100,
-            // alignSelf: 'center'
-
-        },
-        floatingButton: {
-            backgroundColor: App_Primary_color,
-            borderRadius: 20,
-            paddingVertical: 8,
-            paddingHorizontal: 5,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.25,
-            shadowRadius: 12,
-            elevation: 15,
-            width: 140,
-        },
-        floatingButtonContent: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-        },
-        floatingButtonText: {
-            color: 'white',
-            fontSize: 12,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-            // flex: 1,
-            textAlign: 'center',
-        },
-        floatingBadge: {
-            backgroundColor: '#EF4444',
-            borderRadius: 12,
-            minWidth: 20,
-            height: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingHorizontal: 6,
-            bottom: 2
-        },
-        floatingBadgeText: {
-            color: 'white',
-            fontSize: 10,
-            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
-        },
-    });
 
     const renderFloatingCartButton = () => (
         <Animated.View
@@ -1109,7 +582,7 @@ export default function HomeScreen({ navigation }) {
                                 }),
                                 floatWobbleAnim.interpolate({
                                     inputRange: [-1, 1],
-                                    outputRange: [-5, 5], // subtle continuous sway
+                                    outputRange: [-5, 5],
                                 })
                             ),
                         },
@@ -1127,17 +600,14 @@ export default function HomeScreen({ navigation }) {
                 onPress={() => navigation.navigate('CartScreen')}
                 activeOpacity={0.85}
             >
-                <View style={styles.floatingButtonContent}>
-                    <Ionicons name="cart" size={20} color="white" />
-                    <Text style={styles.floatingButtonText}>View Cart</Text>
-                    <View style={styles.floatingBadge}>
-                        <Text style={styles.floatingBadgeText}>{cartCount}</Text>
-                    </View>
+                <Ionicons name="cart" size={22} color="white" />
+                <Text style={styles.floatingButtonText}>View Cart</Text>
+                <View style={styles.floatingBadge}>
+                    <Text style={styles.floatingBadgeText}>{cartCount}</Text>
                 </View>
             </TouchableOpacity>
         </Animated.View>
     );
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -1157,16 +627,69 @@ export default function HomeScreen({ navigation }) {
                             />
                         }
                     >
-                        {renderBannerSection()}
-                        {categories.length > 0 && renderCategories()}
-                        {filteredProducts.length > 0 && renderTodaysChoice()}
-                        {filteredProducts.length > 0 && renderTopPicks()}
-                        <View style={{ height: 100 }} />
+                        
+                      {selectedCategory=='All'  &&   <AllPrducts navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                        {selectedCategory=='Beauty'  && <Beauty navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                             {selectedCategory=='Decor'  && <Beauty navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+                             {selectedCategory=='Party'  && <Party navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                         {selectedCategory=='Gifting'  && <Gifting navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                         {selectedCategory=='Electronics'  && <Electronics navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                           {selectedCategory=='Kids'  && <Kids navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                            {selectedCategory=='Festivals'  && <Festival navigation={navigation}  isDarkMode={isDarkMode}
+                            searchQuery={searchQuery}
+                            refreshTrigger={refreshTrigger}
+                            // setIsLoading={setIsLoading}
+
+                        />}
+
+                       
+
+                        <View style={{ height: 120 }} />
                     </ScrollView>
                 </>
             )}
             {renderFloatingCartButton()}
-
         </SafeAreaView>
     );
 }

@@ -12,7 +12,9 @@ export default {
  getSubCategories:'/api/subcategory/all',
  getAllBanners:'/api/banner/all',
  updateCartData:'/api/cart/update',
- getNotifictations:'/api/notification/my'
+ getNotifictations:'/api/notification/my',
+ addToCart:'/api/cart/add',
+
 //  productOnBasisOfCategory:'/api/product/all?categoryId=68d3db3da72d0c08a5829486&subCategoryId=68d3e08ea77ed1f629491892'
 
 

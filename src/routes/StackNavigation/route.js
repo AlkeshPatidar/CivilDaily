@@ -30,6 +30,8 @@ import Signup from '../../screens/Auth/Signup';
 import ForgotPassword from '../../screens/Auth/ForgetPassword';
 import AddAddressScreen from '../../screens/Profile/AddAdress';
 import Notifications from '../../screens/Notification/Notification';
+import CategoryProductsScreen from '../../screens/Home/BestSellers/BestSellerPrductPage';
+import SearchScreen from '../../screens/SearchScreen/Search';
 
 
 
@@ -70,6 +72,11 @@ const StackNavigation = () => {
         <Stack.Screen name={'OrderDetailsPage'} component={OrderDetailsPage} />
         <Stack.Screen name={'OrderTrackingScreen'} component={OrderTrackingScreen} />
         <Stack.Screen name={'CategoryProducts'} component={CategoryProducts} />
+        <Stack.Screen name={'CategoryProductsScreen'} component={CategoryProductsScreen} />
+        <Stack.Screen name={'SearchScreen'} component={SearchScreen} />
+
+
+        
         <Stack.Screen name={'AddAddressScreen'} component={AddAddressScreen} />
         <Stack.Screen name={'Notifications'} component={Notifications} />
       </Stack.Navigator>
