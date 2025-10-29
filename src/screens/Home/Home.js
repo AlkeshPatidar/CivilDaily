@@ -273,7 +273,7 @@ export default function HomeScreen({ navigation }) {
             backgroundColor: isDarkMode ? darkMode25 : '#F8F8F8',
         },
         headerContainer: {
-            backgroundColor: App_Primary_color,
+            // backgroundColor: App_Primary_color,
             paddingHorizontal: 16,
             paddingTop: 12,
             paddingBottom: 12,
@@ -288,13 +288,16 @@ export default function HomeScreen({ navigation }) {
             flex: 1,
         },
         deliverText: {
-            color: 'rgba(255, 255, 255, 0.9)',
+            // color: 'rgba(255, 255, 255, 0.9)',
             fontFamily: FONTS_FAMILY.Poppins_Bold,
             fontSize: 13,
             marginBottom: 2,
+            color: '#333',
+
         },
         locationText: {
-            color: 'white',
+            // color: 'white',
+            color: '#333',
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             fontSize: 14,
             maxWidth: 180,
@@ -311,7 +314,7 @@ export default function HomeScreen({ navigation }) {
             position: 'absolute',
             top: -2,
             right: -2,
-            backgroundColor: '#FFD700',
+            backgroundColor: 'orange',
             borderRadius: 10,
             minWidth: 18,
             height: 18,
@@ -320,14 +323,14 @@ export default function HomeScreen({ navigation }) {
             paddingHorizontal: 4,
         },
         badgeText: {
-            color: App_Primary_color,
+            color: white,
             fontSize: 10,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
         },
         searchContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: 'white',
+            backgroundColor: '#E8EFF3',
             borderRadius: 12,
             paddingHorizontal: 14,
             height: 46,
@@ -460,7 +463,7 @@ export default function HomeScreen({ navigation }) {
             zIndex: 100,
         },
         floatingButton: {
-            backgroundColor: App_Primary_color,
+            // backgroundColor: App_Primary_color,
             borderRadius: 28,
             paddingVertical: 12,
             paddingHorizontal: 16,
@@ -468,27 +471,30 @@ export default function HomeScreen({ navigation }) {
             shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.3,
             shadowRadius: 12,
-            elevation: 15,
+            // elevation: 15,
             flexDirection: 'row',
             alignItems: 'center',
             gap: 8,
+            borderWidth:1,
+            borderColor:App_Primary_color
         },
         floatingButtonText: {
-            color: 'white',
+            color: App_Primary_color,
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
         },
         floatingBadge: {
-            backgroundColor: '#FFD700',
+            backgroundColor: 'orange',
             borderRadius: 12,
             minWidth: 22,
             height: 22,
             justifyContent: 'center',
             alignItems: 'center',
             paddingHorizontal: 6,
+            bottom:3
         },
         floatingBadgeText: {
-            color: App_Primary_color,
+            color: white,
             fontSize: 11,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
         },
@@ -496,13 +502,13 @@ export default function HomeScreen({ navigation }) {
 
     const renderHeader = () => (
         <Animated.View style={[styles.headerContainer, { transform: [{ translateY: headerAnim }] }]}>
-            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+            <StatusBar barStyle="dark-content" backgroundColor={'white'} />
 
             <View style={styles.topBar}>
                 <View style={styles.leftHeader}>
                     <Text style={styles.deliverText}>Delivery in 10 minutes</Text>
                     <Row style={{ alignItems: 'center' }}>
-                        <Ionicons name="location-sharp" size={18} color="white" style={{ marginRight: 4 }} />
+                        <Ionicons name="location-sharp" size={18} color="#333" style={{ marginRight: 4 }} />
                         {selector?.addresses?.length > 0 ?
                             <Text style={styles.locationText} numberOfLines={1}>
                                 {selector?.addresses[0]?.city}, {selector?.addresses[0]?.country}
@@ -522,7 +528,7 @@ export default function HomeScreen({ navigation }) {
                         style={styles.iconButton}
                         onPress={() => navigation.navigate('CartScreen')}
                     >
-                        <Ionicons name="cart-outline" size={24} color="white" />
+                        <Ionicons name="cart-outline" size={24} color={App_Primary_color} />
                         {cartCount > 0 && (
                             <View style={styles.badge}>
                                 <Text style={styles.badgeText}>{cartCount}</Text>
@@ -533,7 +539,7 @@ export default function HomeScreen({ navigation }) {
                         style={styles.iconButton}
                         onPress={() => navigation.navigate('Notifications')}
                     >
-                        <Ionicons name="notifications-outline" size={24} color="white" />
+                        <Ionicons name="notifications-outline" size={24} color={App_Primary_color} />
                         {notificationCount > 0 && (
                             <View style={styles.badge}>
                                 <Text style={styles.badgeText}>{notificationCount}</Text>
@@ -600,7 +606,7 @@ export default function HomeScreen({ navigation }) {
                 onPress={() => navigation.navigate('CartScreen')}
                 activeOpacity={0.85}
             >
-                <Ionicons name="cart" size={22} color="white" />
+                <Ionicons name="cart" size={22} color={App_Primary_color} />
                 <Text style={styles.floatingButtonText}>View Cart</Text>
                 <View style={styles.floatingBadge}>
                     <Text style={styles.floatingBadgeText}>{cartCount}</Text>
@@ -635,53 +641,7 @@ export default function HomeScreen({ navigation }) {
 
                         />}
 
-                        {selectedCategory=='Beauty'  && <Beauty navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-
-                             {selectedCategory=='Decor'  && <Beauty navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-                             {selectedCategory=='Party'  && <Party navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-
-                         {selectedCategory=='Gifting'  && <Gifting navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-
-                         {selectedCategory=='Electronics'  && <Electronics navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-
-                           {selectedCategory=='Kids'  && <Kids navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
-
-                            {selectedCategory=='Festivals'  && <Festival navigation={navigation}  isDarkMode={isDarkMode}
-                            searchQuery={searchQuery}
-                            refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
-
-                        />}
+                    
 
                        
 

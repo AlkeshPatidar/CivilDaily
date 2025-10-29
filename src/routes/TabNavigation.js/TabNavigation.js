@@ -75,12 +75,16 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.activeHome}
+                  // source={IMG.activeHome}
+                  source={IMG.Active1}
+
                   style={{
                     height: 56,
                     width: 56,
-                    bottom: 30
+                    bottom: 30,
                     // tintColor: App_Primary_color,
+                    // tintColor: App_Primary_color,
+
 
                   }}
                 />
@@ -126,11 +130,13 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.activeCategroy}
+                  // source={IMG.activeCategroy}
+                  source={IMG.Active2}
+
                   style={{
                     height: 56,
                     width: 56,
-                    bottom: 30
+                    bottom: 30,
                   }}
                 />
 
@@ -183,6 +189,8 @@ function TabNavigation() {
                 }}>
                 <Image
                   source={IMG.myOrder}
+                  // source={IMG.Active3}
+
                   style={{
                     height: 30,
                     width: 30,
@@ -232,7 +240,9 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.activeFav}
+                  // source={IMG.activeFav}
+                  source={IMG.Active3}
+
                   style={{
                     height: 56,
                     width: 56,
@@ -281,7 +291,9 @@ function TabNavigation() {
                   gap: 8,
                 }}>
                 <Image
-                  source={IMG.activeProfile}
+                  // source={IMG.activeProfile}
+                  source={IMG.Active4}
+
                   style={{
                     height: 56,
                     width: 56,

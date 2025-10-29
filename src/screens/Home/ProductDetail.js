@@ -978,9 +978,11 @@ const ProductDetail = ({ navigation, route }) => {
       backgroundColor: isDarkMode ? dark33 : '#fff',
       borderWidth: 1.5,
       borderColor: App_Primary_color,
-      paddingVertical: 16,
+      // paddingVertical: 10,
+      paddingTop:7,
       borderRadius: 100,
       alignItems: 'center',
+      height:40
     },
     addToCartText: {
       fontSize: 16,
@@ -991,9 +993,11 @@ const ProductDetail = ({ navigation, route }) => {
     buyNowButton: {
       flex: 1,
       backgroundColor: App_Primary_color,
-      paddingVertical: 16,
+      // paddingVertical: 14,
+      paddingTop:7,
       borderRadius: 100,
       alignItems: 'center',
+      height:40
     },
     buyNowText: {
       fontSize: 16,

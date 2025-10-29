@@ -156,7 +156,7 @@ export default function Category({ navigation }) {
     const renderHeader = () => {
         return (
             <View style={styles.headerContainer}>
-                <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+                <StatusBar barStyle="dark-content" backgroundColor={white} />
                 <View style={styles.topBar}>
                     <View style={styles.leftHeader}>
                         <Text style={styles.headerTitle}>Shop</Text>
@@ -215,7 +215,7 @@ export default function Category({ navigation }) {
             backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
         },
         headerContainer: {
-            backgroundColor: App_Primary_color,
+            backgroundColor: 'white',
             paddingHorizontal: 16,
             paddingTop: 16,
             paddingBottom: 24,
@@ -227,12 +227,12 @@ export default function Category({ navigation }) {
         },
         leftHeader: {},
         headerTitle: {
-            color: 'white',
+            color: '#333',
             fontFamily: FONTS_FAMILY.Poppins_Bold,
             fontSize: 30,
         },
         headerSubtitle: {
-            color: 'white',
+            color: '#333',
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             fontSize: 30,
         },
@@ -241,7 +241,7 @@ export default function Category({ navigation }) {
         },
         iconButton: {
             marginLeft: 16,
-            backgroundColor: '#6C87CF',
+            backgroundColor: App_Primary_color,
             padding: 8,
             borderRadius: 100,
             position: 'relative',
@@ -250,7 +250,7 @@ export default function Category({ navigation }) {
             position: 'absolute',
             top: -4,
             right: -4,
-            backgroundColor: '#EF4444',
+            backgroundColor: 'orange',
             borderRadius: 10,
             minWidth: 18,
             height: 18,

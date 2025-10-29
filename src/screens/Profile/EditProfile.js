@@ -515,13 +515,15 @@ const EditProfile = ({ navigation }) => {
       width: 40,
     },
     profileCard: {
-      backgroundColor: isDarkMode ? dark55 : '#9AB0EA',
+      backgroundColor: isDarkMode ? dark55 : '#f7b34dde',
       borderRadius: 10,
       padding: 20,
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: 10,
-      marginHorizontal: 20
+      marginHorizontal: 20,
+      // opacity:0.5
+
     },
     profileImage: {
       width: 60,

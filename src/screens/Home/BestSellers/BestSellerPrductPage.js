@@ -929,7 +929,9 @@ const CategoryProductsScreen = ({ route, navigation }) => {
             textDecorationLine: 'line-through',
         },
         addButton: {
-            backgroundColor: App_Primary_color,
+            // backgroundColor: App_Primary_color,
+            borderWidth:1,
+            borderColor:'orange',
             paddingVertical: 5,
             borderRadius: 8,
             alignItems: 'center',
@@ -937,11 +939,13 @@ const CategoryProductsScreen = ({ route, navigation }) => {
         addButtonText: {
             fontSize: 12,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
-            color: white,
+            color: 'orange',
         },
         optionsButton: {
             flexDirection: 'row',
-            backgroundColor: App_Primary_color,
+            // backgroundColor: App_Primary_color,
+             borderWidth:1,
+            borderColor:'orange',
             paddingVertical: 5,
             borderRadius: 8,
             alignItems: 'center',
@@ -950,7 +954,8 @@ const CategoryProductsScreen = ({ route, navigation }) => {
         optionsText: {
             fontSize: 11,
             fontFamily: FONTS_FAMILY.Poppins_Regular,
-            color: white,
+            // color: white,
+            color: 'orange',
             marginLeft: 4,
         },
     });

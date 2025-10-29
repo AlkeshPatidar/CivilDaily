@@ -73,7 +73,7 @@ const AddressDetailsPage = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('AddAddressScreen', { address: addressData })}
         >
-          <EditIcon />
+          <EditIcon  fill={App_Primary_color}/>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => onDelete(addressData?._id)}
@@ -222,7 +222,8 @@ const AddressDetailsPage = ({ navigation }) => {
       width: 50,
       height: 50,
       borderRadius: 28,
-      backgroundColor: '#5B6BC7',
+      // backgroundColor: '#5B6BC7',
+      backgroundColor: App_Primary_color,
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 12,
@@ -242,7 +243,7 @@ const AddressDetailsPage = ({ navigation }) => {
     },
     addButtonText: {
       fontSize: 16,
-      color: '#5B6BC7',
+      color: App_Primary_color,
       fontWeight: '500',
     },
   });

@@ -29,7 +29,7 @@ const SplashScreen = ({ navigation }) => {
 
   useEffect(() => {
     loginCheck()
-    initializeTheme();
+    // initializeTheme();
 
     // setTimeout(() => {
     //   navigation.navigate('Onboarding')

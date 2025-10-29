@@ -314,6 +314,7 @@ import { FONTS_FAMILY } from '../../assets/Fonts';
 import { useSelector } from 'react-redux';
 import { clearAsyncStorage } from '../../utils/Apis';
 import { useIsFocused } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfilePage = ({ navigation }) => {
 
@@ -483,7 +484,7 @@ const ProfilePage = ({ navigation }) => {
       fontWeight: '300',
     },
     headerTitle: {
-      color: 'white',
+      color: '#333',
       fontSize: 18,
       fontWeight: '600',
     },
@@ -491,7 +492,7 @@ const ProfilePage = ({ navigation }) => {
       width: 40,
     },
     profileCard: {
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      backgroundColor: App_Primary_color,
       borderRadius: 16,
       padding: 20,
       flexDirection: 'row',
@@ -622,7 +623,7 @@ const ProfilePage = ({ navigation }) => {
         }}
       >
         <LinearGradient
-          colors={[App_Primary_color, App_Primary_color]}
+          colors={[white, white]}
           style={styles.header}
         >
           <View style={styles.headerContent}>
@@ -630,7 +631,8 @@ const ProfilePage = ({ navigation }) => {
               style={styles.backButton}
               activeOpacity={0.7}
             >
-              <BackWhite />
+              {/* <BackWhite /> */}
+              <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>My Profile</Text>
             <View style={styles.headerRight} />

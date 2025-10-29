@@ -35,6 +35,12 @@ const IMG = {
 
   myOrder: require('../Images/myOrder.png'),
 
+  Active1: require('../Images/Active1.png'),
+  Active2: require('../Images/Active2.png'),
+  Active3: require('../Images/Active3.png'),
+  Active4: require('../Images/Active4.png'),
+
+
 
   
 

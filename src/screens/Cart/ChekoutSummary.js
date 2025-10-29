@@ -176,7 +176,7 @@ const CheckoutSummary = ({ navigation, route }) => {
             marginTop: 14,
         },
         sectionTitle: {
-            fontSize: 18,
+            fontSize: 16,
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
             color: isDarkMode ? white : '#111827',
             marginTop: 20
@@ -297,7 +297,7 @@ const CheckoutSummary = ({ navigation, route }) => {
             marginBottom: 4,
         },
         itemPrice: {
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: '700',
             color: isDarkMode ? 'white' : '#111827',
         },
@@ -315,7 +315,7 @@ const CheckoutSummary = ({ navigation, route }) => {
         },
         quantityText: {
             marginHorizontal: 16,
-            fontSize: 16,
+            fontSize: 14,
             color: isDarkMode ? 'white' : '#111827',
         },
         billContainer: {
@@ -497,7 +497,25 @@ const CheckoutSummary = ({ navigation, route }) => {
                 <Text style={styles.headerTitle}>Checkout Summary</Text>
             </View>
 
+            
+
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                     {/* Products in Cart */}
+                <View style={styles.section}>
+                    <Text style={{...styles.sectionTitle, marginBottom:6}}>Products in Cart</Text>
+                    {route?.params?.cartData?.items?.map((item, index) => (
+                        <View key={index} style={styles.cartItem}>
+                            <Image source={{ uri: item.productId?.images[0] }} style={styles.itemImage} />
+                            <View style={styles.itemDetails}>
+                                <Text style={styles.itemName}>{item.productId?.name}</Text>
+                                <Text style={styles.itemPrice}>Rs {item.productId?.price}</Text>
+                            </View>
+                            <View style={styles.quantityContainer}>
+                                <Text style={styles.quantityText}>Quantity: {item?.quantity}</Text>
+                            </View>
+                        </View>
+                    ))}
+                </View>
                 {/* Delivery Address */}
                 <Text style={styles.sectionTitle}>Delivery Address</Text>
 
@@ -570,22 +588,7 @@ const CheckoutSummary = ({ navigation, route }) => {
                     )}
                 </View>
 
-                {/* Products in Cart */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Products in Cart</Text>
-                    {route?.params?.cartData?.items?.map((item, index) => (
-                        <View key={index} style={styles.cartItem}>
-                            <Image source={{ uri: item.productId?.images[0] }} style={styles.itemImage} />
-                            <View style={styles.itemDetails}>
-                                <Text style={styles.itemName}>{item.productId?.name}</Text>
-                                <Text style={styles.itemPrice}>Rs {item.productId?.price}</Text>
-                            </View>
-                            <View style={styles.quantityContainer}>
-                                <Text style={styles.quantityText}>Quantity: {item?.quantity}</Text>
-                            </View>
-                        </View>
-                    ))}
-                </View>
+           
 
                 {/* Bill Details */}
                 <View style={styles.section}>

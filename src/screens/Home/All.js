@@ -1188,23 +1188,25 @@ const AllPrducts = ({ navigation, refreshTrigger }) => {
             flexDirection: 'row',
             alignItems: 'center',
             borderWidth: 1,
-            borderColor: App_Primary_color,
+            borderColor: 'orange',
             borderRadius: 6,
             backgroundColor: 'white',
-            paddingHorizontal: 4,
-            paddingVertical: 2,
+            paddingHorizontal: 15,
+            paddingVertical: 1,
         },
         quantityBtn: {
             paddingHorizontal: 6,
         },
         quantityText: {
-            color: App_Primary_color,
+            color: 'orange',
             fontSize: 14,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
         },
         quantityCount: {
             fontSize: 12,
-            color: App_Primary_color,
+            // color: App_Primary_color,
+            color: 'orange',
+
             marginHorizontal: 4,
             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
         },
@@ -1426,10 +1428,10 @@ const AllPrducts = ({ navigation, refreshTrigger }) => {
             paddingVertical: 4,
             borderRadius: 6,
             borderWidth: 1,
-            borderColor: App_Primary_color,
+            borderColor: 'orange',
         },
         addButtonText: {
-            color: App_Primary_color,
+            color: 'orange',
             fontSize: 10,
             fontFamily: FONTS_FAMILY.Poppins_Bold,
         },
@@ -1636,7 +1638,7 @@ const AllPrducts = ({ navigation, refreshTrigger }) => {
                                                 style={styles.addButton}
                                                 onPress={() => handleAddToCart(item)}
                                             >
-                                                <Text style={styles.addButtonText}>ADD</Text>
+                                                <Text style={styles.addButtonText}>Add to cart</Text>
                                             </TouchableOpacity>
                                         )}
                                     </View>
@@ -1651,8 +1653,8 @@ const AllPrducts = ({ navigation, refreshTrigger }) => {
 
     return (
         <View>
-            {<RenderBestSellers navigation={navigation} />}
             {renderBannerSection()}
+            {<RenderBestSellers navigation={navigation} />}
             {renderProductsGrid()}
 
             {/* Floating Cart Button */}

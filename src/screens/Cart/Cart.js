@@ -1246,7 +1246,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet, Alert, PermissionsAndroid, Linking, Platform, Animated } from 'react-native';
 import IMG from '../../assets/Images';
 import { FONTS_FAMILY } from '../../assets/Fonts';
-import { App_Primary_color, dark33, darkMode25 } from '../../common/Colors/colors';
+import { App_Primary_color, dark33, darkMode25, white } from '../../common/Colors/colors';
 import { BackWhite } from '../../assets/SVGs';
 import { useSelector } from 'react-redux';
 import useLoader from '../../utils/LoaderHook';
@@ -1260,6 +1260,7 @@ import CartScreenSkeletonLoader from '../../components/Skeleton/CartScreenSkelet
 import RNPrint from 'react-native-print'
 import { ToastMsg } from '../../utils/helperFunctions';
 import { showToast } from '../../components/Tooltips/SuccessToolTip';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const CartScreen = ({ navigation }) => {
@@ -2173,7 +2174,7 @@ const CartScreen = ({ navigation }) => {
             backgroundColor: isDarkMode ? darkMode25 : 'white',
         },
         header: {
-            backgroundColor: App_Primary_color,
+            backgroundColor: white,
             height: 90,
             flexDirection: 'row',
             alignItems: 'flex-end',
@@ -2185,7 +2186,7 @@ const CartScreen = ({ navigation }) => {
             bottom: 9
         },
         headerTitle: {
-            color: 'white',
+            color: '#333',
             fontSize: 22,
             fontFamily: FONTS_FAMILY.Poppins_Medium,
             marginLeft: 10,
@@ -2516,7 +2517,7 @@ const CartScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={App_Primary_color} />
+            <StatusBar barStyle="dark-content" backgroundColor={white} />
 
             {/* Header */}
             <View style={styles.header}>
@@ -2524,7 +2525,8 @@ const CartScreen = ({ navigation }) => {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
-                    <BackWhite />
+                    {/* <BackWhite /> */}
+              <Ionicons name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Cart</Text>
                 <View style={styles.headerRight} />
