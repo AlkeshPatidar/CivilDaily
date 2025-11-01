@@ -25,28 +25,32 @@ const { width, height } = Dimensions.get('window')
 const onboardingData = [
   {
     id: '1',
-    title: 'Fresh Groceries',
-    highlight: 'Delivered',
-    description: 'Get fresh fruits, vegetables, and daily essentials delivered to your doorstep within minutes.',
-    image: 'https://thumbs.dreamstime.com/b/lots-groceries-17001094.jpg', // Grocery shopping
+    title: 'Providing the Construction',
+    highlight: 'Solution',
+    description: 'We are Beyond, your trusted partner in the world of construction. With a legacy of excellence and a commitment to quality, we turn your visions into reality',
+    // image: 'https://thumbs.dreamstime.com/b/lots-groceries-17001094.jpg', // Grocery shopping
+    image: IMG.onboarding1, // Grocery shopping
+
     backgroundColor: '#E8F5E9',
   },
   {
     id: '2',
-    title: 'Best Prices',
+    title: 'Best Charges',
     highlight: 'Guaranteed',
-    description: 'Shop smarter with exclusive deals, discounts, and same-day delivery on all your favorite products.',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMEOkVGq2zhdPRZbmxy0D8QbtTizBliR2xpQ&s', // Price tags
+    description: 'We are Beyond, your trusted partner in the world of construction. With a legacy of excellence and a commitment to quality, we turn your visions into reality',
+    // image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMEOkVGq2zhdPRZbmxy0D8QbtTizBliR2xpQ&s', // Price tags
+    image: IMG.onboarding2, // Grocery shopping
+
     backgroundColor: '#FFF3E0',
   },
-  {
-    id: '3',
-    title: 'Fast Delivery',
-    highlight: 'Assured',
-    description: 'Your groceries, fresh and affordable — right at your doorstep. Order now and get it delivered fast.',
-    image: 'https://img.freepik.com/free-psd/full-shopping-cart-groceries_191095-79355.jpg?semt=ais_hybrid&w=740&q=80', // Delivery
-    backgroundColor: '#E3F2FD',
-  },
+  // {
+  //   id: '3',
+  //   title: 'Fast Delivery',
+  //   highlight: 'Assured',
+  //   description: 'We are Beyond, your trusted partner in the world of construction. With a legacy of excellence and a commitment to quality, we turn your visions into reality',
+  //   image: 'https://img.freepik.com/free-psd/full-shopping-cart-groceries_191095-79355.jpg?semt=ais_hybrid&w=740&q=80', // Delivery
+  //   backgroundColor: '#E3F2FD',
+  // },
 ]
 
 const OnboardingScreen = ({ navigation }) => {
@@ -101,7 +105,7 @@ const OnboardingScreen = ({ navigation }) => {
       <View style={styles.slideContainer}>
         <View style={[styles.imageContainer, { backgroundColor: item.backgroundColor }]}>
           <Animated.Image
-            source={{ uri: item.image }}
+            source={item.image }
             style={[
               styles.illustration,
               {

@@ -12,7 +12,7 @@ const IMG = {
   // brakingnewsImg:require('../Images/brakingnewsImg.png'),
 
   SplashScreen: require('../Images/SplashScreen.png'),
-  HomeBanner: require('../Images/HomeBanner.png'),
+  // HomeBanner: require('../Images/HomeBanner.png'),
   Meat: require('../Images/Meat.png'),
   fruit: require('../Images/fruit.png'),
   dairy: require('../Images/dairy.png'),
@@ -39,6 +39,22 @@ const IMG = {
   Active2: require('../Images/Active2.png'),
   Active3: require('../Images/Active3.png'),
   Active4: require('../Images/Active4.png'),
+
+  // Civil daily Images
+
+  SplashLogo: require('../Images/SplashLogo.png'),
+  onboarding1: require('../Images/onboarding1.png'),
+  onboarding2: require('../Images/onboarding2.png'),
+  construction: require('../Images/construction.webp'),
+  HomeBanner: require('../Images/homeBanner.png'),
+
+  Acc: require('../Images/Acc.png'),
+  UltraTech: require('../Images/ultratech.png'),
+
+
+
+
+
 
 
 

@@ -1,10 +1,11 @@
 
 
 
-import React, { useEffect, useState, useRef,
+import React, {
+    useEffect, useState, useRef,
     useCallback
 
- } from 'react';
+} from 'react';
 import {
     View,
     Text,
@@ -17,6 +18,7 @@ import {
     Image,
     RefreshControl,
     Animated,
+    ImageBackground,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { App_Primary_color, dark33, dark55, darkMode25, white } from '../../common/Colors/colors';
@@ -38,29 +40,14 @@ import BlinKitLoader from '../../components/Skeleton/BlinkitLoader';
 import messaging from '@react-native-firebase/messaging';
 import { PermissionsAndroid, Platform, Alert, Dimensions } from 'react-native';
 import AllPrducts from './All';
-import { s } from 'react-native-size-matters';
-import Beauty from './Beuty';
-import Party from './Party';
-import Gifting from './Gifting';
-import Electronics from './Electronics';
-import Kids from './Kids';
-import Festival from './Festival';
+import CustomButton from '../../components/Button';
+import HowItsWork from './HowItWorks';
+
 
 const { width } = Dimensions.get('window');
 
 
 
-const FILTER_CATEGORIES = [
-    { name: 'All', icon: 'grid-outline' },
-    { name: 'Party', icon: 'balloon-outline' },
-    { name: 'Gifting', icon: 'gift-outline' },
-    { name: 'Electronics', icon: 'phone-portrait-outline' },
-    { name: 'Beauty', icon: 'rose-outline' },
-    { name: 'Kids', icon: 'happy-outline' },
-    { name: 'Decor', icon: 'home-outline' },
-    { name: 'Festivals', icon: 'sparkles-outline' },
-    // { name: 'Premium', icon: 'star-outline' }
-];
 
 export default function HomeScreen({ navigation }) {
     let selector = useSelector(state => state?.user?.userData);
@@ -70,7 +57,7 @@ export default function HomeScreen({ navigation }) {
 
     const { showLoader, hideLoader } = useLoader()
     const [categories, setCategories] = useState([])
-  
+
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -87,24 +74,28 @@ export default function HomeScreen({ navigation }) {
     const floatingButtonAnim = useRef(new Animated.Value(400)).current;
     const floatWobbleAnim = useRef(new Animated.Value(0)).current;
 
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setRefreshTrigger(prev => prev + 1); // 🔥 trigger change
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
-
-   useEffect(() => {
-        fetchCartData();
-        fetchNotificationCount();
-        const interval = setInterval(() => {
-            fetchCartData();
-            fetchNotificationCount();
-        }, 1000);
-
-        return () => clearInterval(interval);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setRefreshTrigger(prev => prev + 1); // 🔥 trigger change
+        setTimeout(() => setRefreshing(false), 1000);
     }, []);
+
+    // useEffect(() => {
+    //     fetchCartData();
+    //     fetchNotificationCount();
+    //     const interval = setInterval(() => {
+    //         fetchCartData();
+    //         fetchNotificationCount();
+    //     }, 1000);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
+    // api/admin/GetAllCompareProduct
+
+   
 
     const animateHeader = () => {
         Animated.spring(headerAnim, {
@@ -245,7 +236,7 @@ export default function HomeScreen({ navigation }) {
         }
     };
 
-   
+
 
     const initializeData = async () => {
         setIsLoading(true)
@@ -265,7 +256,7 @@ export default function HomeScreen({ navigation }) {
         }
     }
 
-  
+
 
     const styles = StyleSheet.create({
         container: {
@@ -290,7 +281,7 @@ export default function HomeScreen({ navigation }) {
         deliverText: {
             // color: 'rgba(255, 255, 255, 0.9)',
             fontFamily: FONTS_FAMILY.Poppins_Bold,
-            fontSize: 13,
+            fontSize: 18,
             marginBottom: 2,
             color: '#333',
 
@@ -314,7 +305,7 @@ export default function HomeScreen({ navigation }) {
             position: 'absolute',
             top: -2,
             right: -2,
-            backgroundColor: 'orange',
+            backgroundColor: 'red',
             borderRadius: 10,
             minWidth: 18,
             height: 18,
@@ -429,7 +420,7 @@ export default function HomeScreen({ navigation }) {
         },
         bannerSection: {
             marginBottom: 8,
-            width:'100%',
+            width: '100%',
             // backgroundColor:'red'
         },
         carouselContainer: {
@@ -454,8 +445,8 @@ export default function HomeScreen({ navigation }) {
         paginationDotInactive: {
             backgroundColor: '#D1D5DB',
         },
- 
-      
+
+
         floatingButtonContainer: {
             position: 'absolute',
             bottom: 80,
@@ -475,8 +466,8 @@ export default function HomeScreen({ navigation }) {
             flexDirection: 'row',
             alignItems: 'center',
             gap: 8,
-            borderWidth:1,
-            borderColor:App_Primary_color
+            borderWidth: 1,
+            borderColor: App_Primary_color
         },
         floatingButtonText: {
             color: App_Primary_color,
@@ -491,7 +482,7 @@ export default function HomeScreen({ navigation }) {
             justifyContent: 'center',
             alignItems: 'center',
             paddingHorizontal: 6,
-            bottom:3
+            bottom: 3
         },
         floatingBadgeText: {
             color: white,
@@ -506,8 +497,8 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.topBar}>
                 <View style={styles.leftHeader}>
-                    <Text style={styles.deliverText}>Delivery in 10 minutes</Text>
-                    <Row style={{ alignItems: 'center' }}>
+                    <Text style={styles.deliverText}>Civil Daily</Text>
+                    {/* <Row style={{ alignItems: 'center' }}>
                         <Ionicons name="location-sharp" size={18} color="#333" style={{ marginRight: 4 }} />
                         {selector?.addresses?.length > 0 ?
                             <Text style={styles.locationText} numberOfLines={1}>
@@ -520,7 +511,7 @@ export default function HomeScreen({ navigation }) {
                         <TouchableOpacity style={{ marginLeft: 4 }}>
                             <DownChev />
                         </TouchableOpacity>
-                    </Row>
+                    </Row> */}
                 </View>
 
                 <View style={styles.rightHeader}>
@@ -549,7 +540,7 @@ export default function HomeScreen({ navigation }) {
                 </View>
             </View>
 
-            <Animated.View style={styles.searchContainer}>
+            {/* <Animated.View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search for products..."
@@ -564,7 +555,7 @@ export default function HomeScreen({ navigation }) {
                         <Ionicons name="close-circle" size={20} color="#999" />
                     </TouchableOpacity>
                 )}
-            </Animated.View>
+            </Animated.View> */}
             {/* {renderFilterCategories()} */}
 
         </Animated.View>
@@ -574,52 +565,12 @@ export default function HomeScreen({ navigation }) {
 
 
 
-    const renderFloatingCartButton = () => (
-        <Animated.View
-            style={[
-                styles.floatingButtonContainer,
-                {
-                    transform: [
-                        {
-                            translateX: Animated.add(
-                                floatingButtonAnim.interpolate({
-                                    inputRange: [0, 400],
-                                    outputRange: [0, 400],
-                                }),
-                                floatWobbleAnim.interpolate({
-                                    inputRange: [-1, 1],
-                                    outputRange: [-5, 5],
-                                })
-                            ),
-                        },
-                    ],
-                    opacity: floatingButtonAnim.interpolate({
-                        inputRange: [0, 400],
-                        outputRange: [1, 0],
-                    }),
-                },
-            ]}
-            pointerEvents={cartCount > 0 ? 'auto' : 'none'}
-        >
-            <TouchableOpacity
-                style={styles.floatingButton}
-                onPress={() => navigation.navigate('CartScreen')}
-                activeOpacity={0.85}
-            >
-                <Ionicons name="cart" size={22} color={App_Primary_color} />
-                <Text style={styles.floatingButtonText}>View Cart</Text>
-                <View style={styles.floatingBadge}>
-                    <Text style={styles.floatingBadgeText}>{cartCount}</Text>
-                </View>
-            </TouchableOpacity>
-        </Animated.View>
-    );
-
     return (
         <SafeAreaView style={styles.container}>
-            {isLoading ? (
-                <BlinKitLoader isDarkMode={isDarkMode} />
-            ) : (
+            {/* {isLoading ? (
+                // <BlinKitLoader isDarkMode={isDarkMode} />
+                <></>
+            ) : ( */}
                 <>
                     {renderHeader()}
                     <ScrollView
@@ -633,23 +584,57 @@ export default function HomeScreen({ navigation }) {
                             />
                         }
                     >
-                        
-                      {selectedCategory=='All'  &&   <AllPrducts navigation={navigation}  isDarkMode={isDarkMode}
+                        <ImageBackground source={IMG.HomeBanner}
+                            style={{ width: '100%', height: 220, marginBottom: 20, justifyContent: 'center', }}
+                            resizeMode='cover'
+                        >
+                            <View
+                                style={{
+                                    width: '80%',
+                                    paddingHorizontal: 20
+                                }}
+                            >
+                                <CustomText
+                                    style={{
+                                        fontSize: 18,
+                                        fontFamily: FONTS_FAMILY.Poppins_Medium,
+
+                                    }}
+                                >Providing the Construction Solution For You</CustomText>
+                                <Row style={{gap:10, marginTop:10}}>
+                                    <CustomButton
+                                        title={'Add  Requirement'}
+                                        style={{
+                                            width:150
+                                        }}
+                                        onPress={()=>navigation.navigate('AllWorkProject')}
+                                    />
+                                    <CustomButton
+                                        title={'Add Work Project'}
+                                          style={{
+                                            width:150
+                                        }}
+                                        onPress={()=>navigation.navigate('AllWorkProject')}
+
+                                    />
+                                </Row>
+
+                            </View>
+
+                        </ImageBackground>
+
+                        {selectedCategory == 'All' && <AllPrducts navigation={navigation} isDarkMode={isDarkMode}
                             searchQuery={searchQuery}
                             refreshTrigger={refreshTrigger}
-                            // setIsLoading={setIsLoading}
+                        // setIsLoading={setIsLoading}
 
                         />}
-
-                    
-
-                       
+                        {<HowItsWork/>}
 
                         <View style={{ height: 120 }} />
                     </ScrollView>
                 </>
-            )}
-            {renderFloatingCartButton()}
+            {/* )} */}
         </SafeAreaView>
     );
 }

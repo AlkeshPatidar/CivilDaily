@@ -1,7 +1,7 @@
 const color={
     // App_Primary_color:'#D43C31',
-    // App_Primary_color:'#4A6CC5',
-    App_Primary_color:'#FDAA5D',
+    App_Primary_color:'#4A6CC5',
+    // App_Primary_color:'#FDAA5D',
 
     
     darkOfPrimary:'#8f565f',

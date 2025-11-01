@@ -1,7 +1,7 @@
 export default {
  login:'/api/user/login',
- signUp:'/api/user/register',
- getSelf:'/api/user/self',
+ signUp:'/api/user/UserSignUp',
+ getSelf:'/api/user/GetUserProfile',
  updateUser:'/user/update-self',
  getCategory:'/api/category/all',
  getAllProducts:'/api/product/all',

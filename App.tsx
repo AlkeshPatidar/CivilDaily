@@ -16,8 +16,8 @@ const MainApp = () => {
     <LoginCheckProvider>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <StatusBar
-          barStyle={'light-content'}
-          backgroundColor={color.App_Primary_color}
+          barStyle={'dark-content'}
+          backgroundColor={color.white}
         />
         <StackNavigation />
         {/* <FlashMessage position='top' /> */}

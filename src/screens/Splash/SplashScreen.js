@@ -60,8 +60,14 @@ const SplashScreen = ({ navigation }) => {
   }
 
   return (
-    <ImageBackground source={IMG.SplashScreen} style={{ flex: 1 }}>
-    </ImageBackground>
+    // <ImageBackground source={IMG.SplashScreen} style={{ flex: 1 }}>
+    // </ImageBackground>
+    <View style={styles.container}>
+      <Image
+        source={IMG.SplashLogo}
+        style={{ width: 200, height: 200 }}
+      />
+    </View>
   )
 }
 
@@ -70,6 +76,9 @@ export default SplashScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
 
   },
   topSection: {

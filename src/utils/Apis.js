@@ -4,7 +4,9 @@ import { showError } from './helperFunctions';
 import RNRestart from 'react-native-restart';
 import { Alert } from 'react-native';
 
-export const BASE_URL = 'https://rr-store-backend.vercel.app';
+export const BASE_URL = 'https://civils-daily-backend.vercel.app';
+// export const BASE_URL = 'http://10.180.87.149:8080';
+
 
 
 export async function getHeaders() {
@@ -12,7 +14,7 @@ export async function getHeaders() {
   console.log("token in api", token);
   if (token) {
     return {
-      // Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmYzMzhjNGIwZmQ2YmI5ZjAwZDc5MyIsImlhdCI6MTcyMzgwNzg0OH0.978f75LwqgLhL-lPO3nf9Jr7hOViE2o_T8Hd541MMew',
+      // Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGQ0ZDFjNzNmNTRhMzQ1ZmEwNDRiODciLCJpYXQiOjE3NjE3Mjg0NDUsImV4cCI6MTc2NDE0NzY0NX0.ZMlu_p8hywB88litHs8p708LciqUwXrlLHwXVG591P0',
       Authorization: 'Bearer ' + token,
 
     };
