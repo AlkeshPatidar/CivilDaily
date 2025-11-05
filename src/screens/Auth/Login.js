@@ -31,6 +31,7 @@ import { setUser } from '../../redux/reducer/user';
 import CustomText from '../../components/TextComponent';
 import { showToast } from '../../components/Tooltips/SuccessToolTip';
 import IMG from '../../assets/Images';
+import { useLoginCheck } from '../../utils/Context';
 
 // Country data with flags
 const countries = [
@@ -54,6 +55,12 @@ const Login = ({ navigation }) => {
   const { showLoader, hideLoader } = useLoader();
   const dispatch = useDispatch();
   const { isDarkMode } = useSelector(state => state.theme);
+
+  const { loggedInby, setloggedInby } = useLoginCheck()
+
+  console.log('loggedInby:::::::::::::::::::::::::::::::', loggedInby);
+
+
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -146,7 +153,7 @@ const Login = ({ navigation }) => {
         useNativeDriver: true,
       }),
     ]).start();
-    
+
     setLoginMethod(method);
   };
 
@@ -165,7 +172,8 @@ const Login = ({ navigation }) => {
       try {
         showLoader();
         const data = { Email: email, Password: password };
-        const response = await apiPost(urls?.login, data);
+
+        const response = await apiPost(loggedInby == 'user' ? urls?.login : loggedInby == 'supplier' ? urls.loginSupplier : urls.loginExceutive, data);
         console.log('response Of Login', response);
 
         if (response?.statusCode === 200) {
@@ -173,8 +181,22 @@ const Login = ({ navigation }) => {
             await setItem('token', response?.data?.token);
             const token = await getItem('token');
             if (token) {
-              dispatch(setUser(JSON.stringify(response?.data?.User)));
-              navigation.replace('Tab');
+              if (loggedInby == 'user') {
+                dispatch(setUser(JSON.stringify(response?.data?.User)));
+                navigation.replace('Tab');
+
+              }
+              else if (loggedInby == 'supplier') {
+                dispatch(setUser(JSON.stringify(response?.data?.Supplier)));
+                console.log('Supplier SPECIFIC', response?.data?.Supplier);
+                navigation.replace('SupplierDashBoard');
+              }
+              else {
+                dispatch(setUser(JSON.stringify(response?.data?.FieldExecutive)));
+                console.log('FELED EXCUTIVE SPECIFIC', response?.data?.FieldExecutive);
+
+                navigation.replace('FieldExecutiveDashboard');
+              }
             }
           }
           // ToastMsg(response?.message);
@@ -202,12 +224,12 @@ const Login = ({ navigation }) => {
       }
       try {
         showLoader();
-        const data = { 
-          email: phoneNumber.toString(), 
-          password: password 
+        const data = {
+          email: phoneNumber.toString(),
+          password: password
         };
         const response = await apiPost(urls?.login, data);
-        
+
         if (response?.statusCode === 200) {
           if (response?.data?.token) {
             await setItem('token', response?.data?.token);
@@ -329,7 +351,7 @@ const Login = ({ navigation }) => {
       paddingHorizontal: 5,
       borderRightColor: '#ddd',
       minWidth: 100,
-      backgroundColor:isDarkMode?dark33: '#F2F2F3',
+      backgroundColor: isDarkMode ? dark33 : '#F2F2F3',
       borderRadius: 8,
     },
     countryFlag: {
@@ -351,7 +373,7 @@ const Login = ({ navigation }) => {
       paddingHorizontal: 20,
       fontSize: 15,
       color: isDarkMode ? white : '#333',
-      backgroundColor:isDarkMode?dark33: '#F2F2F3',
+      backgroundColor: isDarkMode ? dark33 : '#F2F2F3',
       borderRadius: 8,
       fontFamily: FONTS_FAMILY.Poppins_Regular,
     },
@@ -456,11 +478,11 @@ const Login = ({ navigation }) => {
       >
         {/* Content with Animations */}
         <Image
-                source={IMG.construction}
-                style={{height:130, alignSelf:'center',}}
-                resizeMode='contain'
-                />
-        <Animated.View 
+          source={IMG.construction}
+          style={{ height: 130, alignSelf: 'center', }}
+          resizeMode='contain'
+        />
+        <Animated.View
           style={[
             styles.content,
             {
@@ -568,7 +590,7 @@ const Login = ({ navigation }) => {
       </ScrollView>
 
       {/* Continue Button with Scale Animation */}
-      <Animated.View 
+      <Animated.View
         style={[
           styles.buttonContainer,
           {
@@ -584,12 +606,12 @@ const Login = ({ navigation }) => {
           onPress={() => onSubmit()}
           // onPress={()=>navigation.navigate('Tab')}
           activeOpacity={0.8}
-        > 
+        >
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </Animated.View>
 
-      <Animated.View 
+      <Animated.View
         style={[
           styles.loginRedirect,
           {
@@ -598,7 +620,7 @@ const Login = ({ navigation }) => {
         ]}
       >
         <Text style={styles.loginText}>Don't have an account?</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.navigate('Signup')}
           activeOpacity={0.7}
         >

@@ -1,7 +1,11 @@
 export default {
  login:'/api/user/login',
+ loginExceutive:'/api/executive/FieldExecutiveLogin',
+ loginSupplier:'/api/supplier/SupplierLogin',
  signUp:'/api/user/UserSignUp',
  getSelf:'/api/user/GetUserProfile',
+ getExecutiveProfile:'/api/executive/GetExecutiveProfile',
+ getSupplierProfile:'/api/supplier/GetSupplierProfile',
  updateUser:'/user/update-self',
  getCategory:'/api/category/all',
  getAllProducts:'/api/product/all',

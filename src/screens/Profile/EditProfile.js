@@ -26,6 +26,7 @@ import { inValidEmail, inValidNum } from '../../utils/CheckValidation';
 import { apiGet, apiPut, BASE_URL, getItem } from '../../utils/Apis';
 import urls from '../../config/urls';
 import { setUser } from '../../redux/reducer/user';
+import { useLoginCheck } from '../../utils/Context';
 
 const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -37,13 +38,16 @@ const EditProfile = ({ navigation }) => {
     selector = JSON.parse(selector);
   }
 
-  console.log(selector,'++++++++++++++++++++++++++++==');
+  // console.log(selector,'++++++++++++++++++++++++++++==');
   
 
   // Form states - initialize with user data
   const [name, setName] = useState(selector?.FullName || '');
   const [email, setEmail] = useState(selector?.Email || '');
   const [phone, setPhone] = useState(selector?.Number?.toString() || '');
+
+  const {loggedInby, setloggedInby}=useLoginCheck()
+
 
   const { isDarkMode } = useSelector(state => state.theme);
 
@@ -160,12 +164,13 @@ const EditProfile = ({ navigation }) => {
     };
 
     showLoader()
-    fetch(`${BASE_URL}/api/user/UpdateUser`, requestOptions)
+    const url= loggedInby=='user'?`${BASE_URL}/api/user/UpdateUser`:loggedInby=='supplier'?`${BASE_URL}/api/supplier/UpdateSupplier`:`${BASE_URL}/api/executive/UpdateExecutiveProfile`
+    fetch(url, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log('result::', result);
 
-        getUserProfile(urls.getSelf)
+        getUserProfile(loggedInby=='user'? urls.getSelf:loggedInby=='supplier'? urls.getSupplierProfile: urls.getExecutiveProfile)
 
         ToastMsg('User Updated Successfully')
         hideLoader()

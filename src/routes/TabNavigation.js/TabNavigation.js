@@ -8,7 +8,7 @@ import { FONTS_FAMILY } from '../../assets/Fonts'
 import IMG from '../../assets/Images'
 
 import { useSelector } from 'react-redux'
-import HomeScreen from '../../screens/Home/Home'
+import HomeScreen from '../../screens/User/Home/Home'
 
 import ProfilePage from '../../screens/Profile/Profile'
 

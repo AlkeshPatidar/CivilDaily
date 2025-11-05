@@ -74,12 +74,14 @@ const OnboardingScreen = ({ navigation }) => {
         animated: true,
       })
     } else {
-      navigation.navigate('Login')
+      // navigation.navigate('Login')
+      // 
+      navigation.navigate('RoleSelection')
     }
   }
 
   const handleSkip = () => {
-    navigation.navigate('Login')
+    navigation.navigate('RoleSelection')
   }
 
   const OnboardingItem = ({ item, index }) => {

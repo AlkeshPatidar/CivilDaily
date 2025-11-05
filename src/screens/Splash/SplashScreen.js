@@ -38,26 +38,58 @@ const SplashScreen = ({ navigation }) => {
   }, [])
 
   const loginCheck = async () => {
+    const loggedBy = await getItem('loggedInby')
     const token = await getItem('token')
-    console.log('UserTypeToken at SPlas', token)
     if (token) {
-      getUserProfile(urls.getSelf)
+      if (loggedBy == 'user') {
+        getUserProfile(urls.getSelf,'user')
+        setloggedInby('user')
+      }
+       else if(loggedBy == 'supplier') {
+        getUserProfile(urls.getSupplierProfile,'supplier')
+        setloggedInby('supplier')
+
+
+      }
+      else {
+        getUserProfile(urls.getExecutiveProfile,'field_executive')
+        setloggedInby('field_executive')
+
+
+      }
     } else {
       navigation.replace('Onboarding')
     }
+
+
+
+
   }
 
-  const getUserProfile = async (endPoint) => {
+  const getUserProfile = async (endPoint, role) => {
     try {
       setLoading(true)
       const response = await apiGet(endPoint)
       dispatch(setUser(JSON.stringify(response?.data)))
+      if (role == 'user') {
       navigation.replace('Tab')
+
+      }
+      else if (role == 'supplier') {
+      navigation.replace('SupplierDashBoard')
+
+      }
+      else {
+      navigation.replace('FieldExecutiveDashboard')
+
+      }
       setLoading(false)
     } catch (error) {
       setLoading(false)
     }
   }
+
+
 
   return (
     // <ImageBackground source={IMG.SplashScreen} style={{ flex: 1 }}>

@@ -1,252 +1,718 @@
-import React, { useEffect, useState } from 'react';
+// import React, { useRef, useEffect } from 'react';
+// import {
+//     View,
+//     Text,
+//     TouchableOpacity,
+//     StyleSheet,
+//     Modal,
+//     Animated,
+//     Dimensions,
+//     TouchableWithoutFeedback,
+//     ScrollView,
+//     Image,
+// } from 'react-native';
+// import { FONTS_FAMILY } from '../assets/Fonts';
+// import { App_Primary_color, dark33, dark55, darkMode25, white } from '../common/Colors/colors';
+// import { useSelector } from 'react-redux';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import IMG from '../assets/Images';
+// import { clearAsyncStorage } from '../utils/Apis';
+// import { useLoginCheck } from '../utils/Context';
+
+// const { width } = Dimensions.get('window');
+// const DRAWER_WIDTH = width * 0.75;
+
+// const DrawerMenu = ({ visible, onClose, navigation }) => {
+//     const { isDarkMode } = useSelector(state => state.theme);
+//     const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+//     const fadeAnim = useRef(new Animated.Value(0)).current;
+
+//      const { loggedInby, setloggedInby } = useLoginCheck()
+ 
+
+//     useEffect(() => {
+//         if (visible) {
+//             // Open drawer - slide from left to right
+//             Animated.parallel([
+//                 Animated.timing(slideAnim, {
+//                     toValue: 0,
+//                     duration: 300,
+//                     useNativeDriver: true,
+//                 }),
+//                 Animated.timing(fadeAnim, {
+//                     toValue: 1,
+//                     duration: 300,
+//                     useNativeDriver: true,
+//                 }),
+//             ]).start();
+//         } else {
+//             // Close drawer - slide from right to left
+//             Animated.parallel([
+//                 Animated.timing(slideAnim, {
+//                     toValue: -DRAWER_WIDTH,
+//                     duration: 300,
+//                     useNativeDriver: true,
+//                 }),
+//                 Animated.timing(fadeAnim, {
+//                     toValue: 0,
+//                     duration: 300,
+//                     useNativeDriver: true,
+//                 }),
+//             ]).start();
+//         }
+//     }, [visible]);
+
+//     const handleClose = () => {
+//         // Animate out first, then close
+//         Animated.parallel([
+//             Animated.timing(slideAnim, {
+//                 toValue: -DRAWER_WIDTH,
+//                 duration: 300,
+//                 useNativeDriver: true,
+//             }),
+//             Animated.timing(fadeAnim, {
+//                 toValue: 0,
+//                 duration: 300,
+//                 useNativeDriver: true,
+//             }),
+//         ]).start(() => {
+//             onClose();
+//         });
+//     };
+
+    
+//       const onLogout = async () => {
+//         await clearAsyncStorage()
+//         // navigation.replace('Login')
+//         navigation.replace('RoleSelection')
+    
+//       }
+
+//     const menuItems = [
+//         {
+//             section: 'EXECUTIVE PROFILE',
+//             items: [
+//                 {
+//                     label: 'Profile',
+//                     icon: 'person-outline',
+//                     iconType: 'Ionicons',
+//                     route: 'ExecutiveProfile',
+//                 },
+//             ],
+//         },
+//         {
+//             section: 'EXECUTIVE USER',
+//             items: [
+//                 {
+//                     label: 'Add User',
+//                     icon: 'person-add-outline',
+//                     iconType: 'Ionicons',
+//                     route: 'AddUserScreen',
+//                 },
+//                 {
+//                     label: 'All Users',
+//                     icon: 'people-outline',
+//                     iconType: 'Ionicons',
+//                     route: 'AllUsersScreen',
+//                 },
+//             ],
+//         },
+//         {
+//             section: 'ALL REQUIREMENT',
+//             items: [
+//                 {
+//                     label: 'All Requirement',
+//                     icon: 'clipboard-list-outline',
+//                     iconType: 'MaterialCommunityIcons',
+//                     route: 'ExecutiveAllRequirement',
+//                 },
+//             ],
+//         },
+//     ];
+
+//     const handleMenuPress = (route) => {
+//         handleClose();
+//         setTimeout(() => {
+//             navigation.navigate(route);
+//         }, 350);
+//     };
+
+//     const styles = StyleSheet.create({
+//         overlay: {
+//             flex: 1,
+//             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//         },
+//         drawerContainer: {
+//             position: 'absolute',
+//             left: 0,
+//             top: 0,
+//             bottom: 0,
+//             width: DRAWER_WIDTH,
+//             backgroundColor: isDarkMode ? dark33 : '#E5E7EB',
+//             shadowColor: '#000',
+//             shadowOffset: {
+//                 width: 2,
+//                 height: 0,
+//             },
+//             shadowOpacity: 0.25,
+//             shadowRadius: 10,
+//             elevation: 10,
+//         },
+//         header: {
+//             paddingTop: 60,
+//             paddingBottom: 30,
+//             paddingHorizontal: 24,
+//             backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
+//             borderBottomWidth: 1,
+//             borderBottomColor: isDarkMode ? dark55 : '#E5E7EB',
+//         },
+//         appName: {
+//             fontSize: 28,
+//             fontFamily: FONTS_FAMILY.Poppins_Bold,
+//             color: isDarkMode ? white : '#1F2937',
+//             letterSpacing: 0.5,
+//             textAlign: 'center',
+//             lineHeight: 36,
+//         },
+//         menuContent: {
+//             flex: 1,
+//             paddingTop: 10,
+//         },
+//         section: {
+//             marginTop: 20,
+//         },
+//         sectionTitle: {
+//             fontSize: 11,
+//             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+//             color: isDarkMode ? '#9CA3AF' : '#6B7280',
+//             paddingHorizontal: 24,
+//             letterSpacing: 0.5,
+//         },
+//         menuItem: {
+//             flexDirection: 'row',
+//             alignItems: 'center',
+//             paddingVertical: 5,
+//             paddingHorizontal: 24,
+//             marginHorizontal: 12,
+//             borderRadius: 10,
+//         },
+//         menuItemActive: {
+//             backgroundColor: isDarkMode ? dark55 : '#F3F4F6',
+//         },
+//         iconContainer: {
+//             width: 36,
+//             height: 36,
+//             borderRadius: 10,
+//             backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
+//             justifyContent: 'center',
+//             alignItems: 'center',
+//             marginRight: 16,
+//         },
+//         menuLabel: {
+//             fontSize: 15,
+//             fontFamily: FONTS_FAMILY.Poppins_Medium,
+//             color: isDarkMode ? white : '#374151',
+//             flex: 1,
+//         },
+//         footer: {
+//             padding: 24,
+//             borderTopWidth: 1,
+//             borderTopColor: isDarkMode ? dark55 : '#E5E7EB',
+//         },
+//         logoutButton: {
+//             flexDirection: 'row',
+//             alignItems: 'center',
+//             justifyContent: 'center',
+//             paddingVertical: 14,
+//             paddingHorizontal: 24,
+//             borderRadius: 12,
+//             backgroundColor: isDarkMode ? '#DC2626' : '#FEE2E2',
+//         },
+//         logoutText: {
+//             fontSize: 15,
+//             fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+//             color: isDarkMode ? white : '#DC2626',
+//             marginLeft: 10,
+//         },
+//     });
+
+//     if (!visible) return null;
+
+//     return (
+//         <Modal
+//             visible={visible}
+//             transparent
+//             animationType="none"
+//             onRequestClose={handleClose}
+//         >
+//             <TouchableWithoutFeedback onPress={handleClose}>
+//                 <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+//                     <TouchableWithoutFeedback>
+//                         <Animated.View
+//                             style={[
+//                                 styles.drawerContainer,
+//                                 {
+//                                     transform: [{ translateX: slideAnim }],
+//                                 },
+//                             ]}
+//                         >
+//                             <View style={{
+//                                 width:'100%',
+//                                 backgroundColor:'white'
+//                             }}>
+//                             <Image
+//                                 source={IMG.SplashLogo}
+//                                 style={{ width: 200, height: 100, alignSelf: 'center', }}
+//                             />
+
+//                             </View>
+
+//                             {/* Menu Items */}
+//                             <ScrollView
+//                                 style={styles.menuContent}
+//                                 showsVerticalScrollIndicator={false}
+//                             >
+//                                 {menuItems.map((section, sectionIndex) => (
+//                                     <View key={sectionIndex} style={styles.section}>
+//                                         <Text style={styles.sectionTitle}>{section.section}</Text>
+//                                         {section.items.map((item, itemIndex) => (
+//                                             <TouchableOpacity
+//                                                 key={itemIndex}
+//                                                 style={styles.menuItem}
+//                                                 onPress={() => handleMenuPress(item.route)}
+//                                                 activeOpacity={0.7}
+//                                             >
+//                                                 <View style={styles.iconContainer}>
+//                                                     {item.iconType === 'Ionicons' ? (
+//                                                         <Ionicons
+//                                                             name={item.icon}
+//                                                             size={20}
+//                                                             color={isDarkMode ? white : '#6B7280'}
+//                                                         />
+//                                                     ) : (
+//                                                         <MaterialCommunityIcons
+//                                                             name={item.icon}
+//                                                             size={20}
+//                                                             color={isDarkMode ? white : '#6B7280'}
+//                                                         />
+//                                                     )}
+//                                                 </View>
+//                                                 <Text style={styles.menuLabel}>{item.label}</Text>
+//                                             </TouchableOpacity>
+//                                         ))}
+//                                     </View>
+//                                 ))}
+//                             </ScrollView>
+
+//                             {/* Footer - Logout Button */}
+//                             <View style={styles.footer}>
+//                                 <TouchableOpacity
+//                                     style={styles.logoutButton}
+//                                     onPress={() => {
+//                                         // handleClose();
+//                                         // Handle logout logic
+//                                         onLogout()
+//                                     }}
+//                                     activeOpacity={0.7}
+//                                 >
+//                                     <Ionicons
+//                                         name="log-out-outline"
+//                                         size={22}
+//                                         color={isDarkMode ? white : '#DC2626'}
+//                                     />
+//                                     <Text style={styles.logoutText}>Logout</Text>
+//                                 </TouchableOpacity>
+//                             </View>
+//                         </Animated.View>
+//                     </TouchableWithoutFeedback>
+//                 </Animated.View>
+//             </TouchableWithoutFeedback>
+//         </Modal>
+//     );
+// };
+
+// export default DrawerMenu;
+
+
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
     StyleSheet,
-    Image,
+    Modal,
+    Animated,
+    Dimensions,
+    TouchableWithoutFeedback,
     ScrollView,
-    Share
+    Image,
 } from 'react-native';
-import Modal from 'react-native-modal'; // Modal package for drawer effect
-import { moderateScale, verticalScale, } from 'react-native-size-matters';
-import CustomText from './TextComponent';
 import { FONTS_FAMILY } from '../assets/Fonts';
-import { BookmarkSimple, Down, DownArrowCircle, Flag, Headset, Notepad, PencilLine, SignOut, Star } from '../assets/SVGs';
-import Row from './wrapper/row';
-import { getItem } from '../utils/Apis';
-import { useTranslation } from 'react-i18next';
-// import { EditIcon, BookmarkIcon, RateIcon, HelpIcon, ContactIcon, TermsIcon, LogoutIcon, LanguageIcon } from './assets/icons'; // Use your icons here
+import { App_Primary_color, dark33, dark55, darkMode25, white } from '../common/Colors/colors';
+import { useSelector } from 'react-redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import IMG from '../assets/Images';
+import { clearAsyncStorage } from '../utils/Apis';
+import { useLoginCheck } from '../utils/Context';
 
-const DrawerModal = ({
-    isModalVisible,
-    toggleModal,
-    navigation,
-    isLanguage
-}) => {
+const { width } = Dimensions.get('window');
+const DRAWER_WIDTH = width * 0.75;
 
+const DrawerMenu = ({ visible, onClose, navigation }) => {
+    const { isDarkMode } = useSelector(state => state.theme);
+    const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const onInvite = async () => {
-        try {
-            const result = await Share.share({
-                message: 'Check out this cool app! https://example.com', // Your message or URL here
-            }, {
-                // Ensure this targets WhatsApp by specifying the package
-                dialogTitle: 'Share via',
-                excludedActivityTypes: [], // You can exclude other apps if needed
-            });
+    const { loggedInby, setloggedInby } = useLoginCheck();
 
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // Shared with activity type of result.activityType
-                    console.log('Shared with activity type:', result.activityType);
-                } else {
-                    // Shared without specifying activity type
-                    console.log('Shared successfully');
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // Dismissed
-                console.log('Share dismissed');
-            }
-        } catch (error) {
-            console.error('Error while sharing:', error.message);
+    useEffect(() => {
+        if (visible) {
+            // Open drawer - slide from left to right
+            Animated.parallel([
+                Animated.timing(slideAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        } else {
+            // Close drawer - slide from right to left
+            Animated.parallel([
+                Animated.timing(slideAnim, {
+                    toValue: -DRAWER_WIDTH,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]).start();
         }
+    }, [visible]);
+
+    const handleClose = () => {
+        // Animate out first, then close
+        Animated.parallel([
+            Animated.timing(slideAnim, {
+                toValue: -DRAWER_WIDTH,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start(() => {
+            onClose();
+        });
     };
 
-    const { t, i18n } = useTranslation();
+    const onLogout = async () => {
+        await clearAsyncStorage();
+        navigation.replace('RoleSelection');
+    };
 
+    // Menu items for Field Executive
+    const fieldExecutiveMenuItems = [
+        {
+            section: 'EXECUTIVE PROFILE',
+            items: [
+                {
+                    label: 'Profile',
+                    icon: 'person-outline',
+                    iconType: 'Ionicons',
+                    route: 'ExecutiveProfile',
+                },
+            ],
+        },
+        {
+            section: 'EXECUTIVE USER',
+            items: [
+                {
+                    label: 'Add User',
+                    icon: 'person-add-outline',
+                    iconType: 'Ionicons',
+                    route: 'AddUserScreen',
+                },
+                {
+                    label: 'All Users',
+                    icon: 'people-outline',
+                    iconType: 'Ionicons',
+                    route: 'AllUsersScreen',
+                },
+            ],
+        },
+        {
+            section: 'ALL REQUIREMENT',
+            items: [
+                {
+                    label: 'All Requirement',
+                    icon: 'clipboard-list-outline',
+                    iconType: 'MaterialCommunityIcons',
+                    route: 'ExecutiveAllRequirement',
+                },
+            ],
+        },
+    ];
 
+    // Menu items for other users (User/Customer)
+    const userMenuItems = [
+        {
+            section: 'MY ACCOUNT',
+            items: [
+                {
+                    label: 'Profile',
+                    icon: 'person-outline',
+                    iconType: 'Ionicons',
+                    route: 'UserProfile',
+                },
+            ],
+        },
+        {
+            section: 'REQUIREMETS',
+            items: [
+                {
+                    label: 'All Requirements',
+                    icon: 'briefcase-outline',
+                    iconType: 'Ionicons',
+                    route: 'SuplierAllRequirement',
+                },
+                {
+                    label: 'Pending Requirement',
+                    icon: 'add-circle-outline',
+                    iconType: 'Ionicons',
+                    route: 'SupplierpendingRequirement',
+                },
+            ],
+        },
+        {
+            section: 'BIDS',
+            items: [
+                {
+                    label: 'All Bids',
+                    icon: 'clipboard-list-outline',
+                    iconType: 'MaterialCommunityIcons',
+                    route: 'AllMyBids',
+                },
+            ],
 
-    const handleNavigation = (key) => {
-        if (key == 'edit_profile') {
-            navigation.navigate('EditProfile')
-        }
-        if (key == 'send_feedback') {
-            navigation.navigate('ContactUsScreen')
+            
+        },
+         {
+            section: 'TRANSACTIONS',
+            items: [
+                {
+                    label: 'All Transactions',
+                    icon: 'clipboard-list-outline',
+                    iconType: 'MaterialCommunityIcons',
+                    route: 'AllTransaction',
+                },
+            ],
 
-        }
-        if (key == 'rate_us') {
-            navigation.navigate('SendFeedBack')
-        }
-        if (key == 'privacy_policy') {
-            navigation.navigate('Privacy')
-        }
-        if (key == 'terms_and_conditions') {
-            navigation.navigate('TermsAndConditons')
-        }
-        if (key == 'Rate Us') {
-            navigation.navigate('RatingScreen')
-        }
-        if (key == 'Invite Freinds') {
-            onInvite()
-        }
-        if (key == 'public_post') {
-            navigation.navigate('News', { type: 'Public Post' })
-        }
-        if (key == 'user_search') {
-            navigation.navigate('UserSearch')
-        }
+            
+        },
+    ];
 
-        if (key == 'questions') {
-            navigation.navigate('QuestionsScreen')
-        }
+    // Choose menu items based on loggedInby
+    const menuItems = loggedInby === 'field_executive' 
+        ? fieldExecutiveMenuItems 
+        : userMenuItems;
 
-        if (key == 'top_news') {
-            navigation.navigate('TopNews')
-        }
-        
-        if (key == 'contact_us') {
-            navigation.navigate('ContactUsScreen')
-        }
-        if (key == 'survey') {
-            navigation.navigate('Survey')
-        }
-        if (key == 'influencers') {
-            navigation.navigate('Influencers')
-        }
-        // TermsAndConditons
-    }
+    const handleMenuPress = (route) => {
+        handleClose();
+        setTimeout(() => {
+            navigation.navigate(route);
+        }, 350);
+    };
 
-    return (
-        <View style={styles.container}>
-
-
-            <Modal
-                isVisible={isModalVisible}
-                onBackdropPress={toggleModal}
-                style={styles.modal}
-                animationIn="slideInLeft"
-                animationOut="slideOutLeft"
-                hasBackdrop={true}
-                backdropOpacity={0.7}
-            >
-                <View style={styles.drawer}>
-                    {/* Profile Section */}
-                    <TouchableOpacity style={styles.profileSection}
-                        onPress={() => navigation.navigate('EditProfile')}
-                    >
-                        <Image
-                            source={{ uri: 'https://via.placeholder.com/100' }} // Placeholder profile image
-                            style={styles.profileImage}
-                        />
-                        <View>
-                            <Text style={styles.userName}>Rahul Sharma</Text>
-                            <Text style={styles.userEmail}>rahulsharma@gmail.com</Text>
-
-                        </View>
-                    </TouchableOpacity>
-
-                    {/* Language Selector */}
-                    <TouchableOpacity style={styles.menuItem}
-                        onPress={() => navigation.navigate('LanguageSelection')}
-                    >
-                        <Flag />
-                        <Text style={styles.menuText}>{t('language')}</Text>
-                        <Row>
-                            <Text style={styles.languageText}>{isLanguage == 'en' ? 'English' :
-                                isLanguage == 'hi' ? "हिंदी" : isLanguage == 'kn' ? 'ಕನ್ನಡ' : null
-                            }</Text>
-                            <Down />
-                        </Row>
-                    </TouchableOpacity>
-
-                    {/* Menu Items */}
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        {menuData.map((item, index) => (
-                            <TouchableOpacity key={index} style={styles.menuItem}
-                                onPress={() => {
-                                    handleNavigation(item?.title)
-                                }}
-                            >
-                                {item.icon}
-                                <Text style={styles.menuText}>{t(item.title)}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-            </Modal>
-        </View>
-    );
-};
-
-const menuData = [
-    { id: 1, title: 'edit_profile', icon: <PencilLine /> },
-    { id: 2, title: 'send_feedback', icon: <Star /> },
-    { id: 3, title: 'rate_us', icon: <Star /> },
-    { id: 4, title: 'privacy_policy', icon: <Star /> },
-    { id: 5, title: 'contact_us', icon: <Headset /> },
-    { id: 6, title: 'public_post', icon: <Headset /> },
-    { id: 7, title: 'user_search', icon: <Notepad /> },
-    { id: 8, title: 'top_news', icon: <Notepad /> },
-    { id: 9, title: 'survey', icon: <Notepad /> },
-    { id: 10, title: 'influencers', icon: <Notepad /> },
-    { id: 11, title: 'questions', icon: <Notepad /> },
-    { id: 12, title: 'terms_and_conditions', icon: <Notepad /> },
-    { id: 13, title: 'invite_friends', icon: <Notepad /> },
-    { id: 14, title: 'log_out', icon: <SignOut /> },
-
-];
-
- 
-
-const styles = StyleSheet.create({
-        container: {
+    const styles = StyleSheet.create({
+        overlay: {
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
         },
-        modal: {
-            margin: 0,
-            justifyContent: 'flex-start',
+        drawerContainer: {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: DRAWER_WIDTH,
+            backgroundColor: isDarkMode ? dark33 : '#E5E7EB',
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 2,
+                height: 0,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 10,
+            elevation: 10,
         },
-        drawer: {
-            width: '80%',
-            height: '100%',
-            backgroundColor: '#fff',
-            padding: moderateScale(20),
-            // borderTopRightRadius: moderateScale(10),
-            // borderBottomRightRadius: moderateScale(10),
+        header: {
+            width: '100%',
+            backgroundColor: 'white',
         },
-        profileSection: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: verticalScale(20),
-            gap: 10
+        logoContainer: {
+            width: 200,
+            height: 100,
+            alignSelf: 'center',
         },
-        profileImage: {
-            width: moderateScale(50),
-            height: moderateScale(50),
-            borderRadius: moderateScale(35),
-            marginBottom: verticalScale(10),
+        menuContent: {
+            flex: 1,
+            paddingTop: 10,
         },
-        userName: {
-            fontSize: moderateScale(18),
-            fontWeight: 'bold',
-            color: '#333',
+        section: {
+            marginTop: 20,
         },
-        userEmail: {
-            fontSize: moderateScale(14),
-            color: '#8A8A8A',
+        sectionTitle: {
+            fontSize: 11,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+            paddingHorizontal: 24,
+            letterSpacing: 0.5,
         },
         menuItem: {
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingVertical: verticalScale(10),
-            borderBottomWidth: 1,
-            borderBottomColor: '#E6E6E6',
+            paddingVertical: 5,
+            paddingHorizontal: 24,
+            marginHorizontal: 12,
+            borderRadius: 10,
         },
-        menuText: {
-            fontSize: moderateScale(14),
-            color: '#333',
+        menuItemActive: {
+            backgroundColor: isDarkMode ? dark55 : '#F3F4F6',
+        },
+        iconContainer: {
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            backgroundColor: isDarkMode ? darkMode25 : '#F9FAFB',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: 16,
+        },
+        menuLabel: {
+            fontSize: 15,
+            fontFamily: FONTS_FAMILY.Poppins_Medium,
+            color: isDarkMode ? white : '#374151',
             flex: 1,
-            marginLeft: moderateScale(10),
-            fontFamily: FONTS_FAMILY.Comfortaa_Regular
         },
-        languageText: {
-            fontSize: moderateScale(14),
-            color: '#333',
+        footer: {
+            padding: 24,
+            borderTopWidth: 1,
+            borderTopColor: isDarkMode ? dark55 : '#E5E7EB',
+        },
+        logoutButton: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 14,
+            paddingHorizontal: 24,
+            borderRadius: 12,
+            backgroundColor: isDarkMode ? '#DC2626' : '#FEE2E2',
+        },
+        logoutText: {
+            fontSize: 15,
+            fontFamily: FONTS_FAMILY.Poppins_SemiBold,
+            color: isDarkMode ? white : '#DC2626',
+            marginLeft: 10,
         },
     });
 
-export default DrawerModal;
+    if (!visible) return null;
+
+    return (
+        <Modal
+            visible={visible}
+            transparent
+            animationType="none"
+            onRequestClose={handleClose}
+        >
+            <TouchableWithoutFeedback onPress={handleClose}>
+                <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+                    <TouchableWithoutFeedback>
+                        <Animated.View
+                            style={[
+                                styles.drawerContainer,
+                                {
+                                    transform: [{ translateX: slideAnim }],
+                                },
+                            ]}
+                        >
+                            {/* Logo Header */}
+                            <View style={styles.header}>
+                                <Image
+                                    source={IMG.SplashLogo}
+                                    style={styles.logoContainer}
+                                />
+                            </View>
+
+                            {/* Menu Items */}
+                            <ScrollView
+                                style={styles.menuContent}
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {menuItems.map((section, sectionIndex) => (
+                                    <View key={sectionIndex} style={styles.section}>
+                                        <Text style={styles.sectionTitle}>{section.section}</Text>
+                                        {section.items.map((item, itemIndex) => (
+                                            <TouchableOpacity
+                                                key={itemIndex}
+                                                style={styles.menuItem}
+                                                onPress={() => handleMenuPress(item.route)}
+                                                activeOpacity={0.7}
+                                            >
+                                                <View style={styles.iconContainer}>
+                                                    {item.iconType === 'Ionicons' ? (
+                                                        <Ionicons
+                                                            name={item.icon}
+                                                            size={20}
+                                                            color={isDarkMode ? white : '#6B7280'}
+                                                        />
+                                                    ) : (
+                                                        <MaterialCommunityIcons
+                                                            name={item.icon}
+                                                            size={20}
+                                                            color={isDarkMode ? white : '#6B7280'}
+                                                        />
+                                                    )}
+                                                </View>
+                                                <Text style={styles.menuLabel}>{item.label}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                ))}
+                            </ScrollView>
+
+                            {/* Footer - Logout Button */}
+                            <View style={styles.footer}>
+                                <TouchableOpacity
+                                    style={styles.logoutButton}
+                                    onPress={onLogout}
+                                    activeOpacity={0.7}
+                                >
+                                    <Ionicons
+                                        name="log-out-outline"
+                                        size={22}
+                                        color={isDarkMode ? white : '#DC2626'}
+                                    />
+                                    <Text style={styles.logoutText}>Logout</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Animated.View>
+                    </TouchableWithoutFeedback>
+                </Animated.View>
+            </TouchableWithoutFeedback>
+        </Modal>
+    );
+};
+
+export default DrawerMenu;

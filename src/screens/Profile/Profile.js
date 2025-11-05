@@ -102,7 +102,9 @@ const ProfilePage = ({ navigation }) => {
 
   const onLogout = async () => {
     await clearAsyncStorage()
-    navigation.replace('Login')
+    // navigation.replace('Login')
+    navigation.replace('RoleSelection')
+
   }
 
   const menuItems = [
