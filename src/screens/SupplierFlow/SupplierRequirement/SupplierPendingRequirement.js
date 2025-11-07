@@ -21,6 +21,8 @@ import { apiGet } from '../../../utils/Apis';
 import { BackIcon } from '../../../assets/SVGs';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import SpaceBetweenRow from '../../../components/wrapper/spacebetween';
+import CustomButton from '../../../components/Button';
 
 const { width } = Dimensions.get('window');
 
@@ -409,6 +411,7 @@ export default function SupplierpendingRequirement({ navigation }) {
                             Created: {formatDate(requirement?.createdAt)}
                         </Text>
                     </View>
+
                 </View>
 
                 {/* Info Section */}
@@ -419,7 +422,7 @@ export default function SupplierpendingRequirement({ navigation }) {
                             {requirement?.Location?.Address || 'N/A'}
                         </Text>
                     </View>
-                    
+
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>City:</Text>
                         <Text style={styles.infoValue}>
@@ -430,7 +433,7 @@ export default function SupplierpendingRequirement({ navigation }) {
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Map:</Text>
                         {hasLocation ? (
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={styles.mapButton}
                                 onPress={() => openMapLocation(requirement?.Location?.Coordinates)}
                             >
@@ -466,15 +469,15 @@ export default function SupplierpendingRequirement({ navigation }) {
                         {requirement.Items.map((item, idx) => (
                             <View key={idx} style={styles.itemCard}>
                                 <Text style={styles.itemName}>{item.productName || 'N/A'}</Text>
-                                
+
                                 <Text style={styles.itemDetail}>
                                     Quantity: <Text style={styles.itemDetailBold}>{item.quantity || 'N/A'}</Text>
                                 </Text>
-                                
+
                                 <Text style={styles.itemDetail}>
                                     Size: <Text style={styles.itemDetailBold}>{item.size || 'N/A'}</Text>
                                 </Text>
-                                
+
                                 <Text style={styles.itemDetail}>
                                     Price: <Text style={styles.itemDetailBold}>₹{item.price || 0}</Text>
                                 </Text>
@@ -506,8 +509,8 @@ export default function SupplierpendingRequirement({ navigation }) {
                                     style={styles.imageWrapper}
                                     onPress={() => openImageModal(requirement.Image, imgIndex)}
                                 >
-                                    <Image 
-                                        source={{ uri: img }} 
+                                    <Image
+                                        source={{ uri: img }}
                                         style={styles.thumbnail}
                                     />
                                 </TouchableOpacity>
@@ -519,6 +522,10 @@ export default function SupplierpendingRequirement({ navigation }) {
                 {!hasItems && !hasImages && (
                     <Text style={styles.noImagesText}>No items or images available</Text>
                 )}
+                <CustomButton
+                    title={'View Detail'}
+                    onPress={()=>navigation.navigate('SupplierRequirementDetails', {requirementId:requirement._id})}
+                />
             </View>
         );
     };

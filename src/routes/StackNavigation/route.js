@@ -58,6 +58,7 @@ import SuplierAllRequirement from '../../screens/SupplierFlow/SupplierRequiremen
 import SupplierpendingRequirement from '../../screens/SupplierFlow/SupplierRequirement/SupplierPendingRequirement';
 import AllMyBids from '../../screens/SupplierFlow/SupplierRequirement/AllMyBid';
 import AllTransaction from '../../screens/SupplierFlow/SupplierRequirement/AllTrasactions';
+import SupplierRequirementDetails from '../../screens/SupplierFlow/SupplierRequirement/SupplierReqDetail';
 
 
 
@@ -147,6 +148,8 @@ const StackNavigation = () => {
         <Stack.Screen name={'SupplierpendingRequirement'} component={SupplierpendingRequirement} />
         <Stack.Screen name={'AllMyBids'} component={AllMyBids} />
         <Stack.Screen name={'AllTransaction'} component={AllTransaction} />
+        <Stack.Screen name={'SupplierRequirementDetails'} component={SupplierRequirementDetails} />
+
 
         
       </Stack.Navigator>
