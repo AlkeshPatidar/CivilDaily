@@ -28,18 +28,18 @@ const { width } = Dimensions.get('window');
 export default function SupplierRequirementDetails({ navigation, route }) {
     const { requirementId } = route.params;
     const { isDarkMode } = useSelector(state => state.theme);
-    
+
     const [requirementDetails, setRequirementDetails] = useState(null);
     const [myBid, setMyBid] = useState(null);
     const [isUploading, setIsUploading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    
+
     // Modal states
     const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
     const [isUpdateBidModalOpen, setIsUpdateBidModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [menuVisible, setMenuVisible] = useState(false);
-    
+
     // Bid form states
     const [itemsWithBrands, setItemsWithBrands] = useState([]);
     const [deliveryDate, setDeliveryDate] = useState('');
@@ -102,7 +102,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
 
     const handleCreateBidClick = () => {
         if (!requirementDetails) return;
-        
+
         const items = requirementDetails.Items.map((item) => ({
             productName: item.productName,
             quantity: item.quantity,
@@ -121,7 +121,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
 
     const handleUpdateBidClick = () => {
         if (!myBid) return;
-        
+
         const items = myBid.Items.map((item) => ({
             productName: item.productName,
             quantity: item.quantity,
@@ -147,7 +147,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
     const createBid = async () => {
         try {
             // Validation
-            const hasEmptyPrice = itemsWithBrands.some(item => 
+            const hasEmptyPrice = itemsWithBrands.some(item =>
                 item.brands.some(brand => !brand.price || brand.price === '')
             );
 
@@ -162,7 +162,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
             }
 
             setIsUploading(true);
-            
+
             const payload = {
                 requirementId: requirementId,
                 Items: itemsWithBrands.map(item => ({
@@ -190,7 +190,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
     const updateBid = async () => {
         try {
             // Validation
-            const hasEmptyPrice = itemsWithBrands.some(item => 
+            const hasEmptyPrice = itemsWithBrands.some(item =>
                 item.brands.some(brand => !brand.price || brand.price === '')
             );
 
@@ -205,7 +205,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
             }
 
             setIsUploading(true);
-            
+
             const payload = {
                 Items: itemsWithBrands.map(item => ({
                     ...item,
@@ -658,6 +658,7 @@ export default function SupplierRequirementDetails({ navigation, route }) {
                                                 placeholder="Enter price"
                                                 keyboardType="numeric"
                                                 value={brand.price}
+                                                placeholderTextColor={'gray'}
                                                 onChangeText={(value) => updateBrandPrice(itemIndex, brandIndex, value)}
                                             />
                                         </View>
@@ -672,6 +673,8 @@ export default function SupplierRequirementDetails({ navigation, route }) {
                                     placeholder="YYYY-MM-DD"
                                     value={deliveryDate}
                                     onChangeText={setDeliveryDate}
+                                    placeholderTextColor={'gray'}
+
                                 />
                             </View>
 
@@ -684,6 +687,8 @@ export default function SupplierRequirementDetails({ navigation, route }) {
                                     numberOfLines={4}
                                     value={note}
                                     onChangeText={setNote}
+                                    placeholderTextColor={'gray'}
+
                                 />
                             </View>
                         </ScrollView>
